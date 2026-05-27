@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Material Machinability — CNC AE Reference</title>
+<style>
+:root{--navy:#1A2744;--blue:#2C4A8A;--purple:#534AB7;--green:#1D9E75;--amber:#EF9F27;--red:#A32D2D;--bg:#F8F9FC;--border:#E2E6EF;--text:#1A1A2E;--mono:'Courier New',monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);}
+header{background:var(--navy);color:white;padding:1.5rem 2rem;}
+header h1{font-size:1.4rem;font-weight:600;}
+header p{font-size:.82rem;opacity:.7;margin-top:.25rem;}
+.container{max-width:960px;margin:0 auto;padding:1.5rem;}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.tab{padding:7px 12px;border:2px solid var(--border);border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;background:white;}
+.tab.active{border-color:var(--navy);background:var(--navy);color:white;}
+.panel{display:none;}.panel.active{display:block;}
+table{width:100%;border-collapse:collapse;background:white;border-radius:10px;overflow:hidden;border:1px solid var(--border);margin-bottom:1rem;}
+th{padding:.65rem 1rem;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;background:var(--navy);color:white;text-align:left;}
+td{padding:.7rem 1rem;font-size:.82rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;}
+tr:last-child td{border-bottom:none;}
+td:first-child{font-weight:600;color:var(--navy);}
+.note{background:#EFF6FF;border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:#1E3A5F;margin:.75rem 0;line-height:1.6;}
+.note strong{display:block;margin-bottom:.25rem;}
+.warn{background:#FEF2F2;border-left:4px solid var(--red);border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:#7F1D1D;margin:.75rem 0;line-height:1.6;}
+.warn strong{display:block;margin-bottom:.25rem;}
+.mac-bar{height:12px;border-radius:4px;margin:.3rem 0;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+@media(max-width:600px){.grid{grid-template-columns:1fr;}}
+.card{background:white;border:1px solid var(--border);border-radius:10px;padding:1rem;}
+.card h4{font-size:.88rem;font-weight:600;color:var(--navy);margin-bottom:.5rem;}
+.card ul{font-size:.82rem;color:#374151;line-height:1.8;padding-left:1rem;}
+</style>
+</head>
+<body>
+<header>
+  <h1>🔩 Material Machinability Reference</h1>
+  <p>CNC AE Reference Library — Module 9 · 8 material families · Properties · Tooling · Cutting considerations</p>
+</header>
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="go(0,this)">Machinability overview</button>
+    <button class="tab" onclick="go(1,this)">Aluminum</button>
+    <button class="tab" onclick="go(2,this)">Steel</button>
+    <button class="tab" onclick="go(3,this)">Stainless steel</button>
+    <button class="tab" onclick="go(4,this)">Titanium</button>
+    <button class="tab" onclick="go(5,this)">Inconel / superalloys</button>
+    <button class="tab" onclick="go(6,this)">Cast iron</button>
+    <button class="tab" onclick="go(7,this)">Plastics / composites</button>
+  </div>
+
+  <div id="p0" class="panel active">
+    <div class="note"><strong>Machinability rating — relative to 1212 free-machining steel = 100%</strong>Higher rating = easier to machine. These are approximate starting references — actual machinability varies with hardness, condition, and specific alloy. Use as relative comparisons, not absolute values.</div>
+    <table>
+      <tr><th>Material family</th><th>Machinability rating</th><th>Relative difficulty</th><th>Primary challenge</th></tr>
+      <tr><td>Aluminum (6061-T6)</td><td><div class="mac-bar" style="width:90%;background:#10B981;"></div>~300–1000%</td><td>Easy</td><td>BUE with wrong coating. Long chips can tangle.</td></tr>
+      <tr><td>Mild steel (1018)</td><td><div class="mac-bar" style="width:70%;background:#3B82F6;"></div>~70%</td><td>Easy-moderate</td><td>Long stringy chips. BUE tendency.</td></tr>
+      <tr><td>Alloy steel (4140 annealed)</td><td><div class="mac-bar" style="width:55%;background:#6366F1;"></div>~55%</td><td>Moderate</td><td>Hardness varies with condition. Interrupted cuts.</td></tr>
+      <tr><td>Cast iron (gray)</td><td><div class="mac-bar" style="width:65%;background:#8B5CF6;"></div>~60–70%</td><td>Moderate</td><td>Abrasive dust chips. Dry machining preferred.</td></tr>
+      <tr><td>Stainless (304)</td><td><div class="mac-bar" style="width:40%;background:#F59E0B;"></div>~45%</td><td>Moderate-hard</td><td>Work hardening. Galling. Correct chip load critical.</td></tr>
+      <tr><td>Tool steel (D2, H13)</td><td><div class="mac-bar" style="width:30%;background:#F97316;"></div>~30%</td><td>Hard</td><td>Hard carbide particles. High cutting forces.</td></tr>
+      <tr><td>Titanium (Ti-6Al-4V)</td><td><div class="mac-bar" style="width:22%;background:#EF4444;"></div>~22%</td><td>Very hard</td><td>Low thermal conductivity. Work hardening. Fire risk.</td></tr>
+      <tr><td>Inconel 718</td><td><div class="mac-bar" style="width:10%;background:#DC2626;"></div>~8–12%</td><td>Extremely hard</td><td>Extreme cutting forces. Work hardening. Heat retention.</td></tr>
+    </table>
+  </div>
+
+  <div id="p1" class="panel">
+    <div class="grid">
+      <div class="card"><h4>Key properties</h4><ul>
+        <li>Density: 0.098 lb/in³ (2.7 g/cm³) — 1/3 of steel</li>
+        <li>Melting point: ~1220°F (660°C)</li>
+        <li>Thermal conductivity: high — dissipates heat well</li>
+        <li>6061-T6: 40 ksi tensile, 35 ksi yield, 95 HRB</li>
+        <li>7075-T6: 83 ksi tensile, 73 ksi yield, harder to machine</li>
+      </ul></div>
+      <div class="card"><h4>Tooling recommendations</h4><ul>
+        <li>Uncoated carbide — preferred for most aluminum</li>
+        <li>ZrN or TiN coating — acceptable</li>
+        <li>NEVER TiAlN or AlTiN — chemical affinity → BUE</li>
+        <li>High positive rake geometry essential</li>
+        <li>2 or 3 flute end mills for better chip evacuation</li>
+        <li>PCD for high-volume production or high-silicon alloys</li>
+      </ul></div>
+    </div>
+    <table>
+      <tr><th>Operation</th><th>SFM range</th><th>Chip load (in/tooth)</th><th>Notes</th></tr>
+      <tr><td>Milling — roughing</td><td>800–1500</td><td>0.004–0.008</td><td>Flood or air blast. Watch for chip packing in pockets.</td></tr>
+      <tr><td>Milling — finishing</td><td>1000–2000+</td><td>0.002–0.005</td><td>Sharp tool essential. Wiper geometry for flat surfaces.</td></tr>
+      <tr><td>Turning</td><td>600–1200</td><td>0.008–0.020 IPR</td><td>High positive rake insert. Chip breaker geometry important.</td></tr>
+      <tr><td>Drilling</td><td>200–500</td><td>0.004–0.012 IPR</td><td>Parabolic flute drill for deep holes. Peck at L:D &gt;5.</td></tr>
+      <tr><td>Tapping</td><td>50–150 SFM</td><td>—</td><td>Form taps preferred in aluminum — stronger thread, no chips.</td></tr>
+    </table>
+    <div class="warn"><strong>TiAlN and AlTiN coatings are prohibited for aluminum</strong>The aluminum content in the coating bonds chemically with the workpiece aluminum at cutting temperatures, causing built-up edge (BUE). The BUE tears out and leaves a rough, smeared surface finish. Use uncoated carbide or ZrN.</div>
+  </div>
+
+  <div id="p2" class="panel">
+    <div class="grid">
+      <div class="card"><h4>Key properties by grade</h4><ul>
+        <li>1018 (mild): 64 ksi tensile, soft, free-machining</li>
+        <li>4140 annealed: 95 ksi tensile, 197 HB</li>
+        <li>4140 Q&T 28-32 HRC: 130–145 ksi tensile</li>
+        <li>4340 Q&T: 150–180 ksi tensile</li>
+        <li>Hardness drives insert grade selection more than alloy designation</li>
+      </ul></div>
+      <div class="card"><h4>Tooling recommendations</h4><ul>
+        <li>CVD TiCN + Al₂O₃ for continuous turning</li>
+        <li>PVD TiAlN for milling and interrupted cuts</li>
+        <li>Harder grades (lower application number) for soft steel finishing</li>
+        <li>Tougher grades (higher application number) for hardened/interrupted</li>
+        <li>Above 40 HRC: approach H-group tooling strategies</li>
+      </ul></div>
+    </div>
+    <table>
+      <tr><th>Grade / condition</th><th>Turning SFM</th><th>Milling SFM</th><th>Chip load start</th><th>Notes</th></tr>
+      <tr><td>1018 / A36 (soft)</td><td>400–700</td><td>300–500</td><td>0.004–0.007</td><td>BUE tendency — maintain adequate chip load</td></tr>
+      <tr><td>4140 annealed</td><td>300–550</td><td>250–400</td><td>0.004–0.006</td><td>Most common AE material — versatile</td></tr>
+      <tr><td>4140 Q&T 28-32 HRC</td><td>200–400</td><td>180–300</td><td>0.003–0.005</td><td>Watch for interrupted cuts — use tougher grade</td></tr>
+      <tr><td>4340 Q&T 35-40 HRC</td><td>150–300</td><td>120–220</td><td>0.002–0.004</td><td>Approaching H-group territory — check insert spec</td></tr>
+      <tr><td>H13 / D2 tool steel</td><td>100–250</td><td>80–180</td><td>0.002–0.004</td><td>Hard carbide particles — abrasive wear dominant failure</td></tr>
+    </table>
+  </div>
+
+  <div id="p3" class="panel">
+    <div class="grid">
+      <div class="card"><h4>Key properties</h4><ul>
+        <li>304: 73 ksi tensile, 31 ksi yield, 200 HB — most common</li>
+        <li>316: similar to 304 + Mo for corrosion resistance</li>
+        <li>Work hardening rate: 3–4× higher than carbon steel</li>
+        <li>Low thermal conductivity — heat stays at cutting zone</li>
+        <li>Galling tendency on metal-to-metal contact</li>
+      </ul></div>
+      <div class="card"><h4>Tooling recommendations</h4><ul>
+        <li>PVD TiAlN — preferred over CVD for stainless</li>
+        <li>High positive rake geometry essential</li>
+        <li>Sharp edge — worn edges work-harden the surface</li>
+        <li>Adequate chip load — NEVER let the tool rub</li>
+        <li>Flood coolant — high pressure preferred</li>
+        <li>Anti-galling compound on locating contacts in workholding</li>
+      </ul></div>
+    </div>
+    <table>
+      <tr><th>Operation</th><th>SFM range</th><th>Chip load</th><th>Critical rule</th></tr>
+      <tr><td>Turning 304/316</td><td>200–400</td><td>0.006–0.015 IPR</td><td>Maintain chip load — never reduce feed to fix chatter without checking tool condition first</td></tr>
+      <tr><td>Milling 304/316</td><td>150–300</td><td>0.002–0.005 in/tooth</td><td>Higher application number grade than steel — more toughness needed</td></tr>
+      <tr><td>Drilling 304/316</td><td>80–150</td><td>0.003–0.006 IPR</td><td>Peck cycle — chip evacuation critical. TSC preferred.</td></tr>
+      <tr><td>Tapping 304/316</td><td>20–60 SFM</td><td>—</td><td>Form taps in stainless risk galling. Cut taps with quality tapping fluid. Oversized tap drill helps.</td></tr>
+    </table>
+    <div class="warn"><strong>Chip color in stainless — blue means stop</strong>Blue chips in stainless indicate severe work hardening and imminent cutting edge failure. This is the opposite of carbon steel where blue chips are acceptable in heavy roughing. See Chip Color Reference (Module 6).</div>
+  </div>
+
+  <div id="p4" class="panel">
+    <div class="grid">
+      <div class="card"><h4>Key properties — Ti-6Al-4V</h4><ul>
+        <li>138 ksi tensile, 128 ksi yield, 36 HRC equivalent</li>
+        <li>Density: 0.160 lb/in³ — 56% of steel</li>
+        <li>Thermal conductivity: very low — 1/6 of steel</li>
+        <li>Young's modulus: 16.5 Msi — 55% of steel (more springback)</li>
+        <li>Ignites above 600°C in fine chip/dust form</li>
+      </ul></div>
+      <div class="card"><h4>Tooling and setup requirements</h4><ul>
+        <li>PVD TiAlN coating — no uncoated carbide for volume work</li>
+        <li>High positive rake to minimize cutting forces</li>
+        <li>Flood coolant always — TSC 1000+ psi for drilling</li>
+        <li>Never ceramic — fire risk</li>
+        <li>Non-ferrous contact pads in fixtures — galling risk</li>
+        <li>Rigid setup — springback and deflection significant</li>
+      </ul></div>
+    </div>
+    <table>
+      <tr><th>Operation</th><th>SFM range</th><th>Chip load</th><th>Notes</th></tr>
+      <tr><td>Turning</td><td>100–200</td><td>0.005–0.012 IPR</td><td>Constant feed — never dwell. Dwelling work-hardens the surface.</td></tr>
+      <tr><td>Milling — roughing</td><td>100–200</td><td>0.002–0.005 in/tooth</td><td>Climb milling preferred. High-feed or trochoidal toolpaths to manage heat.</td></tr>
+      <tr><td>Milling — finishing</td><td>150–250</td><td>0.001–0.003 in/tooth</td><td>Light DOC, fresh sharp insert. Springback means finish pass often needed.</td></tr>
+      <tr><td>Drilling</td><td>50–100</td><td>0.002–0.005 IPR</td><td>Peck every 1×D. TSC essential above L:D 3. Never let drill dwell at bottom.</td></tr>
+    </table>
+    <div class="warn"><strong>Titanium fire risk is real</strong>Fine titanium chips and dust ignite above 600°C. Never allow dry machining of titanium. Never let chips accumulate. Flood coolant must reach the cutting zone — not just flood the general area. TSC preferred for all operations where accessible.</div>
+  </div>
+
+  <div id="p5" class="panel">
+    <div class="grid">
+      <div class="card"><h4>Inconel 718 key properties</h4><ul>
+        <li>185 ksi tensile, 150 ksi yield (aged condition)</li>
+        <li>Maintains strength to 1200°F — cutting heat stays in tool</li>
+        <li>Work hardening rate: extremely high</li>
+        <li>Thermal conductivity: very low — 8.3 BTU/hr·ft·°F</li>
+        <li>Specific cutting force Kc: ~110,000 psi (vs 70,000 for alloy steel)</li>
+      </ul></div>
+      <div class="card"><h4>Non-negotiable requirements</h4><ul>
+        <li>Maximum machine and fixturing rigidity — no compliance anywhere</li>
+        <li>PVD TiAlN or AlTiN — heat-resistant coating essential</li>
+        <li>High pressure TSC coolant (1000+ psi) for all drilling</li>
+        <li>Ceramic only for dry roughing — rigid, no interruptions, specific grades</li>
+        <li>Replace inserts at scheduled intervals — don't run to failure</li>
+        <li>No vibration — any chatter destroys insert life instantly</li>
+      </ul></div>
+    </div>
+    <table>
+      <tr><th>Operation</th><th>SFM (carbide)</th><th>SFM (ceramic)</th><th>Chip load</th><th>Notes</th></tr>
+      <tr><td>Turning — roughing</td><td>80–130</td><td>800–1500 (dry only)</td><td>0.005–0.010 IPR</td><td>Ceramic: continuous cuts, rigid setup, dry. Zero interruptions.</td></tr>
+      <tr><td>Turning — finishing</td><td>100–180</td><td>N/A</td><td>0.003–0.007 IPR</td><td>Carbide only for finishing — surface integrity requires coolant</td></tr>
+      <tr><td>Milling — roughing</td><td>60–100</td><td>N/A</td><td>0.001–0.003 in/tooth</td><td>Trochoidal toolpaths strongly preferred — manage heat and force</td></tr>
+      <tr><td>Drilling</td><td>40–80</td><td>N/A</td><td>0.001–0.003 IPR</td><td>TSC mandatory. Peck every 0.5×D. Spot drill first — no walking.</td></tr>
+    </table>
+    <div class="note"><strong>Workholding rigidity is the #1 factor in Inconel performance</strong>Every source of compliance — loose clamps, worn fixture components, long tool overhang — shows up as chatter, poor surface finish, and dramatically reduced insert life. Over-engineer the setup for superalloy work.</div>
+  </div>
+
+  <div id="p6" class="panel">
+    <div class="grid">
+      <div class="card"><h4>Gray cast iron (GG) properties</h4><ul>
+        <li>Compressive strength high, tensile strength low</li>
+        <li>Graphite flakes cause brittle fracture → powder chips</li>
+        <li>Good vibration damping — used for machine bases and fixtures</li>
+        <li>Machinability rating: ~60–70% (easier than steel)</li>
+        <li>Free-machining but abrasive — graphite is a solid lubricant but the dust is abrasive to machine ways</li>
+      </ul></div>
+      <div class="card"><h4>Tooling and coolant</h4><ul>
+        <li>CVD Al₂O₃ coating — chemically inert, ideal for gray iron</li>
+        <li>TiC coating also effective for abrasion resistance</li>
+        <li>Dry machining preferred for gray iron — coolant + graphite dust = abrasive slurry</li>
+        <li>Nodular (ductile) iron: coolant acceptable, machines more like steel</li>
+        <li>Carbide grades K10–K20 for gray, K20–K30 for nodular</li>
+      </ul></div>
+    </div>
+    <table>
+      <tr><th>Material</th><th>Turning SFM</th><th>Milling SFM</th><th>Chip load</th><th>Coolant</th></tr>
+      <tr><td>Gray iron GG20–GG25</td><td>300–600</td><td>250–500</td><td>0.006–0.015 IPR</td><td>Dry preferred</td></tr>
+      <tr><td>Nodular iron GGG40–GGG60</td><td>250–500</td><td>200–400</td><td>0.005–0.012 IPR</td><td>Flood acceptable</td></tr>
+      <tr><td>Malleable iron</td><td>300–550</td><td>250–450</td><td>0.006–0.014 IPR</td><td>Flood acceptable</td></tr>
+      <tr><td>Compacted graphite (CGI)</td><td>150–350</td><td>120–280</td><td>0.004–0.010 IPR</td><td>Dry or minimal</td></tr>
+    </table>
+  </div>
+
+  <div id="p7" class="panel">
+    <div class="grid">
+      <div class="card"><h4>Common engineering plastics</h4><ul>
+        <li>Delrin (acetal): easiest to machine, low friction</li>
+        <li>Nylon: good strength but absorbs moisture — check final dims after conditioning</li>
+        <li>PEEK: high performance, expensive, machines well when sharp</li>
+        <li>Ultem (PEI): excellent stability, less creep than nylon</li>
+        <li>UHMW-PE: very soft, gummy, sticks to tooling</li>
+      </ul></div>
+      <div class="card"><h4>Key rules for plastics</h4><ul>
+        <li>Sharp edge essential — dull tools generate heat and melt the material</li>
+        <li>High SFM, low chip load — opposite of metal instinct</li>
+        <li>Air blast or mist — flood coolant can cause swelling in some plastics</li>
+        <li>Measure after unclamping — plastics spring back significantly</li>
+        <li>Static charge attracts chips — air blast keeps surface clean</li>
+        <li>Vacuum workholding preferred for flat parts</li>
+      </ul></div>
+    </div>
+    <table>
+      <tr><th>Material</th><th>SFM</th><th>Chip load</th><th>Coolant</th><th>Watch for</th></tr>
+      <tr><td>Delrin / acetal</td><td>600–1200</td><td>0.003–0.008</td><td>Air blast or dry</td><td>Long stringy chips — use chip breaker geometry</td></tr>
+      <tr><td>Nylon (6, 66)</td><td>400–800</td><td>0.003–0.007</td><td>Air or mist</td><td>Moisture absorption changes dimensions — machine oversized</td></tr>
+      <tr><td>PEEK</td><td>500–1000</td><td>0.003–0.007</td><td>Air or dry</td><td>Expensive — prototype carefully before production run</td></tr>
+      <tr><td>Ultem / PEI</td><td>500–900</td><td>0.003–0.006</td><td>Air blast</td><td>Less creep than nylon — better dimensional stability</td></tr>
+      <tr><td>Carbon fiber (CFRP)</td><td>400–800</td><td>0.002–0.005</td><td>Dry or vacuum extraction</td><td>Extremely abrasive — PCD only for production. Health hazard — dust extraction mandatory.</td></tr>
+    </table>
+    <div class="warn"><strong>Carbon fiber dust is a health hazard</strong>CFRP machining produces fine conductive carbon fiber particles that are a respiratory hazard and can short-circuit electronic equipment. Always use local exhaust ventilation, HEPA filtration, and appropriate PPE. Never blow dry with compressed air.</div>
+  </div>
+</div>
+<script>
+function go(i,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));document.getElementById('p'+i).classList.add('active');btn.classList.add('active');}
+</script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tolerance Matrix — CNC AE Reference</title>
+<style>
+:root{--navy:#1A2744;--blue:#2C4A8A;--purple:#534AB7;--green:#1D9E75;--amber:#EF9F27;--red:#A32D2D;--bg:#F8F9FC;--border:#E2E6EF;--text:#1A1A2E;--mono:'Courier New',monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);}
+header{background:var(--navy);color:white;padding:1.5rem 2rem;}
+header h1{font-size:1.4rem;font-weight:600;}
+header p{font-size:.82rem;opacity:.7;margin-top:.25rem;}
+.container{max-width:960px;margin:0 auto;padding:1.5rem;}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.tab{padding:7px 12px;border:2px solid var(--border);border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;background:white;}
+.tab.active{border-color:var(--navy);background:var(--navy);color:white;}
+.panel{display:none;}.panel.active{display:block;}
+table{width:100%;border-collapse:collapse;background:white;border-radius:10px;overflow:hidden;border:1px solid var(--border);margin-bottom:1rem;}
+th{padding:.65rem 1rem;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;background:var(--navy);color:white;text-align:left;}
+td{padding:.75rem 1rem;font-size:.82rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;}
+tr:last-child td{border-bottom:none;}
+.note{background:#EFF6FF;border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:#1E3A5F;margin:.75rem 0;line-height:1.6;}
+.note strong{display:block;margin-bottom:.25rem;}
+.warn{background:#FEF2F2;border-left:4px solid var(--red);border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:#7F1D1D;margin:.75rem 0;line-height:1.6;}
+.warn strong{display:block;margin-bottom:.25rem;}
+.band{border-radius:8px;padding:.75rem 1rem;margin-bottom:.75rem;display:flex;align-items:flex-start;gap:1rem;}
+.band-label{font-size:1.1rem;font-weight:700;min-width:80px;flex-shrink:0;}
+.band-content{flex:1;font-size:.82rem;line-height:1.7;}
+.band-title{font-weight:600;margin-bottom:.25rem;}
+.b1{background:#EFF6FF;border:1px solid #BFDBFE;}
+.b2{background:#F0FDF4;border:1px solid #BBF7D0;}
+.b3{background:#FEF3C7;border:1px solid #FDE68A;}
+.b4{background:#FEE2E2;border:1px solid #FECACA;}
+.b5{background:#F3E8FF;border:1px solid #DDD6FE;}
+.cost-scale{display:flex;height:16px;border-radius:6px;overflow:hidden;margin:.5rem 0;}
+.cs-seg{flex:1;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:white;}
+</style>
+</head>
+<body>
+<header>
+  <h1>📐 Tolerance Matrix</h1>
+  <p>CNC AE Reference Library — Module 5 · Five tolerance bands · Process · Tooling · Inspection · Cost</p>
+</header>
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="go(0,this)">Five bands overview</button>
+    <button class="tab" onclick="go(1,this)">Band 1 — Standard</button>
+    <button class="tab" onclick="go(2,this)">Band 2 — Precision</button>
+    <button class="tab" onclick="go(3,this)">Band 3 — High precision</button>
+    <button class="tab" onclick="go(4,this)">Band 4 — Ultra precision</button>
+    <button class="tab" onclick="go(5,this)">Inspection requirements</button>
+    <button class="tab" onclick="go(6,this)">Cost impact</button>
+  </div>
+
+  <div id="p0" class="panel active">
+    <div class="note"><strong>These tolerance bands represent production-capable values at Cpk ≥ 1.33</strong>Not theoretical best-case measurements — achievable in production with proper process control. Each tighter band requires a fundamentally different process, not just more care.</div>
+
+    <div class="band b1">
+      <div class="band-label" style="color:#1E40AF;">Band 1<br>±0.005″</div>
+      <div class="band-content"><div class="band-title">Standard CNC — no special process required</div>General milling, turning, and drilling. Production-capable with standard tooling and fixturing. The default for non-critical features. No additional inspection beyond standard in-process gauging.</div>
+    </div>
+    <div class="band b2">
+      <div class="band-label" style="color:#065F46;">Band 2<br>±0.002″</div>
+      <div class="band-content"><div class="band-title">Precision CNC — process discipline required</div>Precision milling, finish boring, reaming. Requires temperature stabilization, calibrated tooling, and verified work offsets. CMM recommended for first article. Achievable on well-maintained CNC equipment with process control.</div>
+    </div>
+    <div class="band b3">
+      <div class="band-label" style="color:#92400E;">Band 3<br>±0.001″</div>
+      <div class="band-content"><div class="band-title">Near limit of CNC — tight process control</div>Approaching the practical limit of milling and turning without grinding. Requires thermal stabilization, in-process probing, and tight process control. CMM inspection on all critical features. Not suitable for general production without dedicated process development.</div>
+    </div>
+    <div class="band b4">
+      <div class="band-label" style="color:#991B1B;">Band 4<br>±0.0005″</div>
+      <div class="band-content"><div class="band-title">Grinding required — separate operation</div>Cylindrical or surface grinding required. Separate setup, separate operation, temperature-controlled environment recommended. CMM inspection required. Cost 2–4× band 2. ISO fit H6 or tighter.</div>
+    </div>
+    <div class="band b5">
+      <div class="band-label" style="color:#6B21A8;">Band 5<br>&lt;±0.0002″</div>
+      <div class="band-content"><div class="band-title">Specialty processes — honing, lapping, superfinishing</div>Honing for bores, lapping for flat surfaces, cylindrical grinding with in-process gauging. Temperature-controlled environment required. Specialist process. Cost 5–10× band 2. ISO fit H5 or tighter.</div>
+    </div>
+
+    <table style="margin-top:1rem;">
+      <tr><th>Band</th><th>Tolerance (±)</th><th>Tolerance (mm)</th><th>Process</th><th>ISO fit class</th><th>Cpk achievable</th></tr>
+      <tr><td style="color:#1E40AF;font-weight:700;">1</td><td>±0.005″</td><td>±0.127mm</td><td>Standard CNC mill/turn/drill</td><td>H9–H11</td><td>≥ 1.33</td></tr>
+      <tr><td style="color:#065F46;font-weight:700;">2</td><td>±0.002″</td><td>±0.050mm</td><td>Precision CNC, reaming, fine boring</td><td>H7–H8</td><td>≥ 1.33</td></tr>
+      <tr><td style="color:#92400E;font-weight:700;">3</td><td>±0.001″</td><td>±0.025mm</td><td>Near-limit CNC with process control</td><td>H6–H7</td><td>≥ 1.00 (marginal)</td></tr>
+      <tr><td style="color:#991B1B;font-weight:700;">4</td><td>±0.0005″</td><td>±0.013mm</td><td>Grinding required</td><td>H5–H6</td><td>≥ 1.33 with grinding</td></tr>
+      <tr><td style="color:#6B21A8;font-weight:700;">5</td><td>&lt;±0.0002″</td><td>&lt;±0.005mm</td><td>Honing, lapping, superfinishing</td><td>H5 or tighter</td><td>≥ 1.33 with specialty process</td></tr>
+    </table>
+  </div>
+
+  <div id="p1" class="panel">
+    <div class="note"><strong>Band 1 — ±0.005″ (±0.127mm) — the production default</strong>This is the tolerance level that well-maintained CNC equipment holds in production with no special process requirements. Specify Band 1 for all non-functional features.</div>
+    <table>
+      <tr><th>Attribute</th><th>Details</th></tr>
+      <tr><td>Tolerance</td><td>±0.005″ / ±0.127mm</td></tr>
+      <tr><td>Processes</td><td>CNC milling, turning, drilling. No special requirements.</td></tr>
+      <tr><td>Tooling</td><td>Standard carbide end mills, inserts, drills. No special geometry required.</td></tr>
+      <tr><td>Fixturing</td><td>Standard vise, chuck, or soft jaws. No precision fixture required.</td></tr>
+      <tr><td>Inspection</td><td>In-process gauging — calipers, micrometers. CMM not required for Band 1 features.</td></tr>
+      <tr><td>Cpk capability</td><td>≥ 1.67 achievable on well-maintained equipment with standard process control</td></tr>
+      <tr><td>Surface finish</td><td>Ra 1.6–3.2 µm (63–125 µin) typical as-machined</td></tr>
+      <tr><td>Cost baseline</td><td>1.0× — reference baseline</td></tr>
+      <tr><td>When to specify</td><td>All clearance features, non-mating surfaces, rough locations, holes for clearance only</td></tr>
+    </table>
+  </div>
+
+  <div id="p2" class="panel">
+    <div class="note"><strong>Band 2 — ±0.002″ (±0.050mm) — precision CNC</strong>Achievable by precision reaming, fine boring, and well-controlled CNC turning and milling. Requires process discipline but not a separate grinding operation.</div>
+    <table>
+      <tr><th>Attribute</th><th>Details</th></tr>
+      <tr><td>Tolerance</td><td>±0.002″ / ±0.050mm</td></tr>
+      <tr><td>Processes</td><td>Precision reaming (H7 bores), fine boring head, precision CNC turning with wiper insert, precision milling with thermal stabilization</td></tr>
+      <tr><td>Tooling</td><td>Sharp, fresh tooling. Reamer or boring bar for bores. Wiper insert for turned diameters. Calibrated tool holders with low runout.</td></tr>
+      <tr><td>Fixturing</td><td>Precision soft jaws or dedicated fixture. Clamp torque specified. Air blast before loading.</td></tr>
+      <tr><td>Work offset</td><td>Probe confirmation of G54 before each run. In-process probing recommended for production.</td></tr>
+      <tr><td>Inspection</td><td>CMM recommended for first article. Precision bore gauge or air gauge for in-process. Micrometer for diameters.</td></tr>
+      <tr><td>Cpk capability</td><td>≥ 1.33 achievable with proper process control</td></tr>
+      <tr><td>Surface finish</td><td>Ra 0.8–1.6 µm (32–63 µin) typical</td></tr>
+      <tr><td>Cost vs Band 1</td><td>+15–50% depending on feature type and volume</td></tr>
+      <tr><td>When to specify</td><td>H7 fits, precision locating bores, shaft diameters for bearings, mating surfaces</td></tr>
+    </table>
+  </div>
+
+  <div id="p3" class="panel">
+    <div class="note"><strong>Band 3 — ±0.001″ (±0.025mm) — near the limit of CNC without grinding</strong>Achievable by fine boring, precision turning, or very controlled milling — but not reliably in production without dedicated process development. Cpk often marginal (1.00–1.33).</div>
+    <table>
+      <tr><th>Attribute</th><th>Details</th></tr>
+      <tr><td>Tolerance</td><td>±0.001″ / ±0.025mm</td></tr>
+      <tr><td>Processes</td><td>Fine boring (most reliable), precision turning with tool monitoring, precision milling with temperature stabilization and in-process probing</td></tr>
+      <tr><td>Requirements</td><td>Machine thermal stabilization (30–60 min warm-up). In-process probing mandatory in production. Calibrated tooling with runout &lt;0.0003″. Controlled coolant temperature.</td></tr>
+      <tr><td>Fixturing</td><td>Dedicated precision fixture. Zero-point clamping system preferred. Datum pad surfaces hardened and ground.</td></tr>
+      <tr><td>Inspection</td><td>CMM required for all features. 100% inspection recommended in production until Cpk &gt; 1.33 demonstrated.</td></tr>
+      <tr><td>Cpk capability</td><td>1.00–1.33 typical by CNC alone. ≥ 1.33 requires grinding or sustained process development.</td></tr>
+      <tr><td>Surface finish</td><td>Ra 0.4–0.8 µm (16–32 µin)</td></tr>
+      <tr><td>Cost vs Band 1</td><td>+50–150%</td></tr>
+      <tr><td>AE recommendation</td><td>Ask the customer: is this functional or drawn conservatively? Often relaxable to ±0.002″ without functional impact.</td></tr>
+    </table>
+  </div>
+
+  <div id="p4" class="panel">
+    <div class="note"><strong>Band 4 — ±0.0005″ (±0.013mm) — grinding required</strong>CNC turning and milling cannot reliably hold this tolerance in production. A separate grinding operation is required. This is a process step change, not just tighter machining.</div>
+    <table>
+      <tr><th>Attribute</th><th>Details</th></tr>
+      <tr><td>Tolerance</td><td>±0.0005″ / ±0.013mm</td></tr>
+      <tr><td>Processes</td><td>Cylindrical grinding (OD/ID), surface grinding (flat features), jig boring (location). Honing for bores in production.</td></tr>
+      <tr><td>Setup requirements</td><td>Temperature-controlled environment (±2°F) strongly recommended. Parts must be thermally stable before grinding. Grinding fluid temperature controlled.</td></tr>
+      <tr><td>Tooling</td><td>Grinding wheel selection, dressing schedule, and spark-out passes are critical process parameters. Documented and controlled.</td></tr>
+      <tr><td>Inspection</td><td>CMM required. Air gauging for bores in production. Roundness tester for cylindrical features. Measurement uncertainty must be &lt;10% of tolerance.</td></tr>
+      <tr><td>Cpk capability</td><td>≥ 1.33 achievable with controlled grinding process</td></tr>
+      <tr><td>Surface finish</td><td>Ra 0.1–0.4 µm (4–16 µin)</td></tr>
+      <tr><td>Cost vs Band 1</td><td>+100–300% — separate operation, separate setup, separate inspection</td></tr>
+      <tr><td>ISO fit</td><td>H5–H6 typical</td></tr>
+    </table>
+    <div class="warn"><strong>Designing to Band 4 when Band 2 is sufficient is a common and expensive DFM error</strong>Always ask what the functional requirement is. A bearing bore that needs H7 (Band 2) specified as H6 (Band 4) doubles or triples the manufacturing cost for no functional benefit.</div>
+  </div>
+
+  <div id="p5" class="panel">
+    <table>
+      <tr><th>Band</th><th>Tolerance</th><th>Minimum inspection method</th><th>Production inspection</th><th>Measurement uncertainty requirement</th></tr>
+      <tr><td style="color:#1E40AF;font-weight:700;">1 — ±0.005″</td><td>Standard</td><td>Caliper or micrometer</td><td>Spot check per lot</td><td>&lt;30% of tolerance (≤±0.0015″)</td></tr>
+      <tr><td style="color:#065F46;font-weight:700;">2 — ±0.002″</td><td>Precision</td><td>Micrometer or CMM</td><td>First article CMM + in-process gauging</td><td>&lt;20% of tolerance (≤±0.0004″)</td></tr>
+      <tr><td style="color:#92400E;font-weight:700;">3 — ±0.001″</td><td>High precision</td><td>CMM required</td><td>CMM first article + 100% in-process until Cpk proven</td><td>&lt;10% of tolerance (≤±0.0001″)</td></tr>
+      <tr><td style="color:#991B1B;font-weight:700;">4 — ±0.0005″</td><td>Ultra precision</td><td>CMM + air gauge for bores</td><td>100% CMM or air gauge in production</td><td>&lt;10% of tolerance (≤±0.00005″)</td></tr>
+      <tr><td style="color:#6B21A8;font-weight:700;">5 — &lt;±0.0002″</td><td>Specialty</td><td>CMM + roundness tester</td><td>100% with in-process gauging during grinding/honing</td><td>&lt;10% — requires calibrated lab instruments</td></tr>
+    </table>
+    <div class="note"><strong>Measurement uncertainty rule — 10:1 gauge-to-tolerance ratio</strong>The measurement system uncertainty must be less than 10% of the feature tolerance. A caliper with ±0.001″ uncertainty cannot reliably measure a ±0.001″ tolerance feature — the measurement uncertainty consumes the entire tolerance band. A Gauge R&R study is required before a measurement system is approved for production use on tight tolerances.</div>
+  </div>
+
+  <div id="p6" class="panel">
+    <div class="note"><strong>Cost multipliers are approximate — actual impact varies with part complexity, volume, and shop rates</strong>Use these for DFM conversations and quoting estimates. The key insight is that tighter tolerances are not a linear cost increase — each band change is a step change in process requirements.</div>
+    <div class="cost-scale">
+      <div class="cs-seg" style="background:#1D9E75;flex:1;">Band 1<br>1×</div>
+      <div class="cs-seg" style="background:#3B82F6;flex:1.3;">Band 2<br>1.3–1.5×</div>
+      <div class="cs-seg" style="background:#F59E0B;flex:2;">Band 3<br>1.5–2.5×</div>
+      <div class="cs-seg" style="background:#EF4444;flex:3;">Band 4<br>2–4×</div>
+      <div class="cs-seg" style="background:#7C3AED;flex:5;">Band 5<br>5–10×</div>
+    </div>
+    <table>
+      <tr><th>Tolerance transition</th><th>Cost driver</th><th>Cost multiplier</th><th>DFM question to ask</th></tr>
+      <tr><td>Band 1 → Band 2 (±0.005 → ±0.002)</td><td>Additional finish pass, precision tooling, tighter process control</td><td style="color:#3B82F6;font-weight:600;">+15–50%</td><td>"Is ±0.002 required, or is ±0.003 acceptable? What's the fit?"</td></tr>
+      <tr><td>Band 2 → Band 3 (±0.002 → ±0.001)</td><td>Process development, temperature control, 100% inspection, marginal Cpk</td><td style="color:#F59E0B;font-weight:600;">+50–150%</td><td>"Can we use an H7 fit callout instead? That defines the function without specifying ±0.001."</td></tr>
+      <tr><td>Band 3 → Band 4 (±0.001 → ±0.0005)</td><td>Grinding operation — separate setup, separate machine, temperature control</td><td style="color:#EF4444;font-weight:600;">+100–200%</td><td>"Is H6 fit functionally required, or was H7 specified conservatively?"</td></tr>
+      <tr><td>Band 4 → Band 5 (&lt;±0.0002)</td><td>Honing, lapping, superfinishing — specialist process, long cycle time</td><td style="color:#7C3AED;font-weight:600;">+300–500%</td><td>"What is the functional requirement that drives sub-0.0002 tolerance?"</td></tr>
+    </table>
+    <div class="note"><strong>The most expensive DFM errors are Band 4 callouts on Band 2 features</strong>A ±0.0005″ tolerance on a bore that functionally requires H7 (±0.0008″) triggers a grinding operation for no benefit. This happens when designers default to tight tolerances without considering the manufacturing process. The AE's job is to catch this before the job starts.</div>
+  </div>
+</div>
+<script>
+function go(i,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));document.getElementById('p'+i).classList.add('active');btn.classList.add('active');}
+</script>
+</body>
+</html>

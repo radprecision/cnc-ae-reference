@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Troubleshooting Index — CNC AE Reference</title>
+<style>
+:root{--navy:#1A2744;--blue:#2C4A8A;--purple:#534AB7;--green:#1D9E75;--amber:#EF9F27;--red:#A32D2D;--bg:#F8F9FC;--border:#E2E6EF;--text:#1A1A2E;--mono:'Courier New',monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);}
+header{background:var(--navy);color:white;padding:1.5rem 2rem;}
+header h1{font-size:1.4rem;font-weight:600;}
+header p{font-size:.82rem;opacity:.7;margin-top:.25rem;}
+.container{max-width:960px;margin:0 auto;padding:1.5rem;}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.tab{padding:7px 12px;border:2px solid var(--border);border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;background:white;}
+.tab.active{border-color:var(--navy);background:var(--navy);color:white;}
+.panel{display:none;}.panel.active{display:block;}
+.ts-card{background:white;border:1px solid var(--border);border-radius:10px;margin-bottom:.75rem;overflow:hidden;}
+.ts-hd{padding:.75rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+.ts-symptom{font-size:.9rem;font-weight:600;}
+.ts-cat{font-size:.7rem;font-weight:600;padding:2px 8px;border-radius:4px;}
+.ts-body{padding:.75rem 1rem;display:none;}
+.ts-body.open{display:block;}
+.ts-row{display:flex;gap:.75rem;margin-bottom:.6rem;font-size:.82rem;}
+.ts-row:last-child{margin-bottom:0;}
+.ts-lbl{font-weight:600;min-width:80px;flex-shrink:0;}
+.ts-val{color:#374151;line-height:1.6;flex:1;}
+.cat-sf{background:#EEF4FF;color:#1E3A5F;}
+.cat-dim{background:#FEF3C7;color:#713F12;}
+.cat-tl{background:#FEE2E2;color:#7F1D1D;}
+.cat-ch{background:#D1FAE5;color:#064E3B;}
+.cat-vib{background:#F3E8FF;color:#6B21A8;}
+.filter-row{display:flex;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap;align-items:center;}
+.filter-input{padding:.5rem .75rem;border:1px solid var(--border);border-radius:7px;font-size:.85rem;background:white;min-width:200px;}
+.filter-input:focus{outline:none;border-color:var(--purple);}
+.note{background:#EFF6FF;border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:#1E3A5F;margin:.75rem 0;line-height:1.6;}
+.note strong{display:block;margin-bottom:.25rem;}
+</style>
+</head>
+<body>
+<header>
+  <h1>🔍 Troubleshooting Index</h1>
+  <p>CNC AE Reference Library — Module 1 · Symptom → Cause → Fix · 5 categories</p>
+</header>
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="go(0,this)">All issues</button>
+    <button class="tab" onclick="go(1,this)">Surface finish</button>
+    <button class="tab" onclick="go(2,this)">Dimensional</button>
+    <button class="tab" onclick="go(3,this)">Tool life</button>
+    <button class="tab" onclick="go(4,this)">Chip formation</button>
+    <button class="tab" onclick="go(5,this)">Vibration / chatter</button>
+  </div>
+
+  <div id="p0" class="panel active">
+    <div class="filter-row">
+      <input class="filter-input" type="text" id="search" placeholder="Search symptoms, causes, fixes..." oninput="filterAll()"/>
+      <span id="count" style="font-size:.82rem;color:#6B7280;"></span>
+    </div>
+    <div id="all-list"></div>
+  </div>
+  <div id="p1" class="panel"><div id="sf-list"></div></div>
+  <div id="p2" class="panel"><div id="dim-list"></div></div>
+  <div id="p3" class="panel"><div id="tl-list"></div></div>
+  <div id="p4" class="panel"><div id="ch-list"></div></div>
+  <div id="p5" class="panel"><div id="vib-list"></div></div>
+</div>
+
+<script>
+const DATA = [
+  // SURFACE FINISH
+  {cat:'sf',symptom:'Poor surface finish — rough, torn',causes:'Dull insert or end mill. Chip load too high. Vibration/chatter. BUE on cutting edge.',fix:'Replace or index insert. Check chip load — reduce if too aggressive. Check workholding rigidity. For aluminum, verify uncoated carbide or ZrN — never TiAlN.',priority:'high'},
+  {cat:'sf',symptom:'Chatter marks — regular wavy pattern',causes:'Vibration at cut frequency. Tool overhang too long. Workpiece resonance. Loose spindle or spindle bearing wear.',fix:'Shorten tool overhang. Reduce depth of cut and increase feed (raise chip load). Add dampening — shrink-fit holder or heavy metal toolholder. Check spindle bearings.',priority:'high'},
+  {cat:'sf',symptom:'Built-up edge (BUE) — smeared finish',causes:'Cutting speed too low. Wrong coating for material. Chip load too low causing rubbing rather than cutting.',fix:'Increase SFM. For aluminum: switch to uncoated carbide. For stainless: verify adequate chip load — never rub. Check that coating is correct for material.',priority:'high'},
+  {cat:'sf',symptom:'Burnished / glazed surface finish',causes:'Rubbing rather than cutting. Insert too worn. Chip load too low. Negative rake geometry on wrong material.',fix:'Increase chip load to cutting threshold. Replace worn insert. Verify positive rake geometry for the material. Check SFM — too high causes rubbing in some materials.',priority:'med'},
+  {cat:'sf',symptom:'Feed lines visible — too coarse',causes:'Feed rate too high. Large tool nose radius required. Incorrect wiper geometry.',fix:'Reduce feed rate. Use wiper insert (flat on nose) for turning. Increase step-over overlap for milling finishing passes.',priority:'low'},
+  {cat:'sf',symptom:'Surface finish inconsistent across part',causes:'Thermal variation. Workholding inconsistency. Tool runout. Different cutting conditions at different depths.',fix:'Allow machine thermal stabilization. Verify workholding seating consistency. Check tool runout (TIR). Verify consistent chip load throughout path.',priority:'med'},
+  {cat:'sf',symptom:'Burrs on edges — consistent location',causes:'Exit direction of tool path. Insert geometry. Chip load too high at exit.',fix:'Program a lead-out move. Use climb milling at exits. Reduce chip load at feature exit. Chamfer the edge design if burrs are always at the same location.',priority:'low'},
+
+  // DIMENSIONAL
+  {cat:'dim',symptom:'Feature consistently off in same direction',causes:'Work offset error (G54/G55). Datum pad chip or debris. Systematic tool length error. Thermal growth not accounted for.',fix:'Verify G54 with probe. Air blast datum pads before loading. Re-touch off tool length. Run machine warm-up cycle. Check for thermal drift with in-process probing.',priority:'high'},
+  {cat:'dim',symptom:'Feature dimensions drift over production run',causes:'Thermal growth of spindle/machine. Tool wear progression. Fixture wear. Chip buildup under datum pads.',fix:'Implement in-process probing. Add scheduled offset adjustment. Replace worn fixture components. Add air blast at every load cycle.',priority:'high'},
+  {cat:'dim',symptom:'Bore or hole is oval — out of round',causes:'Part deflection under clamping forces. Spindle runout. Vibration during boring. Offset boring bar.',fix:'Measure bore in-fixture vs out — if different, reduce clamp force or add distributed clamping. Check spindle TIR. Single-point bore with rigid bar.',priority:'high'},
+  {cat:'dim',symptom:'Part dimensions different in fixture vs CMM',causes:'Clamping distortion — part deflects during machining and springs back. Over-clamping thin-wall features.',fix:'Reduce clamp force and redistribute. Use distributed soft jaws. Add internal support (mandrel). This is a workholding redesign problem, not an offset adjustment.',priority:'high'},
+  {cat:'dim',symptom:'True position fails CMM but looks correct',causes:'Wrong datum reference frame used in CMM program. Datum setup order mismatch between drawing and CMM program. Thermal expansion.',fix:'Verify CMM datum setup matches drawing A|B|C precedence. Recheck datum surfaces for chip contamination. Verify part at room temperature (68°F / 20°C).',priority:'med'},
+  {cat:'dim',symptom:'First article passes, production parts fail',causes:'Setup variation between first article and production. Fixture wear. Clamp torque variation. Operator procedure difference.',fix:'Run setup verification sheet on first production setup. Verify clamp torque with torque wrench. Inspect fixture datum pads. Compare setup sheets between first article and production.',priority:'high'},
+  {cat:'dim',symptom:'Thread engagement fails — gauge reject',causes:'Tap drill too small (low thread%). Tap drill too large (low engagement). Wrong pitch diameter. Tap runout.',fix:'Verify tap drill size — cut tap 75%, form tap 65%. Check pitch diameter with go/no-go gauge. Verify tap holder TIR. See Hole Making Reference for correct drill sizes.',priority:'med'},
+  {cat:'dim',symptom:'Taper or draft on nominally straight feature',causes:'Tool deflection under cutting forces. Spindle not trammed to workpiece. Thermal growth during long cycle.',fix:'Check spindle tram. Reduce depth of cut to reduce cutting forces. Add roughing and finishing passes. Verify thermal stabilization.',priority:'med'},
+
+  // TOOL LIFE
+  {cat:'tl',symptom:'Insert failing faster than expected — premature wear',causes:'SFM too high. Wrong insert grade for material. Incorrect coolant application. Interrupted cut with wrong grade.',fix:'Reduce SFM 15–20%. Move to tougher grade (higher application number). Verify coolant reaches cutting zone. For interrupted cuts, move to PVD coating.',priority:'high'},
+  {cat:'tl',symptom:'Insert chipping — small chips from edge',causes:'Grade too hard for interrupted cut. SFM too high causing thermal shock. Work-hardened layer from previous pass (stainless, titanium). Coolant on ceramic or CBN.',fix:'Move to tougher grade. Reduce SFM. Increase chip load to cut below hardened layer. Remove flood coolant from CBN operations.',priority:'high'},
+  {cat:'tl',symptom:'Insert fracture — large piece breaks off',causes:'Severe interruption. BUE weld-and-fracture cycle. Wrong grade for material. Thermal shock (coolant on CBN/ceramic).',fix:'Increase chip load to prevent BUE. Move to tougher grade. Never flood CBN or ceramic. Check for work hardening in stainless/titanium.',priority:'high'},
+  {cat:'tl',symptom:'Cratering on insert rake face',causes:'Chemical dissolution at high temperature. SFM too high — heat exceeds coating capability. Wrong coating chemistry for material.',fix:'Reduce SFM. Switch to more thermally stable coating — CVD Al₂O₃ for high-speed steel turning.',priority:'med'},
+  {cat:'tl',symptom:'Notch wear at depth-of-cut line',causes:'Oxidation at DOC boundary. Work-hardened or scaled surface (forging, casting skin). Hard inclusions in material.',fix:'Vary depth of cut to distribute wear. Remove hard skin in dedicated first pass. Move to tougher grade at the notch position.',priority:'med'},
+  {cat:'tl',symptom:'Drill breakage — consistent depth or location',causes:'Chip packing — insufficient peck cycle. Drill walking on curved entry surface. Chip load too high. Work-hardening at bottom of peck.',fix:'Increase peck frequency — every 1×D for deep holes. Spot drill before drilling on curved surfaces. Reduce chip load. Never dwell at bottom of peck in stainless/titanium.',priority:'high'},
+  {cat:'tl',symptom:'Tap breakage — blind holes',causes:'Insufficient chip relief at bottom. Chip load too high. Wrong tap for material (cut vs form). Coolant insufficient.',fix:'Drill deeper than thread depth (3–5 pitches for cut tap). Use form tap in aluminum and stainless blind holes. Verify coolant reaches tap. See Hole Making Reference.',priority:'high'},
+  {cat:'tl',symptom:'End mill wear concentrated at corner',causes:'Chip load too high at corner. SFM too high at corner (higher effective diameter). Incorrect corner radius for material.',fix:'Program a corner radius on the tool path. Reduce chip load at corners. Use corner radius end mill instead of sharp corner.',priority:'med'},
+
+  // CHIP FORMATION
+  {cat:'ch',symptom:'Long stringy chips — tangling around tool or part',causes:'Chip load too low — chips not breaking. Wrong insert geometry (insufficient chip breaker). Ductile material with no work hardening.',fix:'Increase chip load. Switch to insert with more aggressive chip breaker. For aluminum, long chips are normal — focus on chip evacuation rather than chip breaking.',priority:'med'},
+  {cat:'ch',symptom:'Powdery chips with no formed shape',causes:'Normal for gray cast iron. If in steel or aluminum — chip load is extremely low, tool is rubbing not cutting.',fix:'For cast iron — normal behavior. For other materials — increase chip load significantly. Verify SFM is in range.',priority:'low'},
+  {cat:'ch',symptom:'Chips blue-black and smoking (steel)',causes:'Excessive heat at cutting zone. SFM too high. Coolant not reaching cut. Insert worn.',fix:'Reduce SFM 15–20%. Verify coolant coverage. Replace worn insert. Check chip color reference — blue is high end of acceptable in steel roughing, black is not.',priority:'high'},
+  {cat:'ch',symptom:'Chips blue or purple (stainless)',causes:'Work hardening occurring. CRITICAL — insert failure likely within next few passes.',fix:'STOP. Inspect insert. Reduce SFM 20%. Increase chip load to cut below hardened layer. Verify adequate flood coolant. See Chip Color Reference for stainless — blue means failure imminent.',priority:'high'},
+  {cat:'ch',symptom:'Chips welding to insert — BUE',causes:'SFM too low. Wrong coating for material. Chip load too low (rubbing threshold).',fix:'Increase SFM. For aluminum: uncoated carbide or ZrN only. For stainless: increase chip load. Replace worn insert.',priority:'high'},
+  {cat:'ch',symptom:'Chips not evacuating from deep pocket or hole',causes:'Chip packing at the bottom. Insufficient coolant flow direction. No pecking cycle.',fix:'Add peck cycle (drilling). For milling: add air blast directed at pocket floor. Use TSC to blast chips up the flute. Reduce axial depth per pass.',priority:'med'},
+
+  // VIBRATION / CHATTER
+  {cat:'vib',symptom:'Chatter — high frequency squealing',causes:'Tool overhang too long. Workpiece resonating. Spindle speed at chatter frequency. Loose workholding.',fix:'Shorten tool as much as possible. Change spindle speed ±10–15% to detune from resonance. Tighten workholding. Reduce axial DOC, increase radial DOC (keep MRR same).',priority:'high'},
+  {cat:'vib',symptom:'Chatter only on walls — thin section',causes:'Thin wall resonating at cut frequency. No support behind wall.',fix:'Add machined-in support that is removed last. Use trochoidal toolpath to reduce radial force. Machine from both sides simultaneously if fixturing allows.',priority:'high'},
+  {cat:'vib',symptom:'Vibration gets worse as cut progresses',causes:'Tool wear increasing cutting forces. Thermal growth loosening workholding. Progressive chip packing.',fix:'Replace or index insert earlier. Check workholding clamp force after thermal soak. Add chip clearing cycle.',priority:'med'},
+  {cat:'vib',symptom:'Chatter at specific RPM ranges only',causes:'Machine resonance at specific frequency. Spindle speed harmonic.',fix:'Build a stability lobe diagram (spindle speed vs DOC). Run at a speed between resonance peaks. Reduce DOC and increase RPM to move out of unstable zone.',priority:'med'},
+  {cat:'vib',symptom:'Vibration from workholding — indicated on setup',causes:'Loose clamps. Chips under datum pads. Resonance of fixture body itself.',fix:'Retorque all clamps. Air blast all datum contact surfaces. Add mass to fixture if it is resonating (cast iron backing plate). Confirm with DTI on workpiece during cutting.',priority:'high'},
+  {cat:'vib',symptom:'End mill chatter but not indexable insert',causes:'End mill runout. Wrong helix angle for material. Number of flutes resonating with depth of cut.',fix:'Check end mill TIR in holder — replace if &gt;0.0005″. Try different helix (38° vs 45°). Change number of flutes. Variable flute end mill eliminates resonance.',priority:'med'},
+];
+
+const CAT_LABEL = {sf:'Surface finish',dim:'Dimensional',tl:'Tool life',ch:'Chip formation',vib:'Vibration/chatter'};
+const CAT_CLASS = {sf:'cat-sf',dim:'cat-dim',tl:'cat-tl',ch:'cat-ch',vib:'cat-vib'};
+
+function makeCard(item, idx){
+  const d = document.createElement('div');
+  d.className = 'ts-card';
+  d.dataset.cat = item.cat;
+  d.dataset.text = (item.symptom+' '+item.causes+' '+item.fix).toLowerCase();
+  d.innerHTML = `
+    <div class="ts-hd" onclick="toggleCard(this)">
+      <span class="ts-symptom">${item.symptom}</span>
+      <span class="ts-cat ${CAT_CLASS[item.cat]}">${CAT_LABEL[item.cat]}</span>
+    </div>
+    <div class="ts-body">
+      <div class="ts-row"><div class="ts-lbl">Causes:</div><div class="ts-val">${item.causes}</div></div>
+      <div class="ts-row"><div class="ts-lbl">Fix:</div><div class="ts-val">${item.fix}</div></div>
+    </div>`;
+  return d;
+}
+
+function toggleCard(hd){hd.nextElementSibling.classList.toggle('open');}
+
+function buildLists(){
+  const containers = {all:'all-list',sf:'sf-list',dim:'dim-list',tl:'tl-list',ch:'ch-list',vib:'vib-list'};
+  Object.values(containers).forEach(id=>document.getElementById(id).innerHTML='');
+  DATA.forEach((item,i)=>{
+    document.getElementById('all-list').appendChild(makeCard(item,i));
+    document.getElementById(item.cat+'-list').appendChild(makeCard(item,i));
+  });
+  document.getElementById('count').textContent = DATA.length+' issues';
+}
+
+function filterAll(){
+  const q = document.getElementById('search').value.toLowerCase();
+  const cards = document.querySelectorAll('#all-list .ts-card');
+  let shown = 0;
+  cards.forEach(c=>{
+    const match = !q || c.dataset.text.includes(q);
+    c.style.display = match?'':'none';
+    if(match) shown++;
+  });
+  document.getElementById('count').textContent = shown+' of '+DATA.length+' issues';
+}
+
+function go(i,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('p'+i).classList.add('active');
+  btn.classList.add('active');
+}
+
+buildLists();
+</script>
+</body>
+</html>

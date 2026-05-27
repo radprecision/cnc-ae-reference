@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ISO Material Classification — CNC AE Reference</title>
+<style>
+:root{--navy:#1A2744;--blue:#2C4A8A;--purple:#534AB7;--green:#1D9E75;--amber:#EF9F27;--red:#A32D2D;--bg:#F8F9FC;--border:#E2E6EF;--text:#1A1A2E;--mono:'Courier New',monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);}
+header{background:var(--navy);color:white;padding:1.5rem 2rem;}
+header h1{font-size:1.4rem;font-weight:600;}
+header p{font-size:.82rem;opacity:.7;margin-top:.25rem;}
+.container{max-width:960px;margin:0 auto;padding:1.5rem;}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.tab{padding:7px 12px;border:2px solid var(--border);border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;background:white;}
+.tab.active{border-color:var(--navy);background:var(--navy);color:white;}
+.panel{display:none;}.panel.active{display:block;}
+table{width:100%;border-collapse:collapse;background:white;border-radius:10px;overflow:hidden;border:1px solid var(--border);margin-bottom:1rem;}
+th{padding:.65rem 1rem;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;background:var(--navy);color:white;text-align:left;}
+td{padding:.7rem 1rem;font-size:.82rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;}
+tr:last-child td{border-bottom:none;}
+.note{background:#EFF6FF;border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:#1E3A5F;margin:.75rem 0;line-height:1.6;}
+.note strong{display:block;margin-bottom:.25rem;}
+.cat-badge{display:inline-block;font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:4px;margin-right:.4rem;}
+.p-badge{background:#DBEAFE;color:#1E3A5F;}
+.m-badge{background:#FEF3C7;color:#713F12;}
+.k-badge{background:#FCE7F3;color:#831843;}
+.n-badge{background:#D1FAE5;color:#064E3B;}
+.s-badge{background:#FEE2E2;color:#7F1D1D;}
+.h-badge{background:#E5E7EB;color:#111827;}
+.group-hd{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#6B7280;padding:.5rem 0 .3rem;border-bottom:1px solid var(--border);margin-bottom:.5rem;margin-top:.75rem;}
+</style>
+</head>
+<body>
+<header>
+  <h1>🔬 ISO Material Classification</h1>
+  <p>CNC AE Reference Library — Module 10 · ISCAR 41-group system · P / M / K / N / S / H</p>
+</header>
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="go(0,this)">Overview</button>
+    <button class="tab" onclick="go(1,this)">P — Steel</button>
+    <button class="tab" onclick="go(2,this)">M — Stainless</button>
+    <button class="tab" onclick="go(3,this)">K — Cast iron</button>
+    <button class="tab" onclick="go(4,this)">N — Non-ferrous</button>
+    <button class="tab" onclick="go(5,this)">S — Super alloys</button>
+    <button class="tab" onclick="go(6,this)">H — Hardened</button>
+  </div>
+
+  <div id="p0" class="panel active">
+    <div class="note"><strong>ISO 513 material classification — six groups, 41 subgroups</strong>Every workpiece material maps to one of six ISO groups. The group determines the insert grade family (P, M, K, N, S, H), the coating strategy, and the starting SFM range. Subgroup numbers are manufacturer-specific — ISCAR uses 1–41, Sandvik uses a different CMC code system.</div>
+    <table>
+      <tr><th>Group</th><th>Color</th><th>Material family</th><th>ISCAR subgroups</th><th>Key challenge</th></tr>
+      <tr><td><span class="cat-badge p-badge">P</span>Steel</td><td>Blue</td><td>Carbon, alloy, tool, stainless ferritic/martensitic</td><td>P01–P14</td><td>Wide hardness range — select grade by hardness and operation</td></tr>
+      <tr><td><span class="cat-badge m-badge">M</span>Stainless</td><td>Yellow</td><td>Austenitic, duplex, PH stainless</td><td>M15–M17 (in some systems)</td><td>Work hardening — maintain chip load to cut below hardened layer</td></tr>
+      <tr><td><span class="cat-badge k-badge">K</span>Cast iron</td><td>Red</td><td>Gray, nodular, malleable, compacted graphite</td><td>K15–K20</td><td>Abrasive dust chips — dry preferred for gray iron</td></tr>
+      <tr><td><span class="cat-badge n-badge">N</span>Non-ferrous</td><td>Green</td><td>Aluminum, copper, brass, plastics</td><td>N21–N30</td><td>BUE in aluminum — never TiAlN/AlTiN coating</td></tr>
+      <tr><td><span class="cat-badge s-badge">S</span>Super alloys</td><td>Brown</td><td>Inconel, Hastelloy, titanium, cobalt alloys</td><td>S31–S37</td><td>Extreme heat, work hardening, low thermal conductivity</td></tr>
+      <tr><td><span class="cat-badge h-badge">H</span>Hardened</td><td>Gray</td><td>Hardened steel, hardened cast iron, chilled iron</td><td>H38–H41</td><td>Requires CBN or ceramic — carbide unsuitable above 45 HRC</td></tr>
+    </table>
+    <div class="note"><strong>Subgroup numbers are manufacturer-specific</strong>ISCAR, Sandvik, Kennametal, and Walter all use different subgroup numbering systems within the six ISO groups. The letter (P, M, K, N, S, H) is universal. The number after the letter is not — always verify with the specific manufacturer's catalog.</div>
+  </div>
+
+  <div id="p1" class="panel">
+    <div class="note"><strong>ISO P — Steel (blue)</strong>Largest and most diverse group. Covers everything from low-carbon mild steel to high-alloy tool steel. Primary variable is hardness — select insert grade accordingly.</div>
+    <table>
+      <tr><th>Subgroup</th><th>Material</th><th>Hardness</th><th>Examples</th><th>Insert starting grade</th></tr>
+      <tr><td>P01–P02</td><td>Non-alloy steel, low carbon</td><td>&lt;180 HB</td><td>1018, A36, 1020</td><td>P10–P25 — moderate grades</td></tr>
+      <tr><td>P03–P05</td><td>Non-alloy steel, medium/high carbon</td><td>180–250 HB</td><td>1045, 1060, 1080</td><td>P15–P30</td></tr>
+      <tr><td>P06–P09</td><td>Low alloy steel</td><td>180–325 HB</td><td>4140, 4340, 8620 annealed/normalized</td><td>P20–P35</td></tr>
+      <tr><td>P10–P11</td><td>Low alloy steel, hardened</td><td>325–425 HB</td><td>4140 Q&T, 4340 Q&T</td><td>P15–P25 — tougher grades for interrupted</td></tr>
+      <tr><td>P12–P13</td><td>High alloy / tool steel</td><td>200–400 HB</td><td>H13, D2, M2, P20</td><td>P20–P35 — tough grades, watch for hardened skin</td></tr>
+      <tr><td>P14</td><td>Stainless ferritic / martensitic</td><td>150–350 HB</td><td>410, 420, 430, 17-4PH</td><td>M20–M30 or P20–P30</td></tr>
+    </table>
+  </div>
+
+  <div id="p2" class="panel">
+    <div class="note"><strong>ISO M — Stainless steel (yellow)</strong>Austenitic and duplex stainless. Work hardening is the defining challenge — the cut must stay ahead of the hardened layer from the previous pass. PVD coatings preferred over CVD.</div>
+    <table>
+      <tr><th>Subgroup</th><th>Material</th><th>Examples</th><th>Key machining challenge</th><th>Insert approach</th></tr>
+      <tr><td>M15</td><td>Austenitic stainless</td><td>304, 316, 321, 347</td><td>Work hardening, built-up edge, galling</td><td>Sharp positive rake, PVD TiAlN, adequate chip load — never rub</td></tr>
+      <tr><td>M16</td><td>Austenitic stainless, free-machining</td><td>303, 416</td><td>Easier than M15 — sulfur addition improves chip breaking</td><td>M15–M25 grades, standard positive geometry</td></tr>
+      <tr><td>M17</td><td>Duplex / super duplex stainless</td><td>2205, 2507, SAF2304</td><td>High strength + work hardening — worse than austenitic</td><td>Tougher grades, higher SF, PVD essential, rigid setup</td></tr>
+    </table>
+    <div class="note">Chip color in stainless is critical — blue chips indicate work hardening and imminent edge failure. See Chip Color Reference (Module 6) for the full stainless chip color guide.</div>
+  </div>
+
+  <div id="p3" class="panel">
+    <div class="note"><strong>ISO K — Cast iron (red)</strong>Produces abrasive powder/dust chips rather than curled chips. Dry machining preferred for gray iron — coolant combined with graphite dust creates an abrasive slurry that accelerates machine wear.</div>
+    <table>
+      <tr><th>Subgroup</th><th>Material</th><th>Examples</th><th>Chip form</th><th>Coolant</th><th>Insert</th></tr>
+      <tr><td>K15</td><td>Gray cast iron (GG)</td><td>GG20, GG25, Class 30, Class 40</td><td>Powder/dust — no chip curling</td><td>Dry preferred</td><td>K10–K20, CVD Al₂O₃ ideal</td></tr>
+      <tr><td>K16</td><td>Nodular / ductile iron (GGG)</td><td>GGG40, GGG60, Grade 65-45</td><td>Short chips — more like steel than gray iron</td><td>Coolant acceptable</td><td>K15–K30, tougher than gray iron grades</td></tr>
+      <tr><td>K17</td><td>Malleable iron</td><td>Grade 32510, Grade 45008</td><td>Short chips — machines more like steel</td><td>Coolant acceptable</td><td>P20–P30 or K20–K30</td></tr>
+      <tr><td>K18</td><td>Compacted graphite iron (CGI)</td><td>GJV-300, GJV-450</td><td>Short chips — harder than gray, tougher than nodular</td><td>Dry or minimal</td><td>K10–K20, very abrasion-resistant grades</td></tr>
+      <tr><td>K19–K20</td><td>Hardened cast iron</td><td>&gt;400 HB chilled iron</td><td>Powder</td><td>Dry</td><td>CBN or ceramic — carbide unsuitable</td></tr>
+    </table>
+  </div>
+
+  <div id="p4" class="panel">
+    <div class="note"><strong>ISO N — Non-ferrous (green)</strong>Aluminum is the dominant material in this group. Uncoated carbide or ZrN/TiN coating only for aluminum — TiAlN and AlTiN have chemical affinity with aluminum and cause built-up edge (BUE) welding.</div>
+    <table>
+      <tr><th>Subgroup</th><th>Material</th><th>Examples</th><th>Key rule</th><th>Insert</th></tr>
+      <tr><td>N21–N22</td><td>Wrought aluminum, low silicon</td><td>6061, 7075, 2024, 5052</td><td>Never TiAlN/AlTiN — BUE. Uncoated or ZrN only. High positive rake, sharp edge.</td><td>N05–N20, uncoated carbide</td></tr>
+      <tr><td>N23–N24</td><td>Cast aluminum, low silicon (&lt;12% Si)</td><td>A356, 319, 380</td><td>Same as wrought — uncoated. Watch for porosity causing interrupted cuts.</td><td>N05–N20</td></tr>
+      <tr><td>N25–N26</td><td>Cast aluminum, high silicon (&gt;12% Si)</td><td>A390, 413, hypereutectic</td><td>Silicon particles are extremely abrasive. Short carbide life. PCD is the production solution.</td><td>PCD preferred, N05–N15 carbide for low volume</td></tr>
+      <tr><td>N27–N28</td><td>Copper alloys, brass, bronze</td><td>C110, C360, C932, naval brass</td><td>Sharp edge essential. C360 (free-machining brass) is easiest. Some copper alloys work-harden.</td><td>N10–N20, uncoated or ZrN</td></tr>
+      <tr><td>N29–N30</td><td>Plastics, composites, non-metallics</td><td>Delrin, PEEK, Ultem, G10, carbon fiber</td><td>PCD for composites and abrasive plastics. Sharp edge. Dry or air blast. Carbon fiber is very abrasive.</td><td>PCD or diamond-coated for composites</td></tr>
+    </table>
+  </div>
+
+  <div id="p5" class="panel">
+    <div class="note"><strong>ISO S — Super alloys (brown)</strong>Highest cutting forces, lowest thermal conductivity, maximum work hardening tendency. The most demanding material group to machine. Rigid setup, correct tooling, and high-pressure coolant are non-negotiable.</div>
+    <table>
+      <tr><th>Subgroup</th><th>Material</th><th>Examples</th><th>Key challenge</th><th>Approach</th></tr>
+      <tr><td>S31–S32</td><td>Iron-base super alloys</td><td>A286, Incoloy 800, 17-4PH aged</td><td>High strength, moderate work hardening</td><td>PVD TiAlN, flood coolant, moderate SFM, rigid setup</td></tr>
+      <tr><td>S33–S35</td><td>Nickel/cobalt-base super alloys</td><td>Inconel 718, Hastelloy C276, Waspaloy, Rene 41</td><td>Extreme cutting forces, very low thermal conductivity — heat stays in tool</td><td>PVD TiAlN or AlTiN. High pressure TSC essential. Ceramic for dry roughing (no interruptions). Rigid setup mandatory.</td></tr>
+      <tr><td>S36</td><td>Titanium — commercially pure</td><td>CP Ti Grade 1–4</td><td>Work hardening, fire risk above 600°C, galling on steel tooling</td><td>PVD TiAlN, flood coolant always, non-ferrous contact pads for workholding</td></tr>
+      <tr><td>S37</td><td>Titanium alloys</td><td>Ti-6Al-4V, Ti-6Al-2Sn-4Zr-2Mo, Ti-3Al-2.5V</td><td>Same as CP Ti but higher strength — worst-case Ti for machining</td><td>PVD TiAlN, TSC 1000+ psi for drilling, high positive rake, no ceramic (fire risk)</td></tr>
+    </table>
+    <div class="note">Ceramic inserts for Inconel roughing must run DRY at high SFM with zero interruptions. Coolant causes thermal shock and shatters the insert. Titanium must NEVER be run dry — fire risk above 600°C.</div>
+  </div>
+
+  <div id="p6" class="panel">
+    <div class="note"><strong>ISO H — Hardened materials (gray)</strong>Steel hardened above 45 HRC, hardened cast iron, chilled cast iron. CBN (cubic boron nitride) is the primary cutting material. Hard turning with CBN can replace cylindrical grinding when conditions are met.</div>
+    <table>
+      <tr><th>Subgroup</th><th>Material</th><th>Hardness</th><th>Tool material</th><th>Critical rules</th></tr>
+      <tr><td>H38</td><td>Hardened alloy steel</td><td>45–55 HRC</td><td>CBN mixed grade or ceramic</td><td>Dry only — never flood on CBN. Continuous cuts preferred. Rigid setup. DOC 0.010–0.030″.</td></tr>
+      <tr><td>H39</td><td>Hardened alloy steel, very hard</td><td>55–65 HRC</td><td>CBN high-content grade</td><td>Same as H38 but tighter DOC. SFM 400–650. Check for interrupted cuts — may shatter CBN.</td></tr>
+      <tr><td>H40</td><td>Hardened cast iron</td><td>400–600 HB</td><td>CBN or PCBN</td><td>Dry, rigid, no interruptions.</td></tr>
+      <tr><td>H41</td><td>Chilled cast iron</td><td>400–700 HB</td><td>PCBN or ceramic</td><td>Most abrasive material in the H group. Very short tool life even with CBN. Minimize DOC.</td></tr>
+    </table>
+    <div class="note"><strong>CBN — never flood coolant</strong>Thermal shock from flood coolant fractures CBN inserts. Dry machining only. Air blast is acceptable to clear chips. Hard turning with CBN achieves Ra 0.2–0.8 µm — can replace cylindrical grinding for many applications.</div>
+  </div>
+</div>
+<script>
+function go(i,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));document.getElementById('p'+i).classList.add('active');btn.classList.add('active');}
+</script>
+</body>
+</html>
