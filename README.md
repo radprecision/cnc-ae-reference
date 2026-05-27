@@ -25,4 +25,13 @@ CNC Applications Engineering Reference Library
 
 [Process Sheet & Setup Verification](https://radprecision.github.io/cnc-ae-reference/11_process_sheet_setup_verification.html)
 
-[GD&T Reference](https://github.com/radprecision/cnc-ae-reference/blob/main/12_gdt_reference.html)
+[GD&T Reference](https://radprecision.github.io/cnc-ae-reference/12_gdt_reference.html)
+
+[ISO Material Classification](https://radprecision.github.io/cnc-ae-reference/13_iso_material_classification.html)
+
+[Material Machinability](https://radprecision.github.io/cnc-ae-reference/14_material_machinability.html)
+
+[Tolerance Matrix](https://radprecision.github.io/cnc-ae-reference/15_tolerance_matrix.html)
+
+[Troubleshooting Index](https://radprecision.github.io/cnc-ae-reference/16_troubleshooting_index.html)
+
