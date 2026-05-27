@@ -24,3 +24,5 @@ CNC Applications Engineering Reference Library
 [Hole Making Reference](https://radprecision.github.io/cnc-ae-reference/10_hole_making_reference.html)
 
 [Process Sheet & Setup Verification](https://radprecision.github.io/cnc-ae-reference/11_process_sheet_setup_verification.html)
+
+[GD&T Reference](https://github.com/radprecision/cnc-ae-reference/blob/main/12_gdt_reference.html)
