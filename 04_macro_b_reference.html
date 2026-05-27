@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fanuc Macro B Reference — CNC AE Reference</title>
+<style>
+:root{--navy:#1A2744;--blue:#2C4A8A;--purple:#534AB7;--green:#1D9E75;--amber:#EF9F27;--red:#A32D2D;--bg:#F8F9FC;--border:#E2E6EF;--text:#1A1A2E;--mono:'Courier New',monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);}
+header{background:var(--navy);color:white;padding:1.5rem 2rem;}
+header h1{font-size:1.4rem;font-weight:600;}
+header p{font-size:.82rem;opacity:.7;margin-top:.25rem;}
+.container{max-width:960px;margin:0 auto;padding:1.5rem;}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.tab{padding:7px 12px;border:2px solid var(--border);border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;background:white;}
+.tab.active{border-color:var(--navy);background:var(--navy);color:white;}
+.panel{display:none;}.panel.active{display:block;}
+table{width:100%;border-collapse:collapse;background:white;border-radius:10px;overflow:hidden;border:1px solid var(--border);margin-bottom:1rem;}
+th{padding:.65rem 1rem;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;background:var(--navy);color:white;text-align:left;}
+td{padding:.7rem 1rem;font-size:.82rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;}
+tr:last-child td{border-bottom:none;}
+td:first-child{font-family:var(--mono);font-weight:600;color:var(--purple);}
+pre{background:#1E2030;color:#A8D8A8;border-radius:8px;padding:1rem;font-size:.8rem;line-height:1.7;overflow-x:auto;margin:.75rem 0;font-family:var(--mono);}
+.note{background:#EFF6FF;border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:#1E3A5F;margin:.75rem 0;line-height:1.6;}
+.warn{background:#FEF2F2;border-left:4px solid var(--red);border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:#7F1D1D;margin:.75rem 0;line-height:1.6;}
+.warn strong,.note strong{display:block;margin-bottom:.25rem;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:600px){.grid{grid-template-columns:1fr;}}
+.card{background:white;border:1px solid var(--border);border-radius:10px;padding:1rem;}
+.card h4{font-size:.85rem;font-weight:600;color:var(--navy);margin-bottom:.5rem;}
+</style>
+</head>
+<body>
+<header>
+  <h1>⌨ Fanuc Macro B Reference</h1>
+  <p>CNC AE Reference Library — Module 18 · Fanuc primary · Haas NGC &amp; Okuma differences documented</p>
+</header>
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="go(0,this)">Concepts</button>
+    <button class="tab" onclick="go(1,this)">Variables</button>
+    <button class="tab" onclick="go(2,this)">Arithmetic</button>
+    <button class="tab" onclick="go(3,this)">Arguments</button>
+    <button class="tab" onclick="go(4,this)">Control flow</button>
+    <button class="tab" onclick="go(5,this)">System variables</button>
+    <button class="tab" onclick="go(6,this)">#3003/#3004</button>
+    <button class="tab" onclick="go(7,this)">Probing</button>
+    <button class="tab" onclick="go(8,this)">Controller diff.</button>
+  </div>
+
+  <div id="p0" class="panel active">
+    <div class="warn"><strong>⚠ NULL ≠ ZERO — The #1 macro debugging concept</strong>A variable that has never been assigned is NULL (#0) — not zero. <code>#1 EQ #0</code> tests for null. <code>#1 EQ 0</code> tests for the number zero. These are completely different tests. A null variable in an axis word silently omits that axis from the block. A zero moves the machine to position 0.</div>
+    <div class="grid">
+      <div class="card"><h4>Four building blocks</h4>
+        <p style="font-size:.82rem;line-height:1.7;color:#374151;"><strong>Variables</strong> — storage (#100, #500, etc.)<br><strong>Arithmetic</strong> — calculation (#100 = #1 + #2)<br><strong>Control flow</strong> — IF/GOTO, WHILE/DO<br><strong>System variables</strong> — machine state (#5021, #5221)</p>
+      </div>
+      <div class="card"><h4>Why macros exist at AE level</h4>
+        <p style="font-size:.82rem;line-height:1.7;color:#374151;"><strong>1. Parametric families</strong> — one program drives a part family<br><strong>2. Automated probing</strong> — measure, calculate, adjust offset<br><strong>3. Custom cycles</strong> — bolt circles, patterns, thread mill loops</p>
+      </div>
+    </div>
+    <div class="note"><strong>Brackets vs parentheses</strong>Square brackets [ ] are for math. Parentheses ( ) are for comments and are ignored by the controller. Writing (SIN(45)) means the entire thing is a comment. SIN[45] is the correct trig call.</div>
+  </div>
+
+  <div id="p1" class="panel">
+    <div class="warn"><strong>NULL vs ZERO behavior</strong><code>#n EQ #0</code> → TRUE if null, FALSE if zero &nbsp;|&nbsp; <code>#n EQ 0</code> → FALSE if null, TRUE if zero &nbsp;|&nbsp; <code>X#n</code> in a block: null = axis omitted, zero = machine moves to X0.0</div>
+    <table>
+      <tr><th>Range</th><th>Type</th><th>Persistence</th><th>Use</th></tr>
+      <tr><td>#0</td><td>Null constant</td><td>Always null</td><td>Test for unset: IF [#1 EQ #0]</td></tr>
+      <tr><td>#1–#33</td><td>Local</td><td>Reset on M99 return</td><td>Argument receivers (A→#1, B→#2, Z→#26)</td></tr>
+      <tr><td>#100–#199</td><td>Common volatile</td><td>Cleared on power cycle</td><td>Temp calculations, loop counters</td></tr>
+      <tr><td>#500–#999</td><td>Common permanent</td><td>Retained through power-off</td><td>Probe calibration, part counters, tool wear tracking</td></tr>
+      <tr><td>#1000+</td><td>System</td><td>Machine-controlled</td><td>Position, offsets, control behavior, alarms</td></tr>
+    </table>
+    <pre>(BASIC ASSIGNMENT)
+#100 = 25.4          (ASSIGN 25.4 TO COMMON VARIABLE 100)
+#500 = #5021         (COPY CURRENT X MACHINE POSITION)
+#100 = #0            (SET #100 TO NULL - NOT ZERO)
+#100 = 1.0           (ALWAYS USE DECIMAL POINT)</pre>
+  </div>
+
+  <div id="p2" class="panel">
+    <table>
+      <tr><th>Function</th><th>Expression</th><th>Notes</th></tr>
+      <tr><td>#i = #j + #k</td><td>Addition</td><td></td></tr>
+      <tr><td>#i = #j - #k</td><td>Subtraction</td><td></td></tr>
+      <tr><td>#i = #j * #k</td><td>Multiplication</td><td></td></tr>
+      <tr><td>#i = #j / #k</td><td>Division</td><td>Always floating point</td></tr>
+      <tr><td>#i = SIN[#j]</td><td>Sine</td><td>Angle in degrees</td></tr>
+      <tr><td>#i = COS[#j]</td><td>Cosine</td><td>Angle in degrees</td></tr>
+      <tr><td>#i = TAN[#j]</td><td>Tangent</td><td>Angle in degrees</td></tr>
+      <tr><td>#i = ATAN[#j]/[#k]</td><td>Arctangent (atan2)</td><td>Quadrant-aware</td></tr>
+      <tr><td>#i = SQRT[#j]</td><td>Square root</td><td></td></tr>
+      <tr><td>#i = ABS[#j]</td><td>Absolute value</td><td></td></tr>
+      <tr><td>#i = ROUND[#j]</td><td>Round to nearest</td><td></td></tr>
+      <tr><td>#i = FIX[#j]</td><td>Truncate (floor)</td><td>FIX[1.9] = 1</td></tr>
+      <tr><td>#i = FUP[#j]</td><td>Ceiling</td><td>FUP[1.1] = 2</td></tr>
+    </table>
+    <pre>(BOLT CIRCLE EXAMPLE)
+#100 = 0                              (HOLE COUNTER)
+WHILE [#100 LT #1] DO1
+  #101 = #100 * [360.0 / #1]          (ANGLE)
+  G81 X[#2*COS[#101]] Y[#2*SIN[#101]] Z-0.5 R0.1 F15.0
+  #100 = #100 + 1
+END1</pre>
+  </div>
+
+  <div id="p3" class="panel">
+    <div class="note">Any letter not specified in the G65 call → its variable is NULL, not zero. Always validate required arguments at the top of the macro.</div>
+    <pre>G65 P9100 A1.0 B2.5 Z-10.0 F15.0
+(INSIDE O9100: A→#1=1.0, B→#2=2.5, Z→#26=-10.0, F→#9=15.0)</pre>
+    <table>
+      <tr><th>Letter→Var</th><th>Letter→Var</th><th>Letter→Var</th><th>Letter→Var</th></tr>
+      <tr><td>A → #1</td><td>H → #11</td><td>T → #20</td><td>X → #24</td></tr>
+      <tr><td>B → #2</td><td>I → #4</td><td>U → #21</td><td>Y → #25</td></tr>
+      <tr><td>C → #3</td><td>J → #5</td><td>V → #22</td><td>Z → #26</td></tr>
+      <tr><td>D → #7</td><td>K → #6</td><td>W → #23</td><td>F → #9</td></tr>
+      <tr><td>E → #8</td><td>M → #13</td><td>Q → #17</td><td>R → #18</td></tr>
+    </table>
+    <pre>O9100 (ARGUMENT VALIDATION PATTERN)
+IF [#1 EQ #0] THEN #3000=100(MISSING ARGUMENT A)
+IF [#2 EQ #0] THEN #3000=101(MISSING ARGUMENT B)
+IF [#3 EQ #0] THEN #3=0.1   (DEFAULT C TO 0.1 IF NOT PROVIDED)
+M99</pre>
+  </div>
+
+  <div id="p4" class="panel">
+    <table>
+      <tr><th>Type</th><th>Syntax</th><th>Behavior</th></tr>
+      <tr><td>Conditional branch</td><td>IF [condition] GOTO n</td><td>Jump to Nn if true, next line if false</td></tr>
+      <tr><td>Conditional exec</td><td>IF [condition] THEN statement</td><td>One statement only if true</td></tr>
+      <tr><td>Unconditional</td><td>GOTO n</td><td>Always jump. n can be a variable.</td></tr>
+      <tr><td>Loop</td><td>WHILE [cond] DOm ... ENDm</td><td>m = 1, 2, or 3. Max 3 nested loops.</td></tr>
+    </table>
+    <table>
+      <tr><th>Operator</th><th>Meaning</th><th>Operator</th><th>Meaning</th></tr>
+      <tr><td>EQ</td><td>Equal to</td><td>GE</td><td>Greater than or equal</td></tr>
+      <tr><td>NE</td><td>Not equal</td><td>LE</td><td>Less than or equal</td></tr>
+      <tr><td>GT</td><td>Greater than</td><td>LT</td><td>Less than</td></tr>
+    </table>
+    <div class="warn"><strong>WHILE/DO nesting limit = 3</strong>Use DO1, DO2, DO3. Cannot nest DO1 inside another DO1. Beyond 3 levels — use subroutines.</div>
+  </div>
+
+  <div id="p5" class="panel">
+    <table>
+      <tr><th>Variable</th><th>Contents</th><th>R/W</th></tr>
+      <tr><td>#5021–#5025</td><td>Current machine coordinates X/Y/Z/A/B</td><td>R</td></tr>
+      <tr><td>#5041–#5045</td><td>Current workpiece coordinates X/Y/Z/A/B</td><td>R</td></tr>
+      <tr><td>#5061–#5065</td><td>Skip signal position (G31 capture) X/Y/Z/A/B</td><td>R</td></tr>
+      <tr><td>#5221–#5226</td><td>G54 offsets X/Y/Z/A/B/C</td><td>R/W</td></tr>
+      <tr><td>#5241–#5246</td><td>G55 offsets</td><td>R/W</td></tr>
+      <tr><td>#10001–#10200</td><td>Extended tool length geometry (preferred)</td><td>R/W</td></tr>
+      <tr><td>#2001–#2200</td><td>Tool length geometry (legacy)</td><td>R/W</td></tr>
+      <tr><td>#3000</td><td>Programmable alarm (#3000=100(MESSAGE))</td><td>W</td></tr>
+      <tr><td>#3003</td><td>Single block / MST wait control</td><td>R/W</td></tr>
+      <tr><td>#3004</td><td>Feed hold / FRO disable</td><td>R/W</td></tr>
+      <tr><td>#3006</td><td>Programmable stop with message</td><td>W</td></tr>
+      <tr><td>#3901</td><td>Part counter (M30 count)</td><td>R/W</td></tr>
+    </table>
+    <div class="warn"><strong>NEVER write to #5201</strong>#5201 is the external work offset — writing to it shifts ALL work coordinate systems simultaneously. Write to the specific register: #5221 for G54 X, #5222 for G54 Y, #5223 for G54 Z.</div>
+  </div>
+
+  <div id="p6" class="panel">
+    <div class="warn"><strong>Standard probing value: #3004 = 3</strong>Disables both feed hold and FRO during G31 probe move. Restore #3004 before #3003. Restore both before EVERY exit from the macro including alarm branches.</div>
+    <div class="grid">
+      <div>
+        <p style="font-size:.82rem;font-weight:600;margin-bottom:.5rem;">#3003 values</p>
+        <table><tr><th>Value</th><th>Single block</th><th>MST wait</th></tr>
+        <tr><td>0</td><td>Enabled (normal)</td><td>Waits</td></tr>
+        <tr><td>1</td><td>Disabled</td><td>Waits</td></tr>
+        <tr><td>2</td><td>Enabled</td><td>No wait</td></tr>
+        <tr><td>3</td><td>Disabled</td><td>No wait</td></tr></table>
+      </div>
+      <div>
+        <p style="font-size:.82rem;font-weight:600;margin-bottom:.5rem;">#3004 values</p>
+        <table><tr><th>Value</th><th>Feed hold</th><th>FRO</th></tr>
+        <tr><td>0</td><td>Enabled (normal)</td><td>Enabled</td></tr>
+        <tr><td>1</td><td>Disabled</td><td>Enabled</td></tr>
+        <tr><td>2</td><td>Enabled</td><td>Disabled</td></tr>
+        <tr><td>3</td><td>Disabled</td><td>Disabled</td></tr></table>
+      </div>
+    </div>
+    <pre>(CORRECT PROBING SEQUENCE)
+#3003 = 1              (DISABLE SINGLE BLOCK)
+#3004 = 3              (DISABLE FEED HOLD AND FRO)
+G91 G31 Z-1.0 F20.0    (PROBE MOVE)
+#500 = #5063           (CAPTURE Z SKIP POSITION)
+#3004 = 0              (RESTORE FEED HOLD FIRST)
+#3003 = 0              (RESTORE SINGLE BLOCK SECOND)
+M99</pre>
+  </div>
+
+  <div id="p7" class="panel">
+    <div class="note"><strong>G31 — the skip function</strong>Linear move that stops when probe fires. Machine position captured in #5061–#5065 at the instant of contact. If skip never fires, machine completes the full move — always follow with a retract.</div>
+    <pre>O9210 (PROBE X SURFACE — SET G54 X OFFSET)
+(A=NOMINAL X, B=STYLUS RADIUS)
+IF [#1 EQ #0] THEN #3000=200(MISSING A - NOMINAL X)
+IF [#2 EQ #0] THEN #2=0.0
+#3003 = 1
+#3004 = 3
+G91 G31 X-1.0 F10.0         (PROBE IN -X)
+#500 = #5061                 (CAPTURE X AT CONTACT)
+G91 G0 X0.5                 (RETRACT)
+G90
+#3004 = 0
+#3003 = 0
+#501 = [#500 + #2] - #1     (DEVIATION = ACTUAL - NOMINAL)
+#5221 = #5221 - #501         (UPDATE G54 X — NOT #5201)
+M99</pre>
+    <div class="warn"><strong>Write to #5221 not #5201</strong>#5201 shifts ALL fixtures. #5221 is G54 X only. This is the most dangerous probing mistake.</div>
+  </div>
+
+  <div id="p8" class="panel">
+    <div class="note">Core concepts (variables, arithmetic, IF/GOTO, WHILE/DO) are identical across Fanuc, Haas, and Okuma. Variable numbers and system variable addresses differ significantly — code is not portable without modification.</div>
+    <table>
+      <tr><th>Variable type</th><th>Fanuc</th><th>Haas NGC</th><th>Haas Legacy</th><th>Okuma OSP</th></tr>
+      <tr><td>Local (arguments)</td><td>#1–#33</td><td>#1–#33</td><td>#1–#33</td><td>VS1–VS100</td></tr>
+      <tr><td>Common permanent</td><td>#500–#999</td><td>#10000–#10999</td><td>#100–#999</td><td>VC1–VC200</td></tr>
+      <tr><td>Programmable alarm</td><td>#3000</td><td>#3000</td><td>#3000</td><td>OSP manual</td></tr>
+      <tr><td>Feed hold control</td><td>#3004</td><td>#3004</td><td>#3004</td><td>OSP manual</td></tr>
+      <tr><td>Skip position (G31)</td><td>#5061–#5065</td><td>#5061–#5065</td><td>#5061–#5065</td><td>OSP manual</td></tr>
+    </table>
+    <div class="warn"><strong>Haas NGC critical difference</strong>Haas NGC uses #10000–#10999 for permanent common variables (NOT #500–#999 like Fanuc). Old macros written for legacy Haas will read incorrect values on NGC machines. Always verify which controller generation is installed.</div>
+    <div class="note"><strong>Practice environment</strong>Fanuc Macro B browser simulator: <a href="https://zappettiniconsulting.com/wiki/macro-playground" target="_blank">zappettiniconsulting.com/wiki/macro-playground</a></div>
+  </div>
+</div>
+<script>
+function go(i,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('p'+i).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

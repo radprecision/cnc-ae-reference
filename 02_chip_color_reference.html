@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Chip Color Reference — CNC AE Reference</title>
+<style>
+:root{--navy:#1A2744;--blue:#2C4A8A;--bg:#F8F9FC;--border:#E2E6EF;--text:#1A1A2E;--mono:'Courier New',monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);}
+header{background:var(--navy);color:white;padding:1.5rem 2rem;}
+header h1{font-size:1.4rem;font-weight:600;}
+header p{font-size:.82rem;opacity:.7;margin-top:.25rem;}
+.container{max-width:960px;margin:0 auto;padding:1.5rem;}
+.warning-banner{background:#7F1D1D;color:white;border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.5rem;font-size:.88rem;line-height:1.6;}
+.warning-banner strong{display:block;font-size:1rem;margin-bottom:.35rem;}
+.tabs{display:flex;gap:4px;margin-bottom:1.5rem;}
+.tab{padding:8px 20px;border:2px solid var(--border);border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;background:white;}
+.tab.active{border-color:var(--navy);background:var(--navy);color:white;}
+.panel{display:none;}.panel.active{display:block;}
+.chip-table{width:100%;border-collapse:collapse;border-radius:10px;overflow:hidden;border:1px solid var(--border);}
+.chip-table th{padding:.75rem 1rem;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;text-align:left;background:var(--navy);color:white;}
+.chip-table td{padding:.8rem 1rem;font-size:.85rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;}
+.chip-table tr:last-child td{border-bottom:none;}
+.chip-swatch{display:inline-block;width:28px;height:28px;border-radius:50%;border:2px solid rgba(0,0,0,.15);vertical-align:middle;margin-right:.5rem;}
+.badge{display:inline-block;font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:4px;vertical-align:middle;}
+.ok{background:#D1FAE5;color:#065F46;}
+.warn{background:#FEF3C7;color:#92400E;}
+.bad{background:#FEE2E2;color:#991B1B;}
+.crit{background:#7F1D1D;color:white;}
+.mat-note{background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:.75rem 1rem;font-size:.82rem;color:#1E40AF;margin-bottom:1rem;line-height:1.6;}
+</style>
+</head>
+<body>
+<header>
+  <h1>🎨 Chip Color Reference</h1>
+  <p>CNC AE Reference Library — Module 6 · SEPARATE tables for steel vs stainless — colors mean different things</p>
+</header>
+<div class="container">
+  <div class="warning-banner">
+    <strong>⚠ Critical distinction — Steel vs Stainless</strong>
+    Blue chips in steel = acceptable in roughing. Blue chips in stainless = FAILURE IMMINENT. Always identify the material before interpreting chip color. The same color means opposite things depending on the workpiece material.
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="go(0,this)">Carbon &amp; Alloy Steel</button>
+    <button class="tab" onclick="go(1,this)">Stainless Steel</button>
+    <button class="tab" onclick="go(2,this)">Aluminum</button>
+    <button class="tab" onclick="go(3,this)">Cast Iron</button>
+    <button class="tab" onclick="go(4,this)">Titanium</button>
+  </div>
+
+  <div id="p0" class="panel active">
+    <div class="mat-note">Carbon and alloy steel (1018, 4140, 4340, A36). Chip color is a reliable heat indicator. Blue is acceptable in heavy roughing but should not appear in finishing operations.</div>
+    <table class="chip-table">
+      <tr><th>Color</th><th>Temperature (est.)</th><th>Assessment</th><th>Meaning &amp; Action</th></tr>
+      <tr><td><span class="chip-swatch" style="background:#E8E0D0;"></span>Silver / Straw</td><td>Below 400°F</td><td><span class="badge ok">GOOD</span></td><td>Low heat at cutting zone. Ideal for finishing. Good chip load and SFM combination. No action needed.</td></tr>
+      <tr><td><span class="chip-swatch" style="background:#C8A840;"></span>Gold / Yellow</td><td>400–500°F</td><td><span class="badge ok">GOOD</span></td><td>Normal roughing temperature. Heat is controlled. Acceptable for general roughing. Monitor for progression to purple/blue.</td></tr>
+      <tr><td><span class="chip-swatch" style="background:#9060A0;"></span>Purple / Violet</td><td>500–600°F</td><td><span class="badge warn">MONITOR</span></td><td>Elevated heat. Acceptable in heavy roughing but approaching limit. Check coolant flow, consider reducing SFM 10–15%.</td></tr>
+      <tr><td><span class="chip-swatch" style="background:#4040A0;"></span>Blue</td><td>600–700°F</td><td><span class="badge warn">HIGH HEAT</span></td><td>High heat at cutting zone. Acceptable ONLY in heavy roughing with flood coolant. Not acceptable in finishing. Reduce SFM or increase coolant if consistent. Edge wear accelerates above this point.</td></tr>
+      <tr><td><span class="chip-swatch" style="background:#303030;"></span>Dark Blue / Black</td><td>Above 750°F</td><td><span class="badge bad">REDUCE</span></td><td>Excessive heat. Insert life shortening rapidly. Reduce SFM immediately — 15–25% reduction. Check for built-up edge. Verify coolant pressure and coverage.</td></tr>
+    </table>
+  </div>
+
+  <div id="p1" class="panel">
+    <div class="mat-note" style="background:#FEF2F2;border-color:#FECACA;color:#991B1B;">⚠ STAINLESS STEEL — chip color interpretation is REVERSED from carbon steel. Blue chips in stainless indicate work hardening and imminent cutting edge failure. Do NOT continue cutting.</div>
+    <table class="chip-table">
+      <tr><th>Color</th><th>Assessment</th><th>Meaning &amp; Action</th></tr>
+      <tr><td><span class="chip-swatch" style="background:#E8E0D0;"></span>Silver (no color)</td><td><span class="badge ok">TARGET</span></td><td>Optimal. Low heat, no work hardening, good chip load. This is the target chip color for all stainless operations including roughing.</td></tr>
+      <tr><td><span class="chip-swatch" style="background:#C8A840;"></span>Light Gold</td><td><span class="badge warn">MARGINAL</span></td><td>Borderline acceptable. Heat is building. Check chip load — may be too low (rubbing) or SFM too high. Verify coolant coverage on the cutting zone.</td></tr>
+      <tr><td><span class="chip-swatch" style="background:#9060A0;"></span>Purple / Violet</td><td><span class="badge bad">WARNING</span></td><td>Work hardening is occurring. The HAZ (heat-affected zone) is work-hardening ahead of the tool. Reduce SFM 20%. Increase chip load to ensure the tool cuts below the hardened layer.</td></tr>
+      <tr><td><span class="chip-swatch" style="background:#4040A0;"></span>Blue</td><td><span class="badge crit">STOP — FAILURE IMMINENT</span></td><td>Work hardening has progressed significantly. Cutting edge failure likely within the next few passes. STOP and inspect the insert immediately. The next pass may break the insert or produce a poor surface. Check: SFM too high? Chip load too low? Coolant adequate?</td></tr>
+      <tr><td><span class="chip-swatch" style="background:#303030;"></span>Dark Blue / Black</td><td><span class="badge crit">CRITICAL FAILURE</span></td><td>Insert has likely already failed or is moments from failing. Stop immediately. Inspect cutting edge, inspect workpiece surface. Do not continue without replacing the insert.</td></tr>
+    </table>
+    <div class="mat-note" style="margin-top:1rem;">Key rule for stainless: the chip load must be high enough to cut below the work-hardened layer from the previous pass. If chip load is too low, the tool rubs the hardened surface, generates more heat, hardens the next layer — and the condition spirals. Always err toward higher chip load in stainless.</div>
+  </div>
+
+  <div id="p2" class="panel">
+    <div class="mat-note">Aluminum (6061, 7075, 2024). Color change is less pronounced than in steel — aluminum's lower melting point means failure modes differ. Watch for BUE (built-up edge) more than chip color.</div>
+    <table class="chip-table">
+      <tr><th>Color / Appearance</th><th>Assessment</th><th>Meaning &amp; Action</th></tr>
+      <tr><td><span class="chip-swatch" style="background:#E0E0E0;"></span>Bright silver, curly</td><td><span class="badge ok">OPTIMAL</span></td><td>Correct chip load and SFM. Good chip evacuation. Long continuous chips are normal in aluminum finishing.</td></tr>
+      <tr><td><span class="chip-swatch" style="background:#C0C0B0;"></span>Dull silver, short</td><td><span class="badge warn">MONITOR</span></td><td>Possible BUE forming. Check cutting edge — aluminum welding to tool face. TiAlN or AlTiN coatings accelerate BUE — use uncoated carbide or ZrN coating for aluminum.</td></tr>
+      <tr><td><span class="chip-swatch" style="background:#B0A060;"></span>Gold tinge</td><td><span class="badge warn">HIGH HEAT</span></td><td>Unusually high heat for aluminum. Check SFM (may be too low, causing rubbing) or verify correct alloy. 7075 runs hotter than 6061. Increase coolant or air blast.</td></tr>
+      <tr><td><span class="chip-swatch" style="background:#606060;"></span>Dark / smeared</td><td><span class="badge bad">BUE / WELDING</span></td><td>Aluminum is welding to the tool (BUE). Smeared finish on part. Replace or resharpen insert. Check: uncoated carbide? Correct geometry (sharp edge, high rake)? Coolant reaching the cut?</td></tr>
+    </table>
+    <div class="mat-note" style="margin-top:1rem;background:#FEF3C7;border-color:#FDE68A;color:#92400E;">⚠ TiAlN and AlTiN coatings MUST NOT be used in aluminum — chemical affinity between aluminum in the workpiece and aluminum in the coating causes welding (BUE). Use uncoated carbide, ZrN, or TiN coating for aluminum.</div>
+  </div>
+
+  <div id="p3" class="panel">
+    <div class="mat-note">Cast iron (gray GG, nodular GGG). Produces powder/dust chips, not curled chips. Chip color interpretation is different — watch for dust color and surface finish degradation. Preferred: DRY machining.</div>
+    <table class="chip-table">
+      <tr><th>Chip appearance</th><th>Assessment</th><th>Meaning &amp; Action</th></tr>
+      <tr><td>Fine gray/black powder</td><td><span class="badge ok">NORMAL</span></td><td>Characteristic chip form for gray cast iron. Dry preferred — coolant + graphite dust = abrasive slurry that accelerates guide and spindle wear.</td></tr>
+      <tr><td>Coarser flake chips</td><td><span class="badge ok">NORMAL — NODULAR</span></td><td>Nodular (ductile) iron produces more conventional chips than gray iron. Less powdery, more chip-like. Coolant acceptable for nodular iron.</td></tr>
+      <tr><td>Glowing/sparking chips</td><td><span class="badge warn">HIGH HEAT</span></td><td>Excessive cutting speed or interrupted cut generating concentrated heat. Reduce SFM. Verify insert grade — cast iron grades (K-group) required.</td></tr>
+      <tr><td>Long stringy chips</td><td><span class="badge warn">UNEXPECTED</span></td><td>May indicate wrong alloy (malleable iron or steel contamination) or incorrect insert geometry. Malleable iron machines more like steel — requires different insert selection.</td></tr>
+    </table>
+  </div>
+
+  <div id="p4" class="panel">
+    <div class="mat-note">Titanium (Ti-6Al-4V, commercially pure). Extremely heat-sensitive. Work hardening and built-up edge both occur. Chip color monitoring is critical — high heat damages the part metallurgy, not just the tool.</div>
+    <table class="chip-table">
+      <tr><th>Color</th><th>Assessment</th><th>Meaning &amp; Action</th></tr>
+      <tr><td><span class="chip-swatch" style="background:#D0C8B8;"></span>Silver / light straw</td><td><span class="badge ok">TARGET</span></td><td>Optimal for titanium. Low heat, no work hardening. Maintain these parameters. Flood coolant should be running at full pressure.</td></tr>
+      <tr><td><span class="chip-swatch" style="background:#B08030;"></span>Gold / amber</td><td><span class="badge warn">MARGINAL</span></td><td>Heat building. Acceptable in roughing if flood coolant is adequate. Not acceptable in finishing — surface integrity at risk. Reduce SFM 10%.</td></tr>
+      <tr><td><span class="chip-swatch" style="background:#805090;"></span>Purple / blue</td><td><span class="badge bad">REDUCE IMMEDIATELY</span></td><td>Significant heat. Work hardening occurring. Metallurgical damage to part surface possible. Reduce SFM 20–30%. Verify TSC pressure (1000+ psi preferred for titanium drilling).</td></tr>
+      <tr><td><span class="chip-swatch" style="background:#202020;"></span>Dark / black</td><td><span class="badge crit">STOP</span></td><td>Titanium fire risk above 600°C in fine chips/dust. Surface integrity destroyed. Stop and inspect. Never allow dry machining of titanium — always flood or TSC.</td></tr>
+    </table>
+    <div class="mat-note" style="margin-top:1rem;background:#FEF2F2;border-color:#FECACA;color:#991B1B;">⚠ Titanium chips can ignite above 600°C. Never allow titanium dust to accumulate — always use coolant. Ceramic tooling used dry for roughing Inconel should NEVER be used for titanium.</div>
+  </div>
+</div>
+<script>
+function go(i,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('p'+i).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

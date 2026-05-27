@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Surface Finish Reference — CNC AE Reference</title>
+<style>
+:root{--navy:#1A2744;--blue:#2C4A8A;--bg:#F8F9FC;--border:#E2E6EF;--text:#1A1A2E;--mono:'Courier New',monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);}
+header{background:var(--navy);color:white;padding:1.5rem 2rem;}
+header h1{font-size:1.4rem;font-weight:600;}
+header p{font-size:.82rem;opacity:.7;margin-top:.25rem;}
+.container{max-width:960px;margin:0 auto;padding:1.5rem;}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.tab{padding:7px 14px;border:2px solid var(--border);border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;background:white;}
+.tab.active{border-color:var(--navy);background:var(--navy);color:white;}
+.panel{display:none;}.panel.active{display:block;}
+table{width:100%;border-collapse:collapse;background:white;border-radius:10px;overflow:hidden;border:1px solid var(--border);}
+th{padding:.7rem 1rem;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;background:var(--navy);color:white;text-align:left;}
+td{padding:.75rem 1rem;font-size:.83rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;}
+tr:last-child td{border-bottom:none;}
+td:first-child{font-family:var(--mono);font-weight:600;color:var(--navy);}
+.note{background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:.75rem 1rem;font-size:.82rem;color:#1E40AF;margin-bottom:1rem;line-height:1.6;}
+.cost-bar{height:8px;border-radius:4px;background:linear-gradient(to right,#10B981,#F59E0B,#EF4444);position:relative;margin:1rem 0 .25rem;}
+.cost-markers{display:flex;justify-content:space-between;font-size:.72rem;color:#6B7280;font-family:var(--mono);}
+.ra-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.75rem;margin-top:.75rem;}
+.ra-card{background:white;border:1px solid var(--border);border-radius:8px;padding:.75rem;text-align:center;}
+.ra-val{font-size:1.1rem;font-weight:700;font-family:var(--mono);color:var(--navy);}
+.ra-label{font-size:.72rem;color:#6B7280;margin-top:.2rem;}
+.ra-process{font-size:.75rem;color:#374151;margin-top:.3rem;}
+</style>
+</head>
+<body>
+<header>
+  <h1>〰 Surface Finish Reference</h1>
+  <p>CNC AE Reference Library — Module 17 · Dual units throughout (µm metric + µin inch)</p>
+</header>
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="go(0,this)">Parameters</button>
+    <button class="tab" onclick="go(1,this)">Ra conversion table</button>
+    <button class="tab" onclick="go(2,this)">Process capability</button>
+    <button class="tab" onclick="go(3,this)">Functional requirements</button>
+    <button class="tab" onclick="go(4,this)">Cost impact</button>
+    <button class="tab" onclick="go(5,this)">Inspection methods</button>
+  </div>
+
+  <div id="p0" class="panel active">
+    <div class="note">Ra alone is insufficient for critical surfaces. A bearing surface needs Rsk (skewness) — negative skewness means valleys that hold oil. A sealing surface needs Rz. Always specify the parameter that matches the function.</div>
+    <table>
+      <tr><th>Parameter</th><th>Name</th><th>What it measures</th><th>When to specify it</th></tr>
+      <tr><td>Ra</td><td>Arithmetic mean roughness</td><td>Average deviation of profile from mean line. The most common parameter.</td><td>General surface quality, most machined surfaces. Default specification.</td></tr>
+      <tr><td>Rz</td><td>Mean peak-to-valley height</td><td>Average of the 5 largest peak-to-valley distances in the evaluation length.</td><td>Sealing surfaces, gasket faces. More sensitive to spikes than Ra.</td></tr>
+      <tr><td>Rq / RMS</td><td>Root mean square roughness</td><td>RMS of profile deviations. More sensitive to peaks/valleys than Ra.</td><td>Optical surfaces, precision fits. RMS ≈ 1.11 × Ra for random surfaces.</td></tr>
+      <tr><td>Rt</td><td>Total profile height</td><td>Distance between highest peak and deepest valley in entire evaluation length.</td><td>Fatigue-critical surfaces — single deep scratch can initiate crack.</td></tr>
+      <tr><td>Rp / Rv</td><td>Max peak / Max valley depth</td><td>Highest point above / deepest point below mean line.</td><td>Coating adhesion (Rp), lubrication retention (Rv).</td></tr>
+      <tr><td>Rsk</td><td>Skewness</td><td>Asymmetry of profile. Negative = more valleys than peaks (plateau surface).</td><td>Bearing and lubrication surfaces. Negative Rsk preferred — valleys hold oil.</td></tr>
+    </table>
+  </div>
+
+  <div id="p1" class="panel">
+    <div class="note">Conversion shortcut: µm × 40 ≈ µin. Key pairs to memorize: 0.8/32, 1.6/63, 3.2/125, 6.3/250. Ra 3.2 µm / 125 µin / N8 = standard as-machined default.</div>
+    <div class="ra-grid">
+      <div class="ra-card"><div class="ra-val">0.025 µm</div><div class="ra-label">1 µin / N1</div><div class="ra-process">Superfinish / lapping</div></div>
+      <div class="ra-card"><div class="ra-val">0.05 µm</div><div class="ra-label">2 µin / N2</div><div class="ra-process">Superfinish</div></div>
+      <div class="ra-card"><div class="ra-val">0.1 µm</div><div class="ra-label">4 µin / N3</div><div class="ra-process">Honing</div></div>
+      <div class="ra-card"><div class="ra-val">0.2 µm</div><div class="ra-label">8 µin / N4</div><div class="ra-process">Cylindrical grind</div></div>
+      <div class="ra-card"><div class="ra-val">0.4 µm</div><div class="ra-label">16 µin / N5</div><div class="ra-process">Surface grind ← cost jump</div></div>
+      <div class="ra-card"><div class="ra-val">0.8 µm</div><div class="ra-label">32 µin / N6</div><div class="ra-process">Fine turning/milling</div></div>
+      <div class="ra-card" style="border-color:#1D9E75;background:#F0FDF4;"><div class="ra-val" style="color:#065F46;">1.6 µm</div><div class="ra-label" style="color:#065F46;">63 µin / N7</div><div class="ra-process" style="color:#065F46;">Precision milling/turning</div></div>
+      <div class="ra-card" style="border-color:#2C4A8A;background:#EFF6FF;"><div class="ra-val" style="color:#1E40AF;">3.2 µm</div><div class="ra-label" style="color:#1E40AF;">125 µin / N8 ← DEFAULT</div><div class="ra-process" style="color:#1E40AF;">Standard CNC milling</div></div>
+      <div class="ra-card"><div class="ra-val">6.3 µm</div><div class="ra-label">250 µin / N9</div><div class="ra-process">Standard turning</div></div>
+      <div class="ra-card"><div class="ra-val">12.5 µm</div><div class="ra-label">500 µin / N10</div><div class="ra-process">Rough milling</div></div>
+      <div class="ra-card"><div class="ra-val">25 µm</div><div class="ra-label">1000 µin / N11</div><div class="ra-process">Very rough / saw cut</div></div>
+    </div>
+  </div>
+
+  <div id="p2" class="panel">
+    <table>
+      <tr><th>Process</th><th>Ra range (µm)</th><th>Ra range (µin)</th><th>Notes</th></tr>
+      <tr><td>Lapping</td><td>0.025 – 0.4</td><td>1 – 16</td><td>Highest achievable finish</td></tr>
+      <tr><td>Honing</td><td>0.05 – 0.8</td><td>2 – 32</td><td>Negative Rsk — preferred for cylinder bores</td></tr>
+      <tr><td>Cylindrical grinding</td><td>0.1 – 1.6</td><td>4 – 63</td><td>OD and ID precision</td></tr>
+      <tr><td>Surface grinding</td><td>0.1 – 1.6</td><td>4 – 63</td><td>Flat surfaces</td></tr>
+      <tr><td>Hard turning (CBN)</td><td>0.2 – 0.8</td><td>8 – 32</td><td>Can replace cylindrical grinding</td></tr>
+      <tr><td>Fine boring</td><td>0.4 – 1.6</td><td>16 – 63</td><td>H7 bore quality</td></tr>
+      <tr><td>Reaming</td><td>0.2 – 1.6</td><td>8 – 63</td><td>H7/H8 bores</td></tr>
+      <tr><td>CNC turning — finish</td><td>0.4 – 1.6</td><td>16 – 63</td><td>Wiper insert improves significantly</td></tr>
+      <tr><td style="color:#1D9E75;font-weight:700;">CNC milling — finish</td><td style="color:#1D9E75;">0.8 – 3.2</td><td style="color:#1D9E75;">32 – 125</td><td style="color:#1D9E75;">Standard production capability</td></tr>
+      <tr><td>CNC milling — standard</td><td>1.6 – 6.3</td><td>63 – 250</td><td>Default as-machined</td></tr>
+      <tr><td>CNC drilling</td><td>1.6 – 6.3</td><td>63 – 250</td><td>Hole walls</td></tr>
+      <tr><td>Rough milling</td><td>6.3 – 25</td><td>250 – 1000</td><td>Roughing passes only</td></tr>
+    </table>
+  </div>
+
+  <div id="p3" class="panel">
+    <table>
+      <tr><th>Function</th><th>Recommended Ra (µm)</th><th>Recommended Ra (µin)</th><th>Parameter</th><th>Reason</th></tr>
+      <tr><td>Static sealing (O-ring)</td><td>0.8 – 1.6</td><td>32 – 63</td><td>Ra + Rz</td><td>Peaks must not pierce seal</td></tr>
+      <tr><td>Dynamic sealing (shaft seal)</td><td>0.2 – 0.8</td><td>8 – 32</td><td>Ra + Rsk</td><td>Negative Rsk retains lubricant</td></tr>
+      <tr><td>Sliding bearing surface</td><td>0.4 – 0.8</td><td>16 – 32</td><td>Ra + Rsk</td><td>Plateau surface for oil film</td></tr>
+      <tr><td>Press fit / interference</td><td>0.4 – 1.6</td><td>16 – 63</td><td>Ra</td><td>Peaks crushed during assembly contribute to hold</td></tr>
+      <tr><td>Fatigue-critical (shaft, root)</td><td>0.2 – 0.8</td><td>8 – 32</td><td>Ra + Rt</td><td>Deep scratches initiate cracks — Rt matters</td></tr>
+      <tr><td>Cosmetic / appearance</td><td>0.8 – 1.6</td><td>32 – 63</td><td>Ra</td><td>Visual smoothness to the eye</td></tr>
+      <tr><td>General machined surface</td><td>1.6 – 3.2</td><td>63 – 125</td><td>Ra</td><td>No special function — default</td></tr>
+      <tr><td>Non-functional (clearance)</td><td>3.2 – 6.3</td><td>125 – 250</td><td>Ra</td><td>As-machined acceptable</td></tr>
+    </table>
+  </div>
+
+  <div id="p4" class="panel">
+    <div class="note">The cost jump at Ra 0.4 µm (16 µin) is non-linear — it triggers a grinding operation. Every step tighter than Ra 3.2 adds cost. Tighter-than-necessary callouts on non-functional surfaces are pure waste.</div>
+    <div class="cost-bar"></div>
+    <div class="cost-markers"><span>Ra 3.2 (baseline)</span><span>Ra 1.6</span><span>Ra 0.8</span><span>Ra 0.4 (grind)</span><span>Ra 0.2</span></div>
+    <table style="margin-top:1rem;">
+      <tr><th>Transition</th><th>Cost multiplier</th><th>What changes</th></tr>
+      <tr><td>Ra 3.2 → Ra 1.6</td><td style="color:#F59E0B;font-weight:600;">+15–25%</td><td>Additional finish pass, slower feed rate, sharper tooling</td></tr>
+      <tr><td>Ra 1.6 → Ra 0.8</td><td style="color:#F59E0B;font-weight:600;">+30–50%</td><td>Very slow finish pass, wiper insert, precise tool runout required</td></tr>
+      <tr><td>Ra 0.8 → Ra 0.4</td><td style="color:#EF4444;font-weight:600;">+100–200%</td><td>GRINDING required — separate operation, separate setup, CMM inspection</td></tr>
+      <tr><td>Ra 0.4 → Ra 0.2</td><td style="color:#EF4444;font-weight:600;">+200–400%</td><td>Precision grinding or honing, extreme care, controlled environment</td></tr>
+      <tr><td>Ra 0.2 → Ra 0.05</td><td style="color:#991B1B;font-weight:600;">+500%+</td><td>Lapping, superfinishing — specialist process</td></tr>
+    </table>
+  </div>
+
+  <div id="p5" class="panel">
+    <table>
+      <tr><th>Method</th><th>Ra range</th><th>Type</th><th>Use case</th><th>Limitations</th></tr>
+      <tr><td>Stylus profilometer (contact)</td><td>0.005 – 100 µm</td><td>Reference method</td><td>Shop floor and lab. ASME B46.1 / ISO 4288. Most common.</td><td>Slow, directional, stylus can damage very soft surfaces</td></tr>
+      <tr><td>Optical interferometry (non-contact)</td><td>0.001 – 10 µm</td><td>Lab / precision</td><td>Optics, precision surfaces, soft materials</td><td>Sensitive to vibration, requires clean surface</td></tr>
+      <tr><td>Surface comparator (visual/tactile)</td><td>Screening only</td><td>Shop screening</td><td>Quick go/no-go check against known standards. Fast.</td><td>Operator-dependent, not a measurement — screening only</td></tr>
+      <tr><td>Confocal microscopy</td><td>0.001 – 1 µm</td><td>Lab</td><td>Research, forensic surface analysis</td><td>Expensive, lab only</td></tr>
+    </table>
+    <div class="note" style="margin-top:1rem;">Stylus profilometer is the reference method for all production inspection. Cut-off length (λc) must match the surface — standard λc = 0.8mm for Ra 0.1–2 µm. Measure perpendicular to lay (machining direction) for most surfaces.</div>
+  </div>
+</div>
+<script>
+function go(i,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('p'+i).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

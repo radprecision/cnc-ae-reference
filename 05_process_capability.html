@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Process Capability Reference — CNC AE Reference</title>
+<style>
+:root{--navy:#1A2744;--blue:#2C4A8A;--green:#1D9E75;--amber:#EF9F27;--red:#A32D2D;--purple:#534AB7;--bg:#F8F9FC;--border:#E2E6EF;--text:#1A1A2E;--mono:'Courier New',monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);}
+header{background:var(--navy);color:white;padding:1.5rem 2rem;}
+header h1{font-size:1.4rem;font-weight:600;}
+header p{font-size:.82rem;opacity:.7;margin-top:.25rem;}
+.container{max-width:960px;margin:0 auto;padding:1.5rem;}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.tab{padding:7px 12px;border:2px solid var(--border);border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;background:white;}
+.tab.active{border-color:var(--navy);background:var(--navy);color:white;}
+.panel{display:none;}.panel.active{display:block;}
+table{width:100%;border-collapse:collapse;background:white;border-radius:10px;overflow:hidden;border:1px solid var(--border);margin-bottom:1rem;}
+th{padding:.65rem 1rem;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;background:var(--navy);color:white;text-align:left;}
+td{padding:.7rem 1rem;font-size:.82rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;}
+tr:last-child td{border-bottom:none;}
+.note{background:#EFF6FF;border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:#1E3A5F;margin:.75rem 0;line-height:1.6;}
+.warn{background:#FEF2F2;border-left:4px solid var(--red);border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:#7F1D1D;margin:.75rem 0;line-height:1.6;}
+.warn strong,.note strong{display:block;margin-bottom:.25rem;}
+.formula{background:#1E2030;color:#A8D8A8;border-radius:8px;padding:.75rem 1rem;font-family:var(--mono);font-size:.85rem;line-height:1.8;margin:.5rem 0;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+@media(max-width:600px){.grid{grid-template-columns:1fr;}}
+.card{background:white;border:1px solid var(--border);border-radius:10px;padding:1rem;}
+.card h4{font-size:.85rem;font-weight:600;color:var(--navy);margin-bottom:.5rem;}
+.band{display:flex;border-radius:8px;overflow:hidden;margin:.75rem 0;}
+.band-seg{flex:1;padding:6px;text-align:center;}
+.calc-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem;flex-wrap:wrap;}
+.calc-label{font-size:.8rem;color:#374151;min-width:200px;}
+.calc-input{padding:.5rem .75rem;border:1px solid var(--border);border-radius:7px;font-size:.88rem;width:120px;background:white;}
+.calc-input:focus{outline:none;border-color:var(--purple);}
+.btn{padding:.6rem 1.25rem;background:var(--navy);color:white;border:none;border-radius:7px;cursor:pointer;font-size:.85rem;}
+.result-row{display:flex;justify-content:space-between;padding:.5rem .75rem;border-radius:6px;margin:.25rem 0;font-size:.85rem;}
+.r-primary{background:var(--navy);color:white;}
+.r-green{background:#D1FAE5;color:#065F46;}
+.r-amber{background:#FEF3C7;color:#92400E;}
+.r-red{background:#FEE2E2;color:#991B1B;}
+</style>
+</head>
+<body>
+<header>
+  <h1>📊 Process Capability Reference</h1>
+  <p>CNC AE Reference Library — Module 20 · Cp/Cpk · Pp/Ppk · 5-piece pre-PPAP practice</p>
+</header>
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="go(0,this)">Concepts</button>
+    <button class="tab" onclick="go(1,this)">Formulas</button>
+    <button class="tab" onclick="go(2,this)">Cp vs Cpk</button>
+    <button class="tab" onclick="go(3,this)">Cp vs Pp</button>
+    <button class="tab" onclick="go(4,this)">Interpretation</button>
+    <button class="tab" onclick="go(5,this)">Calculator</button>
+    <button class="tab" onclick="go(6,this)">5-piece pre-PPAP</button>
+  </div>
+
+  <div id="p0" class="panel active">
+    <div class="note"><strong>The core question</strong>How does the natural spread of the process (6σ) compare to the tolerance band (USL−LSL)? If the process spread fits inside the tolerance with room to spare — the process is capable.</div>
+    <div class="grid">
+      <div class="card"><h4>Cp — Potential</h4><p style="font-size:.82rem;line-height:1.6;color:#374151;">If the process were perfectly centered, how capable would it be? Measures spread vs tolerance. Does NOT account for centering.</p></div>
+      <div class="card"><h4>Cpk — Actual</h4><p style="font-size:.82rem;line-height:1.6;color:#374151;">Given where the process is actually centered right now, how capable is it? Always ≤ Cp. The gap between Cp and Cpk reveals the centering problem.</p></div>
+      <div class="card"><h4>Pp — Long-term potential</h4><p style="font-size:.82rem;line-height:1.6;color:#374151;">Same as Cp but uses overall std dev s — includes ALL sources of variation (drift, batch effects, shift changes).</p></div>
+      <div class="card"><h4>Ppk — Long-term actual</h4><p style="font-size:.82rem;line-height:1.6;color:#374151;">What the process actually delivered to the customer. The PPAP number. Always ≤ Cpk because s ≥ σ̂.</p></div>
+    </div>
+    <div class="warn"><strong>Capability indices assume a stable, normal process</strong>Calculate Cpk only after verifying statistical control (control chart). Non-normal data requires different methods. Never exclude data points to improve the indices.</div>
+  </div>
+
+  <div id="p1" class="panel">
+    <div class="grid">
+      <div>
+        <p style="font-size:.85rem;font-weight:600;color:var(--navy);margin-bottom:.5rem;">Cp and Cpk (short-term σ̂)</p>
+        <div class="formula">Cp  = (USL − LSL) / (6 × σ̂)
+CPU = (USL − x̄) / (3 × σ̂)
+CPL = (x̄ − LSL) / (3 × σ̂)
+Cpk = min(CPU, CPL)
+
+σ̂ = R̄/d₂  or  s̄/c₄
+(within-subgroup sigma from control chart)</div>
+      </div>
+      <div>
+        <p style="font-size:.85rem;font-weight:600;color:var(--navy);margin-bottom:.5rem;">Pp and Ppk (overall s)</p>
+        <div class="formula">Pp  = (USL − LSL) / (6 × s)
+PPU = (USL − x̄) / (3 × s)
+PPL = (x̄ − LSL) / (3 × s)
+Ppk = min(PPU, PPL)
+
+s = √[Σ(xᵢ − x̄)² / (n−1)]
+(overall standard deviation of all data)</div>
+      </div>
+    </div>
+    <table>
+      <tr><th>Subgroup size n</th><th>d₂</th><th>c₄</th></tr>
+      <tr><td>2</td><td>1.128</td><td>0.7979</td></tr>
+      <tr><td>3</td><td>1.693</td><td>0.8862</td></tr>
+      <tr><td>4</td><td>2.059</td><td>0.9213</td></tr>
+      <tr><td>5</td><td>2.326</td><td>0.9400</td></tr>
+    </table>
+  </div>
+
+  <div id="p2" class="panel">
+    <div class="note"><strong>Cpk = Cp × (1 − k)</strong> where k = |midpoint − x̄| / [(USL−LSL)/2]. k=0 when centered. When Cp &gt;&gt; Cpk, the problem is centering — adjust the mean (tool offset, work offset) before reducing spread.</div>
+    <table>
+      <tr><th>Scenario</th><th>x̄</th><th>Cp</th><th>Cpk</th><th>Assessment</th></tr>
+      <tr style="background:#F0FDF4;"><td>Centered</td><td>1.000</td><td>1.67</td><td style="color:#065F46;font-weight:700;">1.67</td><td style="color:#065F46;">Excellent — centered and capable</td></tr>
+      <tr style="background:#FEF3C7;"><td>Shifted +0.004</td><td>1.004</td><td>1.67</td><td style="color:#92400E;font-weight:700;">1.00</td><td style="color:#92400E;">Marginal — adjust mean</td></tr>
+      <tr style="background:#FEE2E2;"><td>Shifted +0.007</td><td>1.007</td><td>1.67</td><td style="color:#991B1B;font-weight:700;">0.50</td><td style="color:#991B1B;">Not capable — parts at USL</td></tr>
+    </table>
+    <p style="font-size:.82rem;color:#374151;margin-top:.5rem;">Spec: 1.000 ± 0.010″, σ̂ = 0.002″. Cp stays at 1.67 in all three cases — only centering changes.</p>
+    <div class="warn"><strong>Cpk can never exceed Cp</strong>If calculated Cpk &gt; Cp — there is a calculation error. A process with Cp &lt; 1.33 cannot achieve Cpk = 1.33 regardless of centering.</div>
+  </div>
+
+  <div id="p3" class="panel">
+    <div class="grid">
+      <div class="card"><h4>Cp/Cpk — short-term capability</h4><p style="font-size:.82rem;line-height:1.6;color:#374151;">Uses within-subgroup σ̂. Excludes between-subgroup variation. Represents what the process CAN do under ideal conditions. The process's potential.</p></div>
+      <div class="card"><h4>Pp/Ppk — long-term performance</h4><p style="font-size:.82rem;line-height:1.6;color:#374151;">Uses overall s. Includes everything — drift, batch effects, operator changes. Represents what the process ACTUALLY delivered. The PPAP number.</p></div>
+    </div>
+    <div class="note"><strong>Why PPAP asks for both</strong>If Cpk ≈ Ppk: process is stable. If Cpk &gt;&gt; Ppk: significant between-subgroup variation exists. A Cpk of 1.67 with Ppk of 0.95 is a warning sign, not a success.</div>
+    <table>
+      <tr><th>Index</th><th>Minimum</th><th>Preferred</th><th>Critical KC</th></tr>
+      <tr><td>Cpk</td><td>1.33</td><td>≥ 1.67</td><td>1.67</td></tr>
+      <tr><td>Ppk</td><td>1.67</td><td>≥ 1.67</td><td>1.67</td></tr>
+    </table>
+  </div>
+
+  <div id="p4" class="panel">
+    <div class="band">
+      <div class="band-seg" style="background:#DC2626;color:white;"><div style="font-weight:700;font-size:.9rem;">&lt;1.00</div><div style="font-size:.72rem;">Not capable</div></div>
+      <div class="band-seg" style="background:#F59E0B;color:white;"><div style="font-weight:700;font-size:.9rem;">1.00–1.33</div><div style="font-size:.72rem;">Marginal</div></div>
+      <div class="band-seg" style="background:#10B981;color:white;"><div style="font-weight:700;font-size:.9rem;">1.33–1.67</div><div style="font-size:.72rem;">Capable ✓</div></div>
+      <div class="band-seg" style="background:#059669;color:white;"><div style="font-weight:700;font-size:.9rem;">1.67–2.00</div><div style="font-size:.72rem;">Good</div></div>
+      <div class="band-seg" style="background:var(--purple);color:white;"><div style="font-weight:700;font-size:.9rem;">≥ 2.00</div><div style="font-size:.72rem;">Excellent</div></div>
+    </div>
+    <table>
+      <tr><th>Cpk</th><th>Sigma level</th><th>DPM (theoretical)</th><th>Assessment</th><th>Action</th></tr>
+      <tr style="background:#FEE2E2;"><td>0.67</td><td>2σ</td><td style="color:#991B1B;font-weight:700;">45,500</td><td>Unacceptable</td><td>100% inspection required</td></tr>
+      <tr style="background:#FEF3C7;"><td>1.00</td><td>3σ</td><td style="color:#92400E;font-weight:700;">2,700</td><td>Not capable (minimum)</td><td>Sort/inspect, root cause analysis</td></tr>
+      <tr><td>1.33</td><td>4σ</td><td style="color:#065F46;font-weight:700;">63</td><td>Minimum acceptable</td><td>Accepted for PPAP. Monitor for drift.</td></tr>
+      <tr style="background:#F0FDF4;"><td>1.67</td><td>5σ</td><td style="color:#065F46;font-weight:700;">0.57</td><td>Preferred / KC minimum</td><td>Required for critical characteristics</td></tr>
+      <tr style="background:#EFF6FF;"><td>2.00</td><td>6σ</td><td style="color:var(--purple);font-weight:700;">0.002</td><td>Excellent</td><td>Near-zero defects. World-class.</td></tr>
+    </table>
+  </div>
+
+  <div id="p5" class="panel">
+    <div class="grid">
+      <div>
+        <div class="calc-row"><div class="calc-label">USL</div><input class="calc-input" type="number" id="c-usl" value="1.010" step="0.001"/></div>
+        <div class="calc-row"><div class="calc-label">LSL</div><input class="calc-input" type="number" id="c-lsl" value="0.990" step="0.001"/></div>
+        <div class="calc-row"><div class="calc-label">Process mean (x̄)</div><input class="calc-input" type="number" id="c-xbar" value="1.002" step="0.0001"/></div>
+        <div class="calc-row"><div class="calc-label">Within-subgroup σ̂</div><input class="calc-input" type="number" id="c-sw" value="0.0022" step="0.0001"/></div>
+        <div class="calc-row"><div class="calc-label">Overall std dev s</div><input class="calc-input" type="number" id="c-so" value="0.0028" step="0.0001"/></div>
+        <button class="btn" onclick="calcCap()">Calculate</button>
+      </div>
+      <div id="cap-results">
+        <div class="result-row r-primary"><span>Cp</span><span id="r-cp">—</span></div>
+        <div class="result-row r-primary"><span>Cpk</span><span id="r-cpk">—</span></div>
+        <div class="result-row r-green"><span>Pp</span><span id="r-pp">—</span></div>
+        <div class="result-row r-green"><span>Ppk</span><span id="r-ppk">—</span></div>
+        <div style="margin-top:.75rem;padding:.75rem;background:white;border:1px solid var(--border);border-radius:8px;font-size:.8rem;color:#374151;line-height:1.7;" id="r-interp"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="p6" class="panel">
+    <div class="note"><strong>Automotive OEM practice — 5-piece pre-PPAP check</strong>Run 5 consecutive parts before committing to a full 30-piece PPAP study. Identifies gross process problems early. A passing 5-piece check does NOT replace PPAP — it confirms the process is ready to attempt it.</div>
+    <table>
+      <tr><th>Gate</th><th>Criterion</th><th>Why</th></tr>
+      <tr><td>Gate 1</td><td>All 5 pieces in specification</td><td>Fundamental — if any piece fails, the process is not ready</td></tr>
+      <tr><td>Gate 2</td><td>Range ≤ 50% of tolerance</td><td>Spread check — if range already uses 50% of tolerance band, Cpk will likely fail with more data</td></tr>
+      <tr><td>Gate 3</td><td>Mean within ±25% of tolerance from nominal</td><td>Centering check — off-center process will fail even if spread is adequate</td></tr>
+      <tr><td>Gate 4</td><td>Indicative Cpk ≥ 1.00</td><td>Preliminary capability — not statistically reliable with n=5, but catches obvious failures</td></tr>
+    </table>
+    <div class="warn"><strong>The 5-piece Cpk is indicative only</strong>n=5 is too small for a statistically reliable capability determination. Do not submit a 5-piece Cpk for PPAP. All four gates must pass before proceeding to the 30-piece study. A failing gate means fix the process first — do not proceed to PPAP.</div>
+  </div>
+</div>
+<script>
+function go(i,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('p'+i).classList.add('active');
+  btn.classList.add('active');
+}
+function verdict(v){
+  if(v>=1.67) return 'Excellent ✓';
+  if(v>=1.33) return 'Capable ✓';
+  if(v>=1.0) return 'Marginal ⚠';
+  return 'Not capable ✗';
+}
+function calcCap(){
+  const usl=+document.getElementById('c-usl').value;
+  const lsl=+document.getElementById('c-lsl').value;
+  const xbar=+document.getElementById('c-xbar').value;
+  const sw=+document.getElementById('c-sw').value;
+  const so=+document.getElementById('c-so').value;
+  const tol=usl-lsl;
+  const cp=tol/(6*sw); const cpu=(usl-xbar)/(3*sw); const cpl=(xbar-lsl)/(3*sw); const cpk=Math.min(cpu,cpl);
+  const pp=tol/(6*so); const ppu=(usl-xbar)/(3*so); const ppl=(xbar-lsl)/(3*so); const ppk=Math.min(ppu,ppl);
+  document.getElementById('r-cp').textContent=cp.toFixed(3)+' ('+verdict(cp)+')';
+  document.getElementById('r-cpk').textContent=cpk.toFixed(3)+' ('+verdict(cpk)+')';
+  document.getElementById('r-pp').textContent=pp.toFixed(3)+' ('+verdict(pp)+')';
+  document.getElementById('r-ppk').textContent=ppk.toFixed(3)+' ('+verdict(ppk)+')';
+  const mid=(usl+lsl)/2; const k=Math.abs(xbar-mid)/(tol/2);
+  const ratio=(so/sw).toFixed(2);
+  let msg=`<strong>Ppk result:</strong> ${verdict(ppk)}.<br>`;
+  msg+=`<strong>Centering:</strong> ${(k*100).toFixed(1)}% off-center. ${k<0.05?'Well centered.':k<0.2?'Moderate offset — mean adjustment will improve Cpk.':'Significantly off-center — adjust mean first.'}<br>`;
+  msg+=`<strong>Stability (s/σ̂):</strong> ${ratio}. ${parseFloat(ratio)<1.15?'σ̂ ≈ s — process appears stable.':parseFloat(ratio)<1.5?'Some between-subgroup variation present.':'Significant instability — investigate sources.'}`;
+  document.getElementById('r-interp').innerHTML=msg;
+}
+calcCap();
+</script>
+</body>
+</html>

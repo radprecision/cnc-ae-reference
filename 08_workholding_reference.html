@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Workholding Reference — CNC AE Reference</title>
+<style>
+:root{--navy:#1A2744;--blue:#2C4A8A;--green:#1D9E75;--amber:#EF9F27;--red:#A32D2D;--purple:#534AB7;--bg:#F8F9FC;--border:#E2E6EF;--text:#1A1A2E;--mono:'Courier New',monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);}
+header{background:var(--navy);color:white;padding:1.5rem 2rem;}
+header h1{font-size:1.4rem;font-weight:600;}
+header p{font-size:.82rem;opacity:.7;margin-top:.25rem;}
+.container{max-width:960px;margin:0 auto;padding:1.5rem;}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.tab{padding:7px 12px;border:2px solid var(--border);border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;background:white;}
+.tab.active{border-color:var(--navy);background:var(--navy);color:white;}
+.panel{display:none;}.panel.active{display:block;}
+table{width:100%;border-collapse:collapse;background:white;border-radius:10px;overflow:hidden;border:1px solid var(--border);margin-bottom:1rem;}
+th{padding:.65rem 1rem;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;background:var(--navy);color:white;text-align:left;}
+td{padding:.7rem 1rem;font-size:.82rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;}
+tr:last-child td{border-bottom:none;}
+td:first-child{font-weight:600;color:var(--navy);}
+.note{background:#EFF6FF;border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:#1E3A5F;margin:.75rem 0;line-height:1.6;}
+.warn{background:#FEF2F2;border-left:4px solid var(--red);border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:#7F1D1D;margin:.75rem 0;line-height:1.6;}
+.warn strong,.note strong{display:block;margin-bottom:.25rem;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+@media(max-width:600px){.grid{grid-template-columns:1fr;}}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;}
+@media(max-width:700px){.grid3{grid-template-columns:1fr 1fr;}}
+.card{background:white;border:1px solid var(--border);border-radius:10px;padding:1rem;}
+.card h4{font-size:.88rem;font-weight:600;color:var(--navy);margin-bottom:.5rem;}
+.card ul{font-size:.82rem;color:#374151;line-height:1.8;padding-left:1rem;}
+.dof-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1rem;}
+.dof-card{text-align:center;padding:.75rem;border-radius:10px;border:2px solid;}
+.fm-card{background:white;border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:.75rem;}
+.fm-s{font-size:.9rem;font-weight:600;color:var(--red);margin-bottom:.25rem;}
+.fm-c{font-size:.75rem;color:#6B7280;margin-bottom:.5rem;}
+.fm-f{font-size:.82rem;color:#374151;line-height:1.65;}
+.fm-f strong{color:var(--navy);}
+.calc-input{padding:.5rem .75rem;border:1px solid var(--border);border-radius:7px;font-size:.88rem;width:110px;background:white;}
+.calc-label{font-size:.8rem;color:#374151;min-width:180px;}
+.calc-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.65rem;flex-wrap:wrap;}
+.btn{padding:.6rem 1.25rem;background:var(--navy);color:white;border:none;border-radius:7px;cursor:pointer;font-size:.85rem;}
+.res-row{display:flex;justify-content:space-between;padding:.5rem .75rem;border-radius:6px;margin:.25rem 0;font-size:.82rem;}
+.r-p{background:var(--navy);color:white;}
+.r-s{background:#EFF6FF;color:#1E40AF;}
+</style>
+</head>
+<body>
+<header>
+  <h1>🔧 Workholding Reference</h1>
+  <p>CNC AE Reference Library — Module 22 · 3-2-1 locating · Types · Clamping forces · Failure diagnostics</p>
+</header>
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="go(0,this)">3-2-1 locating</button>
+    <button class="tab" onclick="go(1,this)">Workholding types</button>
+    <button class="tab" onclick="go(2,this)">Clamping forces</button>
+    <button class="tab" onclick="go(3,this)">Fixture design rules</button>
+    <button class="tab" onclick="go(4,this)">Material considerations</button>
+    <button class="tab" onclick="go(5,this)">Failure diagnostics</button>
+  </div>
+
+  <div id="p0" class="panel active">
+    <div class="dof-grid">
+      <div class="dof-card" style="border-color:var(--purple);background:#EEF2FF;"><div style="font-size:2rem;font-weight:700;color:var(--purple);">3</div><div style="font-weight:600;font-size:.85rem;">Primary datum</div><div style="font-size:.78rem;color:#374151;margin-top:.25rem;">3 points on primary plane → constrains Z translation + rotation about X and Y (3 DOF)</div></div>
+      <div class="dof-card" style="border-color:var(--green);background:#F0FDF4;"><div style="font-size:2rem;font-weight:700;color:var(--green);">2</div><div style="font-weight:600;font-size:.85rem;">Secondary datum</div><div style="font-size:.78rem;color:#374151;margin-top:.25rem;">2 points on secondary plane → constrains Y translation + rotation about Z (2 DOF)</div></div>
+      <div class="dof-card" style="border-color:var(--amber);background:#FFFBEB;"><div style="font-size:2rem;font-weight:700;color:var(--amber);">1</div><div style="font-weight:600;font-size:.85rem;">Tertiary datum</div><div style="font-size:.78rem;color:#374151;margin-top:.25rem;">1 point on tertiary plane → constrains X translation (1 DOF)</div></div>
+    </div>
+    <div class="warn"><strong>Four support points = rocking chair</strong>Three points define a plane — always. Four points overdetermine it and the part rocks between two stable positions. Always use three datum pads in a large triangle for the primary face.</div>
+    <table>
+      <tr><th>Violation</th><th>What happens</th></tr>
+      <tr><td>Under-constrained (&lt;6 DOF)</td><td>Part moves during machining. Features out of position. Inconsistent part-to-part.</td></tr>
+      <tr><td>Over-constrained (redundant locators)</td><td>Part rocks. Inconsistent seating. Part distorts to contact all locators — stress releases when unclamped.</td></tr>
+      <tr><td>Clamping toward locators ✓</td><td>Correct — clamp force pushes part into locating surfaces. Always do this.</td></tr>
+      <tr><td>Clamping away from locators ✗</td><td>Part lifts off primary datum under cutting forces. Chatter and dimensional error.</td></tr>
+    </table>
+  </div>
+
+  <div id="p1" class="panel">
+    <div class="grid">
+      <div class="card"><h4>Vise — Kurt / precision milling vise</h4><ul><li><strong>Best for:</strong> Prismatic parts with parallel faces</li><li><strong>Jaw lift:</strong> Part lifts slightly under jaw load — seat with mallet after clamping</li><li><strong>Soft jaws:</strong> Machine to part profile in the vise — ±0.0005″ repeatability</li><li><strong>Repeatability:</strong> Hard jaws ±0.001–0.003″ · Soft jaws ±0.0005″</li></ul></div>
+      <div class="card"><h4>Collet chuck</h4><ul><li><strong>Best for:</strong> Round/hex bar stock, 360° grip, bar-feed CNC turning</li><li><strong>5C collets:</strong> Up to 1-1/16″ — must match bar diameter closely</li><li><strong>Dead-length:</strong> Part doesn't move axially when closing — critical for Z reference</li><li><strong>TIR:</strong> 0.0002–0.0005″ typical</li></ul></div>
+      <div class="card"><h4>3-jaw chuck</h4><ul><li><strong>Self-centering:</strong> All jaws move simultaneously — fast setup</li><li><strong>TIR:</strong> 0.002–0.005″ standard jaws · 0.0005–0.001″ precision soft jaws</li><li><strong>Jaw lift:</strong> High RPM opens jaws — observe max RPM ratings</li></ul></div>
+      <div class="card"><h4>Custom fixture plate</h4><ul><li><strong>Best for:</strong> Medium-high volume, complex/irregular parts</li><li><strong>Locating:</strong> 2 dowel pins (1 round, 1 diamond), hardened rest pads</li><li><strong>Material:</strong> Cast iron preferred — stable and damping</li><li><strong>Repeatability:</strong> ±0.0005″ with precision ground components</li></ul></div>
+    </div>
+    <div class="note"><strong>Soft jaws are underused in most job shops</strong>Soft jaws cost 20–40 minutes to make, dramatically improve repeatability, protect finished surfaces, and allow complex shapes to be held in a standard vise or chuck. Make them the default for any second-operation setup on a finished surface.</div>
+  </div>
+
+  <div id="p2" class="panel">
+    <div class="grid">
+      <div>
+        <div class="card" style="margin-bottom:1rem;">
+          <h4>Required clamping force</h4>
+          <div style="font-family:var(--mono);background:#1E2030;color:#A8D8A8;border-radius:6px;padding:.75rem;font-size:.82rem;margin:.5rem 0;">F_clamp ≥ (F_cut × SF) / µ</div>
+          <div style="font-size:.82rem;color:#374151;line-height:1.7;">SF = 2.0 (continuous) or 3.0 (interrupted)<br>µ steel dry ≈ 0.15 · µ aluminum ≈ 0.40 · µ rubber pad ≈ 0.60</div>
+        </div>
+        <div class="card">
+          <h4>Clamp placement rules</h4>
+          <ul style="font-size:.82rem;color:#374151;line-height:1.9;padding-left:1rem;">
+            <li>Always push part INTO locators — never away</li>
+            <li>Position clamps opposite support points — never over unsupported spans</li>
+            <li>Never clamp on a tolerance-critical finished surface without soft pads</li>
+            <li>Multiple light clamps better than one heavy clamp for thin walls</li>
+            <li>Last clamp must not shift the part — verify with indicator</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h4>Milling cutting force estimator</h4>
+          <div class="calc-row"><div class="calc-label">DOC axial (in)</div><input class="calc-input" type="number" id="f-doc" value="0.500" step="0.001"/></div>
+          <div class="calc-row"><div class="calc-label">WOC radial (in)</div><input class="calc-input" type="number" id="f-woc" value="0.100" step="0.001"/></div>
+          <div class="calc-row"><div class="calc-label">Feed rate (IPM)</div><input class="calc-input" type="number" id="f-ipm" value="80"/></div>
+          <div class="calc-row"><div class="calc-label">Material Kc (psi)</div>
+            <select class="calc-input" id="f-kc">
+              <option value="30000">Aluminum (~30k)</option>
+              <option value="70000" selected>Alloy steel (~70k)</option>
+              <option value="55000">Cast iron (~55k)</option>
+              <option value="90000">Stainless (~90k)</option>
+              <option value="110000">Inconel (~110k)</option>
+            </select>
+          </div>
+          <div class="calc-row"><div class="calc-label">Safety factor</div>
+            <select class="calc-input" id="f-sf">
+              <option value="2">2.0 — continuous</option>
+              <option value="3" selected>3.0 — interrupted</option>
+              <option value="4">4.0 — heavy interrupted</option>
+            </select>
+          </div>
+          <button class="btn" onclick="calcF()">Calculate</button>
+          <div id="f-res" style="margin-top:.75rem;display:none;">
+            <div class="res-row r-p"><span>Est. cutting force</span><span id="fr-fc">—</span></div>
+            <div class="res-row r-s"><span>Clamp force needed (µ=0.15)</span><span id="fr-cs">—</span></div>
+            <div class="res-row r-s"><span>Clamp force needed (µ=0.40)</span><span id="fr-ca">—</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="warn"><strong>Over-clamping is as dangerous as under-clamping</strong>Excessive clamp force distorts thin-wall parts during machining. The part springs back after unclamping — and the feature dimensions change. A bore that measures correct in the fixture reads oval on the CMM.</div>
+  </div>
+
+  <div id="p3" class="panel">
+    <div class="grid3">
+      <div class="card"><h4>Locating</h4><ul><li>3-2-1 only — never exceed 6 locating points without reason</li><li>Maximize primary datum triangle footprint</li><li>All locating surfaces hardened and ground</li><li>Two dowel pins: one round + one diamond</li><li>Datum from machined features — never raw stock</li></ul></div>
+      <div class="card"><h4>Clamping</h4><ul><li>Every clamp pushes part into at least one locator</li><li>Tighten center-outward, alternating sides</li><li>Strap clamp bolt closer to part than support stud</li><li>Specify torque value — not "tighten firmly"</li><li>Never clamp over an unsupported span</li></ul></div>
+      <div class="card"><h4>Access &amp; clearance</h4><ul><li>Map every tool path before finalizing fixture design</li><li>Long-reach tools need shank clearance, not just tip</li><li>Design chip evacuation paths into fixture</li><li>Coolant/TSC must reach the cutting zone</li><li>Operator loading must be safe and clear</li></ul></div>
+      <div class="card"><h4>Repeatability</h4><ul><li>Air blast before every load cycle — chips cause 80% of seating errors</li><li>Specify clamp torque in the process sheet</li><li>Qualify fixture with indicator before first part</li><li>Inspect datum pads for wear at PM intervals</li></ul></div>
+      <div class="card"><h4>Thermal effects</h4><ul><li>Match fixture and part material where possible</li><li>Allow 30–60 min machine warm-up before precision work</li><li>Use in-process probing to track and correct thermal drift</li></ul></div>
+      <div class="card"><h4>Documentation</h4><ul><li>Every custom fixture needs a drawing</li><li>Specify clamp torque in ft-lbs or N·m</li><li>Specify air blast in NC program — not verbal instruction</li><li>Fixture ID must match process sheet</li></ul></div>
+    </div>
+  </div>
+
+  <div id="p4" class="panel">
+    <table>
+      <tr><th>Material</th><th>Key challenge</th><th>Clamp strategy</th><th>Specific rules</th></tr>
+      <tr><td>Aluminum (6061, 7075)</td><td>Soft surface — jaw marks. Low modulus — deflects. High thermal expansion.</td><td>Soft jaws for finished surfaces. Distribute clamp force.</td><td>Never steel serrated jaws on finish-machined aluminum. Min wall 0.060″ for clamping. Check dims after unclamping.</td></tr>
+      <tr><td>Alloy steel (4140, 4340)</td><td>High cutting forces. Hardened parts need non-marring clamps.</td><td>Standard hard jaws on rough surfaces. Copper/brass pads on finished surfaces.</td><td>Verify clamp force exceeds 3× cutting force for interrupted cuts. Q&T over 40 HRC — use precision soft jaws.</td></tr>
+      <tr><td>Stainless (304, 316)</td><td>Work hardening under clamping. Galling on metal-to-metal contact.</td><td>Avoid steel-on-stainless contact — use brass/bronze pads. Distribute force.</td><td>Apply anti-galling compound to locating pin contacts. Do not over-clamp thin-wall stainless.</td></tr>
+      <tr><td>Titanium (Ti-6Al-4V)</td><td>Low modulus — significant deflection. Titanium galls on steel.</td><td>Non-ferrous pads at all contact points. Distributed clamping.</td><td>Never bare steel clamps on titanium. Verify contact with Mylar shim before first article. Springback 0.002–0.005″ on thin walls.</td></tr>
+      <tr><td>Inconel / superalloys</td><td>Extreme cutting forces. Work hardening. High-value parts.</td><td>Maximum clamp force. Hydraulic clamping preferred. Maximum rigidity.</td><td>Workholding rigidity is the #1 factor in Inconel machining. Every source of compliance = chatter and poor tool life.</td></tr>
+      <tr><td>Plastics / composites</td><td>Low crush strength. Creep under sustained load. Static charge.</td><td>Vacuum preferred for flat parts. Large-area soft jaws for irregular shapes. Limit torque to 20–40% of metal equivalent.</td><td>Measure parts after unclamping — plastics relax and spring back. Composites: never clamp through fibers without backup plate.</td></tr>
+    </table>
+  </div>
+
+  <div id="p5" class="panel">
+    <div class="fm-card">
+      <div class="fm-s">Feature position shifts part-to-part</div>
+      <div class="fm-c">Inconsistent seating between load cycles</div>
+      <div class="fm-f"><strong>Check 1:</strong> Chips or coolant under datum pads — this is the most common cause. Add air blast before loading.<br><strong>Check 2:</strong> Worn or loose locating pins — measure pin/pocket clearance, replace if &gt;0.001″.<br><strong>Check 3:</strong> Clamp sequence shifting the part — indicate before/after each clamp is tightened.</div>
+    </div>
+    <div class="fm-card">
+      <div class="fm-s">Bore or hole is oval / out of round</div>
+      <div class="fm-c">Part distorted by clamping forces, springs back after unclamping</div>
+      <div class="fm-f"><strong>Check 1:</strong> Measure bore in-fixture vs out. If different — clamping distortion confirmed.<br><strong>Check 2:</strong> Reduce clamp force. Distribute clamps around circumference.<br><strong>Check 3:</strong> Add support inside bore (expandable mandrel) or outside (split-ring collet).</div>
+    </div>
+    <div class="fm-card">
+      <div class="fm-s">Chatter — vibration during cutting</div>
+      <div class="fm-c">Workholding compliance — part or fixture moving at cut frequency</div>
+      <div class="fm-f"><strong>Check 1:</strong> Indicate part during cutting — movement confirms workholding source.<br><strong>Check 2:</strong> Tighten all clamps — insufficient force is most common cause.<br><strong>Check 3:</strong> Check for worn/loose locating components — 0.001″ gap can trigger chatter.</div>
+    </div>
+    <div class="fm-card">
+      <div class="fm-s">First article passes, production parts fail</div>
+      <div class="fm-c">Process change between first article and production</div>
+      <div class="fm-f"><strong>Check 1:</strong> Same fixture? Same clamp torque? Same operator procedure? Small differences compound.<br><strong>Check 2:</strong> Run a setup verification sheet on the first production setup — not just first article.<br><strong>Check 3:</strong> Inspect fixture for wear between first article and production run.</div>
+    </div>
+    <div class="warn"><strong>Workholding problems masquerade as tooling or programming problems</strong>Consistent position error looks like a work offset issue. Dimensional drift looks like tool wear. An oval bore looks like a boring parameter problem. Verify workholding FIRST — indicate the part, check for chips under datum pads, verify clamp torque. It's checked last but should be checked first.</div>
+  </div>
+</div>
+<script>
+function go(i,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));document.getElementById('p'+i).classList.add('active');btn.classList.add('active');}
+function calcF(){
+  const doc=+document.getElementById('f-doc').value;
+  const woc=+document.getElementById('f-woc').value;
+  const ipm=+document.getElementById('f-ipm').value;
+  const kc=+document.getElementById('f-kc').value;
+  const sf=+document.getElementById('f-sf').value;
+  const mrr=ipm*woc*doc;const hp=mrr*kc/396000;const v=100;
+  const fc=hp*33000/(v*60/12);
+  document.getElementById('fr-fc').textContent=Math.round(fc)+' lbf / '+Math.round(fc*4.448)+' N';
+  document.getElementById('fr-cs').textContent=Math.round(fc*sf/0.15)+' lbf / '+Math.round(fc*sf/0.15*4.448)+' N';
+  document.getElementById('fr-ca').textContent=Math.round(fc*sf/0.40)+' lbf / '+Math.round(fc*sf/0.40*4.448)+' N';
+  document.getElementById('f-res').style.display='block';
+}
+</script>
+</body>
+</html>

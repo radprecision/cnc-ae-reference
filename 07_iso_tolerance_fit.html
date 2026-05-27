@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ISO Tolerance Fit Reference — CNC AE Reference</title>
+<style>
+:root{--navy:#1A2744;--blue:#2C4A8A;--purple:#534AB7;--green:#1D9E75;--bg:#F8F9FC;--border:#E2E6EF;--text:#1A1A2E;--mono:'Courier New',monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);}
+header{background:var(--navy);color:white;padding:1.5rem 2rem;}
+header h1{font-size:1.4rem;font-weight:600;}
+header p{font-size:.82rem;opacity:.7;margin-top:.25rem;}
+.container{max-width:960px;margin:0 auto;padding:1.5rem;}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.tab{padding:7px 12px;border:2px solid var(--border);border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;background:white;}
+.tab.active{border-color:var(--navy);background:var(--navy);color:white;}
+.panel{display:none;}.panel.active{display:block;}
+table{width:100%;border-collapse:collapse;background:white;border-radius:10px;overflow:hidden;border:1px solid var(--border);margin-bottom:1rem;}
+th{padding:.65rem 1rem;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;background:var(--navy);color:white;text-align:left;}
+td{padding:.7rem 1rem;font-size:.82rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;}
+tr:last-child td{border-bottom:none;}
+td:first-child{font-family:var(--mono);font-weight:600;color:var(--purple);}
+.note{background:#EFF6FF;border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:#1E3A5F;margin:.75rem 0;line-height:1.6;}
+.warn{background:#FEF2F2;border-left:4px solid #DC2626;border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:#7F1D1D;margin:.75rem 0;line-height:1.6;}
+.calc-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem;flex-wrap:wrap;}
+.calc-label{font-size:.8rem;color:#374151;min-width:220px;}
+.calc-input{padding:.5rem .75rem;border:1px solid var(--border);border-radius:7px;font-size:.88rem;width:auto;min-width:120px;background:white;}
+.calc-input:focus{outline:none;border-color:var(--purple);}
+.btn{padding:.6rem 1.25rem;background:var(--navy);color:white;border:none;border-radius:7px;cursor:pointer;font-size:.85rem;margin-right:.5rem;}
+.unit-toggle{display:flex;gap:0;border:1px solid var(--border);border-radius:7px;overflow:hidden;margin-bottom:1rem;width:fit-content;}
+.ut{padding:6px 18px;font-size:.82rem;font-weight:600;cursor:pointer;background:white;color:#6B7280;border:none;}
+.ut.active{background:var(--navy);color:white;}
+.result-section{background:white;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:.75rem;}
+.rs-hd{padding:.65rem 1rem;background:#F5F7FA;border-bottom:1px solid var(--border);font-size:.82rem;font-weight:600;}
+.rs-row{display:flex;justify-content:space-between;padding:.55rem 1rem;border-bottom:1px solid #F3F4F6;font-size:.82rem;}
+.rs-row:last-child{border-bottom:none;}
+.rs-lbl{color:#374151;}
+.rs-val{font-family:var(--mono);font-weight:600;color:var(--purple);}
+.rs-val.green{color:var(--green);}
+.rs-val.amber{color:#B45309;}
+</style>
+</head>
+<body>
+<header>
+  <h1>⚙ ISO Tolerance Fit Reference</h1>
+  <p>CNC AE Reference Library — Module 21b · ISO 286 · H5 through H11 · Metric and Imperial</p>
+</header>
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="go(0,this)">How fits work</button>
+    <button class="tab" onclick="go(1,this)">H-hole table (ISO 286)</button>
+    <button class="tab" onclick="go(2,this)">Preferred fits</button>
+    <button class="tab" onclick="go(3,this)">Calculator (mm + in)</button>
+  </div>
+
+  <div id="p0" class="panel active">
+    <div class="note"><strong>Reading a tolerance class: H7</strong>Letter (uppercase) = hole, fundamental deviation. H = lower deviation is zero (hole starts at nominal, goes up only). Number = IT grade (tolerance band width). Lower IT = tighter. H7 = precision reaming/boring. g6 = shaft paired for sliding fit.</div>
+    <table>
+      <tr><th>IT grade</th><th>Process</th><th>At 25mm</th></tr>
+      <tr><td>IT5</td><td>Precision grinding</td><td>0.009mm / 0.00035″</td></tr>
+      <tr><td>IT6</td><td>Precision grinding / boring</td><td>0.013mm / 0.00051″</td></tr>
+      <tr><td>IT7</td><td>Precision reaming / fine boring</td><td>0.021mm / 0.00083″</td></tr>
+      <tr><td>IT8</td><td>Standard boring / turning</td><td>0.033mm / 0.0013″</td></tr>
+      <tr><td>IT9</td><td>Standard drilling / milling</td><td>0.052mm / 0.0020″</td></tr>
+      <tr><td>IT11</td><td>Rough machining</td><td>0.130mm / 0.0051″</td></tr>
+    </table>
+    <div class="note"><strong>All H holes: EI = 0.000</strong>The hole lower limit is always exactly the nominal diameter. Upper limit = nominal + IT grade value. The fit type is determined by the shaft letter (g, k, p…) paired with the H hole.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-top:.75rem;">
+      <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:.75rem;"><div style="font-weight:600;color:#065F46;margin-bottom:.3rem;">Clearance fit</div><div style="font-size:.78rem;color:#374151;line-height:1.6;">Shaft always smaller than hole. Part rotates or slides freely. H7/g6, H8/f7, H9/d9</div></div>
+      <div style="background:#FEF3C7;border:1px solid #FDE68A;border-radius:8px;padding:.75rem;"><div style="font-weight:600;color:#92400E;margin-bottom:.3rem;">Transition fit</div><div style="font-size:.78rem;color:#374151;line-height:1.6;">Can be clearance or interference depending on tolerance extremes. H7/k6, H7/n6</div></div>
+      <div style="background:#FEE2E2;border:1px solid #FECACA;border-radius:8px;padding:.75rem;"><div style="font-weight:600;color:#991B1B;margin-bottom:.3rem;">Interference fit</div><div style="font-size:.78rem;color:#374151;line-height:1.6;">Shaft always larger than hole. Must press or heat to assemble. H7/p6, H7/s6</div></div>
+    </div>
+  </div>
+
+  <div id="p1" class="panel">
+    <div class="note">All H holes: EI (lower deviation) = 0.000mm. ES (upper deviation) = value shown. Tolerance = ES − EI = value shown.</div>
+    <div style="overflow-x:auto;">
+    <table style="min-width:700px;">
+      <tr><th>Size range (mm)</th><th>H5 ES (mm/in)</th><th>H6 ES (mm/in)</th><th>H7 ES (mm/in)</th><th>H8 ES (mm/in)</th><th>H9 ES (mm/in)</th><th>H11 ES (mm/in)</th></tr>
+      <tr><td>1–3</td><td>+0.004 / +.0002</td><td>+0.006 / +.0002</td><td>+0.010 / +.0004</td><td>+0.014 / +.0006</td><td>+0.025 / +.0010</td><td>+0.060 / +.0024</td></tr>
+      <tr><td>3–6</td><td>+0.005 / +.0002</td><td>+0.008 / +.0003</td><td>+0.012 / +.0005</td><td>+0.018 / +.0007</td><td>+0.030 / +.0012</td><td>+0.075 / +.0030</td></tr>
+      <tr><td>6–10</td><td>+0.006 / +.0002</td><td>+0.009 / +.0004</td><td>+0.015 / +.0006</td><td>+0.022 / +.0009</td><td>+0.036 / +.0014</td><td>+0.090 / +.0035</td></tr>
+      <tr><td>10–18</td><td>+0.008 / +.0003</td><td>+0.011 / +.0004</td><td>+0.018 / +.0007</td><td>+0.027 / +.0011</td><td>+0.043 / +.0017</td><td>+0.110 / +.0043</td></tr>
+      <tr style="background:#EEF4FF;"><td style="color:var(--purple);font-weight:700;">18–30</td><td>+0.009 / +.0004</td><td>+0.013 / +.0005</td><td style="color:var(--purple);font-weight:700;">+0.021 / +.0008</td><td>+0.033 / +.0013</td><td>+0.052 / +.0020</td><td>+0.130 / +.0051</td></tr>
+      <tr><td>30–50</td><td>+0.011 / +.0004</td><td>+0.016 / +.0006</td><td>+0.025 / +.0010</td><td>+0.039 / +.0015</td><td>+0.062 / +.0024</td><td>+0.160 / +.0063</td></tr>
+      <tr><td>50–80</td><td>+0.013 / +.0005</td><td>+0.019 / +.0007</td><td>+0.030 / +.0012</td><td>+0.046 / +.0018</td><td>+0.074 / +.0029</td><td>+0.190 / +.0075</td></tr>
+      <tr><td>80–120</td><td>+0.015 / +.0006</td><td>+0.022 / +.0009</td><td>+0.035 / +.0014</td><td>+0.054 / +.0021</td><td>+0.087 / +.0034</td><td>+0.220 / +.0087</td></tr>
+      <tr><td>120–180</td><td>+0.018 / +.0007</td><td>+0.025 / +.0010</td><td>+0.040 / +.0016</td><td>+0.063 / +.0025</td><td>+0.100 / +.0039</td><td>+0.250 / +.0098</td></tr>
+      <tr><td>180–250</td><td>+0.020 / +.0008</td><td>+0.029 / +.0011</td><td>+0.046 / +.0018</td><td>+0.072 / +.0028</td><td>+0.115 / +.0045</td><td>+0.290 / +.0114</td></tr>
+      <tr><td>250–315</td><td>+0.023 / +.0009</td><td>+0.032 / +.0013</td><td>+0.052 / +.0020</td><td>+0.081 / +.0032</td><td>+0.130 / +.0051</td><td>+0.320 / +.0126</td></tr>
+      <tr><td>315–400</td><td>+0.025 / +.0010</td><td>+0.036 / +.0014</td><td>+0.057 / +.0022</td><td>+0.089 / +.0035</td><td>+0.140 / +.0055</td><td>+0.360 / +.0142</td></tr>
+    </table>
+    </div>
+    <div class="warn">H5 and H6 require grinding or precision boring — not standard milling or turning. H7 = precision reaming or fine boring. H8 = standard boring. H9 = drill.</div>
+  </div>
+
+  <div id="p2" class="panel">
+    <table>
+      <tr><th>Fit</th><th>Type</th><th>Description</th><th>Min/max clearance (25mm)</th><th>Applications</th><th>Hole process</th></tr>
+      <tr style="background:#F0FDF4;"><td style="font-size:1rem;font-weight:700;">H7/g6</td><td><span style="background:#D1FAE5;color:#065F46;font-size:.7rem;font-weight:600;padding:1px 6px;border-radius:3px;">Clearance</span></td><td style="color:#374151;"><strong>Sliding fit — most common</strong></td><td style="font-family:var(--mono);font-size:.8rem;">+.0003–+.0011″</td><td style="color:#374151;font-size:.78rem;">Precision slides, locating pins, hydraulic spools</td><td style="color:#374151;font-size:.78rem;">Ream H7 or fine bore</td></tr>
+      <tr><td style="font-size:1rem;font-weight:700;">H7/h6</td><td><span style="background:#D1FAE5;color:#065F46;font-size:.7rem;font-weight:600;padding:1px 6px;border-radius:3px;">Clearance</span></td><td style="color:#374151;">Location clearance — close</td><td style="font-family:var(--mono);font-size:.8rem;">0–+.0013″</td><td style="color:#374151;font-size:.78rem;">Precision dowel pins, removable location</td><td style="color:#374151;font-size:.78rem;">Ream H7 or fine bore</td></tr>
+      <tr style="background:#FEF3C7;"><td style="font-size:1rem;font-weight:700;">H7/k6</td><td><span style="background:#FEF3C7;color:#92400E;font-size:.7rem;font-weight:600;padding:1px 6px;border-radius:3px;">Transition</span></td><td style="color:#374151;"><strong>Transition — snug to slight interference</strong></td><td style="font-family:var(--mono);font-size:.8rem;">-.0006–+.0008″</td><td style="color:#374151;font-size:.78rem;">Gears on shafts, coupling hubs, precision location</td><td style="color:#374151;font-size:.78rem;">Ream H7 or fine bore</td></tr>
+      <tr><td style="font-size:1rem;font-weight:700;">H7/n6</td><td><span style="background:#FEF3C7;color:#92400E;font-size:.7rem;font-weight:600;padding:1px 6px;border-radius:3px;">Transition</span></td><td style="color:#374151;">Fixed — mostly interference</td><td style="font-family:var(--mono);font-size:.8rem;">-.0011–+.0003″</td><td style="color:#374151;font-size:.78rem;">Permanent bushings, dowel pins</td><td style="color:#374151;font-size:.78rem;">Ream H7 or fine bore</td></tr>
+      <tr style="background:#FEE2E2;"><td style="font-size:1rem;font-weight:700;">H7/p6</td><td><span style="background:#FEE2E2;color:#991B1B;font-size:.7rem;font-weight:600;padding:1px 6px;border-radius:3px;">Interference</span></td><td style="color:#374151;"><strong>Press fit — standard</strong></td><td style="font-family:var(--mono);font-size:.8rem;">-.0017–-.0003″</td><td style="color:#374151;font-size:.78rem;">Bearing outer races, permanent bushings, pins</td><td style="color:#374151;font-size:.78rem;">Fine bore H7</td></tr>
+      <tr><td style="font-size:1rem;font-weight:700;">H7/s6</td><td><span style="background:#FEE2E2;color:#991B1B;font-size:.7rem;font-weight:600;padding:1px 6px;border-radius:3px;">Interference</span></td><td style="color:#374151;">Heavy press / shrink fit</td><td style="font-family:var(--mono);font-size:.8rem;">-.0024–-.0010″</td><td style="color:#374151;font-size:.78rem;">High-torque hubs, flywheel hubs, thermal assembly</td><td style="color:#374151;font-size:.78rem;">Fine bore H7</td></tr>
+    </table>
+  </div>
+
+  <div id="p3" class="panel">
+    <div class="unit-toggle">
+      <button class="ut active" id="btn-mm" onclick="setUnit('mm')">Metric (mm)</button>
+      <button class="ut" id="btn-in" onclick="setUnit('in')">Imperial (inches)</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div>
+        <div class="calc-row"><div class="calc-label" id="diam-lbl">Diameter (mm)</div><input class="calc-input" type="number" id="diam" value="25" step="0.001" oninput="calcFit()"/></div>
+        <div class="calc-row"><div class="calc-label">Hole tolerance class</div>
+          <select class="calc-input" id="grade" onchange="calcFit()">
+            <option value="H5">H5 — IT5 — grinding</option>
+            <option value="H6">H6 — IT6 — precision boring</option>
+            <option value="H7" selected>H7 — IT7 — reaming / fine boring</option>
+            <option value="H8">H8 — IT8 — standard boring</option>
+            <option value="H9">H9 — IT9 — drilling</option>
+            <option value="H11">H11 — IT11 — rough</option>
+          </select>
+        </div>
+      </div>
+      <div id="fit-results">
+        <div class="result-section">
+          <div class="rs-hd" id="r-title">H7 — 25mm nominal</div>
+          <div class="rs-row"><span class="rs-lbl">Nominal</span><span class="rs-val" id="r-nom">—</span></div>
+          <div class="rs-row"><span class="rs-lbl">IT grade width</span><span class="rs-val" id="r-itw">—</span></div>
+          <div class="rs-row" style="background:#F0FDF4;"><span class="rs-lbl">Lower limit (EI = 0)</span><span class="rs-val green" id="r-lo">—</span></div>
+          <div class="rs-row" style="background:#F0FDF4;"><span class="rs-lbl">Upper limit (ES)</span><span class="rs-val green" id="r-hi">—</span></div>
+          <div class="rs-row"><span class="rs-lbl">Alternate units</span><span class="rs-val" id="r-alt" style="font-size:.78rem;color:#374151;">—</span></div>
+          <div class="rs-row"><span class="rs-lbl">Process</span><span class="rs-val" id="r-proc" style="font-size:.78rem;color:#374151;font-family:var(--font-sans,'Segoe UI');">—</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:1rem;font-size:.82rem;font-weight:600;color:var(--navy);margin-bottom:.5rem;">H7 quick reference — common bore sizes</div>
+    <div style="overflow-x:auto;"><table id="ref-table"><tr><th>Nominal</th><th>H7 min</th><th>H7 max</th><th>Tol width</th><th>Process</th></tr></table></div>
+  </div>
+</div>
+
+<script>
+const IT=[[4,6,10,14,25,60],[5,8,12,18,30,75],[6,9,15,22,36,90],[8,11,18,27,43,110],[9,13,21,33,52,130],[11,16,25,39,62,160],[13,19,30,46,74,190],[15,22,35,54,87,220],[18,25,40,63,100,250],[20,29,46,72,115,290],[23,32,52,81,130,320],[25,36,57,89,140,360]];
+const RANGES=[[1,3],[3,6],[6,10],[10,18],[18,30],[30,50],[50,80],[80,120],[120,180],[180,250],[250,315],[315,400]];
+const GI={H5:0,H6:1,H7:2,H8:3,H9:4,H11:5};
+const PROC={H5:'Cylindrical grinding or precision honing',H6:'Precision grinding or fine boring head',H7:'Precision reaming or fine boring — most common',H8:'Standard boring or precision turning',H9:'Drill + boring or tight-tolerance drill',H11:'Drill or rough boring'};
+let unit='mm';
+function getRIdx(n){for(let i=0;i<RANGES.length;i++)if(n>RANGES[i][0]&&n<=RANGES[i][1])return i;return RANGES.length-1;}
+function setUnit(u){unit=u;document.getElementById('btn-mm').classList.toggle('active',u==='mm');document.getElementById('btn-in').classList.toggle('active',u==='in');document.getElementById('diam-lbl').textContent='Diameter ('+(u==='mm'?'mm':'inches')+')';if(u==='in')document.getElementById('diam').value=(25/25.4).toFixed(4);else document.getElementById('diam').value='25';buildRef();calcFit();}
+function calcFit(){
+  const raw=parseFloat(document.getElementById('diam').value)||25;
+  const nom_mm=unit==='mm'?raw:raw*25.4;
+  const grade=document.getElementById('grade').value;
+  const ridx=getRIdx(nom_mm);
+  const it_um=IT[ridx][GI[grade]];
+  const it_mm=it_um/1000;
+  const lo_mm=nom_mm,hi_mm=nom_mm+it_mm;
+  const f=(v,dp)=>v.toFixed(dp);
+  document.getElementById('r-title').textContent=grade+' — '+(unit==='mm'?f(nom_mm,3)+'mm':f(nom_mm/25.4,4)+'″')+' nominal';
+  document.getElementById('r-nom').textContent=f(nom_mm,3)+' mm / '+f(nom_mm/25.4,5)+' in';
+  document.getElementById('r-itw').textContent=it_um+' µm / '+f(it_mm,4)+' mm / '+f(it_mm/25.4*1000,2)+' thou';
+  if(unit==='mm'){document.getElementById('r-lo').textContent=f(lo_mm,4)+' mm (+0.0000)';document.getElementById('r-hi').textContent=f(hi_mm,4)+' mm (+'+f(it_mm,4)+')';document.getElementById('r-alt').textContent=f(lo_mm/25.4,5)+' in  →  '+f(hi_mm/25.4,5)+' in';}
+  else{document.getElementById('r-lo').textContent=f(lo_mm/25.4,5)+' in (+0.00000)';document.getElementById('r-hi').textContent=f(hi_mm/25.4,5)+' in (+'+f(it_mm/25.4,5)+')';document.getElementById('r-alt').textContent=f(lo_mm,4)+' mm  →  '+f(hi_mm,4)+' mm';}
+  document.getElementById('r-proc').textContent=PROC[grade];
+}
+const MM_SIZES=[6,8,10,12,16,20,25,30,40,50,60,80,100];
+const IN_SIZES=[0.25,0.375,0.5,0.625,0.75,1.0,1.25,1.5,2.0,2.5,3.0,4.0];
+function buildRef(){
+  const tb=document.getElementById('ref-table');
+  while(tb.rows.length>1)tb.deleteRow(1);
+  const sizes=unit==='mm'?MM_SIZES:IN_SIZES.map(x=>x*25.4);
+  const disp=unit==='mm'?MM_SIZES:IN_SIZES;
+  sizes.forEach((nm,i)=>{
+    const ridx=getRIdx(nm);const it_um=IT[ridx][GI['H7']];const it_mm=it_um/1000;
+    const lo=nm,hi=nm+it_mm;
+    const tr=tb.insertRow();
+    tr.insertCell().textContent=unit==='mm'?disp[i]+' mm':disp[i].toFixed(3)+' in';
+    const c1=tr.insertCell();c1.textContent=unit==='mm'?lo.toFixed(4):(lo/25.4).toFixed(5);c1.style.fontFamily='var(--mono)';c1.style.color='var(--purple)';
+    const c2=tr.insertCell();c2.textContent=unit==='mm'?hi.toFixed(4):(hi/25.4).toFixed(5);c2.style.fontFamily='var(--mono)';c2.style.color='var(--purple)';
+    const c3=tr.insertCell();c3.textContent=unit==='mm'?it_mm.toFixed(4)+' mm':(it_mm/25.4*1000).toFixed(2)+' thou';c3.style.color='#6B7280';c3.style.fontSize='.78rem';
+    tr.insertCell().textContent=nm<=30?'Ream or fine bore':'Fine bore';tr.cells[4].style.fontSize='.78rem';tr.cells[4].style.color='#374151';
+    tr.cells[0].style.fontWeight='500';
+  });
+}
+function go(i,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));document.getElementById('p'+i).classList.add('active');btn.classList.add('active');}
+buildRef();calcFit();
+</script>
+</body>
+</html>

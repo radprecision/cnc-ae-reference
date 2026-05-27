@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Insert Grade Selection — CNC AE Reference</title>
+<style>
+:root{--navy:#1A2744;--blue:#2C4A8A;--bg:#F8F9FC;--border:#E2E6EF;--text:#1A1A2E;--mono:'Courier New',monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);}
+header{background:var(--navy);color:white;padding:1.5rem 2rem;}
+header h1{font-size:1.4rem;font-weight:600;}
+header p{font-size:.82rem;opacity:.7;margin-top:.25rem;}
+.container{max-width:960px;margin:0 auto;padding:1.5rem;}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.tab{padding:7px 12px;border:2px solid var(--border);border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;background:white;}
+.tab.active{border-color:var(--navy);background:var(--navy);color:white;}
+.panel{display:none;}.panel.active{display:block;}
+table{width:100%;border-collapse:collapse;background:white;border-radius:10px;overflow:hidden;border:1px solid var(--border);margin-bottom:1rem;}
+th{padding:.65rem 1rem;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;background:var(--navy);color:white;text-align:left;}
+td{padding:.7rem 1rem;font-size:.82rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;}
+tr:last-child td{border-bottom:none;}
+td:first-child{font-weight:600;}
+.note{background:#EFF6FF;border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:#1E3A5F;margin:.75rem 0;line-height:1.6;}
+.warn{background:#FEF2F2;border-left:4px solid #DC2626;border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:#7F1D1D;margin:.75rem 0;line-height:1.6;}
+.warn strong,.note strong{display:block;margin-bottom:.25rem;}
+.spectrum-bar{height:24px;border-radius:6px;background:linear-gradient(to right,#1E3A5F 0%,#534AB7 30%,#10B981 55%,#F59E0B 75%,#DC2626 100%);margin:.75rem 0;position:relative;}
+.spectrum-labels{display:flex;justify-content:space-between;font-size:.72rem;color:#6B7280;font-family:var(--mono);}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+@media(max-width:600px){.grid{grid-template-columns:1fr;}}
+.card{background:white;border:1px solid var(--border);border-radius:10px;padding:1rem;}
+.card h4{font-size:.88rem;font-weight:600;color:var(--navy);margin-bottom:.5rem;}
+</style>
+</head>
+<body>
+<header>
+  <h1>💎 Insert Grade Selection Guide</h1>
+  <p>CNC AE Reference Library — Module 16 · ISO P/M/K/N/S/H · Toughness vs Hardness · Coatings</p>
+</header>
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="go(0,this)">ISO P — Steel</button>
+    <button class="tab" onclick="go(1,this)">ISO M — Stainless</button>
+    <button class="tab" onclick="go(2,this)">ISO K — Cast iron</button>
+    <button class="tab" onclick="go(3,this)">ISO N — Non-ferrous</button>
+    <button class="tab" onclick="go(4,this)">ISO S — Super alloys</button>
+    <button class="tab" onclick="go(5,this)">ISO H — Hardened</button>
+    <button class="tab" onclick="go(6,this)">Toughness vs Hardness</button>
+    <button class="tab" onclick="go(7,this)">Coatings</button>
+    <button class="tab" onclick="go(8,this)">Failure modes</button>
+  </div>
+
+  <div id="p0" class="panel active">
+    <div class="note"><strong>ISO P — Steel (blue color code)</strong>Largest material group. P1–P14 in ISCAR classification. Includes non-alloy, low-alloy, high-alloy, tool steel, and stainless ferritic/martensitic. Select grade by hardness and operation type.</div>
+    <table>
+      <tr><th>Operation</th><th>Starting grade range</th><th>Grade characteristics</th><th>Notes</th></tr>
+      <tr><td>Heavy roughing / interrupted</td><td style="color:#374151;">P40–P50 (tough)</td><td style="color:#374151;">High cobalt substrate, thick PVD TiAlN or multilayer</td><td style="color:#374151;">Prioritize toughness over wear resistance. Hardest grade that does not chip.</td></tr>
+      <tr><td>General roughing</td><td style="color:#374151;">P25–P35</td><td style="color:#374151;">Medium cobalt, CVD or PVD TiAlN</td><td style="color:#374151;">Most common starting point for alloy steel roughing</td></tr>
+      <tr><td>Semi-finishing</td><td style="color:#374151;">P15–P25</td><td style="color:#374151;">Lower cobalt, thinner coating</td><td style="color:#374151;">Balance of toughness and wear resistance</td></tr>
+      <tr><td>Finishing</td><td style="color:#374151;">P05–P15</td><td style="color:#374151;">Fine grain, hard substrate, thin PVD</td><td style="color:#374151;">Maximum hardness. Continuous cuts only.</td></tr>
+    </table>
+    <div class="note"><strong>Application range numbers</strong>Low number (P05) = harder/more wear-resistant. High number (P50) = tougher/more impact-resistant. Milling always starts higher than turning because milling is inherently interrupted.</div>
+  </div>
+
+  <div id="p1" class="panel">
+    <div class="note"><strong>ISO M — Stainless steel (yellow color code)</strong>Austenitic (304, 316), ferritic, martensitic, duplex. Work hardening is the critical challenge. PVD coatings preferred over CVD.</div>
+    <table>
+      <tr><th>Operation</th><th>Grade range</th><th>Key requirement</th></tr>
+      <tr><td>Roughing austenitic (304, 316)</td><td style="color:#374151;">M25–M35</td><td style="color:#374151;">PVD TiAlN preferred. High positive rake — reduce cutting forces. Adequate chip load to cut below work-hardened layer.</td></tr>
+      <tr><td>Finishing austenitic</td><td style="color:#374151;">M10–M20</td><td style="color:#374151;">Sharp edge, high positive rake. Low chip load risks rubbing and work hardening.</td></tr>
+      <tr><td>Duplex stainless</td><td style="color:#374151;">M20–M35</td><td style="color:#374151;">Higher toughness required — duplex has higher strength. PVD coating essential.</td></tr>
+    </table>
+    <div class="warn"><strong>CVD coatings in stainless — proceed with caution</strong>CVD coatings have tensile residual stress at the surface. In stainless where the cut is often borderline (low chip load, work hardening), this tensile stress combined with the aggressive stainless environment can accelerate edge chipping. PVD coatings with compressive residual stress are preferred for stainless steel.</div>
+  </div>
+
+  <div id="p2" class="panel">
+    <div class="note"><strong>ISO K — Cast iron (red color code)</strong>Gray GG, nodular GGG, malleable, compacted graphite. Produces powder/dust chips. Dry preferred for gray iron — coolant creates abrasive slurry. CBN for hardened cast iron (&gt;45 HRC).</div>
+    <table>
+      <tr><th>Material</th><th>Grade range</th><th>Special considerations</th></tr>
+      <tr><td>Gray cast iron (GG)</td><td style="color:#374151;">K10–K20</td><td style="color:#374151;">Dry machining preferred — no coolant. CVD Al₂O₃ coating ideal (ceramic-like hardness). Abrasion is primary wear mode.</td></tr>
+      <tr><td>Nodular/ductile iron (GGG)</td><td style="color:#374151;">K15–K30</td><td style="color:#374151;">More like steel — coolant acceptable. Higher toughness required than for gray iron.</td></tr>
+      <tr><td>Hardened cast iron (&gt;45 HRC)</td><td style="color:#374151;">CBN / PCBN</td><td style="color:#374151;">Ceramic or CBN required. Standard carbide unsuitable.</td></tr>
+    </table>
+  </div>
+
+  <div id="p3" class="panel">
+    <div class="note"><strong>ISO N — Non-ferrous (green color code)</strong>Aluminum alloys, copper alloys, non-metallic. Uncoated carbide preferred for aluminum — TiAlN/AlTiN must NOT be used (chemical affinity → BUE). PCD for high-volume aluminum.</div>
+    <table>
+      <tr><th>Material</th><th>Grade</th><th>Coating</th><th>Critical rule</th></tr>
+      <tr><td>Aluminum (6061, 7075)</td><td style="color:#374151;">N05–N20, sharp edge, high rake</td><td style="color:#374151;">Uncoated, ZrN, or TiN only</td><td style="color:#DC2626;font-weight:600;">NEVER TiAlN or AlTiN — chemical affinity causes BUE</td></tr>
+      <tr><td>High-silicon aluminum (&gt;12% Si)</td><td style="color:#374151;">N05–N15 or PCD</td><td style="color:#374151;">Uncoated or PCD</td><td style="color:#374151;">Silicon is abrasive — short carbide life. PCD is the production solution.</td></tr>
+      <tr><td>Copper alloys</td><td style="color:#374151;">N10–N20</td><td style="color:#374151;">Uncoated or ZrN</td><td style="color:#374151;">Sharp edge essential. Some copper alloys work-harden.</td></tr>
+    </table>
+  </div>
+
+  <div id="p4" class="panel">
+    <div class="note"><strong>ISO S — Super alloys (brown/orange color code)</strong>Inconel, Hastelloy, titanium alloys, cobalt alloys. Highest cutting forces, lowest thermal conductivity, maximum work hardening. Toughest material group to machine.</div>
+    <table>
+      <tr><th>Material</th><th>Grade range</th><th>Special approach</th></tr>
+      <tr><td>Inconel 718 / Hastelloy</td><td style="color:#374151;">S15–S30, tough grades</td><td style="color:#374151;">PVD TiAlN or AlTiN. High pressure coolant essential. Ceramic for dry roughing — no interruptions, rigid setup, specific ceramic grades only.</td></tr>
+      <tr><td>Titanium Ti-6Al-4V</td><td style="color:#374151;">S10–S25</td><td style="color:#374151;">PVD TiAlN. Flood coolant always — fire risk above 600°C. Never ceramic (dry). High positive rake.</td></tr>
+      <tr><td>Cobalt alloys (Stellite)</td><td style="color:#374151;">S25–S40</td><td style="color:#374151;">Most difficult to machine. Very low SFM. Rigid setup mandatory.</td></tr>
+    </table>
+    <div class="warn"><strong>Ceramic in Inconel: dry only, no interruptions</strong>Ceramic inserts for Inconel roughing must run dry at high SFM — coolant causes thermal shock and shatters the insert. Zero interruptions — interrupted cuts will break ceramic. Rigid setup is non-negotiable. Ceramic gives 5–10× higher MRR than carbide in Inconel roughing when conditions are right.</div>
+  </div>
+
+  <div id="p5" class="panel">
+    <div class="note"><strong>ISO H — Hardened materials (gray color code)</strong>Hardened steel 45–65 HRC, hardened cast iron, chilled cast iron. CBN (cubic boron nitride) is the primary tool material. Hard turning can replace cylindrical grinding when conditions are met.</div>
+    <table>
+      <tr><th>Hardness</th><th>Tool material</th><th>Conditions for hard turning</th></tr>
+      <tr><td>45–55 HRC</td><td style="color:#374151;">CBN mixed grade or ceramic</td><td style="color:#374151;">Continuous cuts preferred. No vibration. Rigid setup. Dry — never flood coolant on CBN (thermal shock).</td></tr>
+      <tr><td>55–65 HRC</td><td style="color:#374151;">CBN high-CBN content grade</td><td style="color:#374151;">Maximum rigidity. Shallow DOC (0.010–0.030″). SFM 400–650.</td></tr>
+      <tr><td>&gt;65 HRC</td><td style="color:#374151;">PCD or grinding only</td><td style="color:#374151;">CBN performance degrades above 65 HRC. Grinding or EDM typically required.</td></tr>
+    </table>
+    <div class="warn"><strong>CBN — NEVER flood coolant</strong>Flood coolant on CBN inserts causes thermal shock that fractures the insert. Dry machining only for CBN. Air blast is acceptable if chips need clearing.</div>
+  </div>
+
+  <div id="p6" class="panel">
+    <div class="note"><strong>Toughness vs Hardness spectrum — carbide only</strong>This spectrum applies to carbide inserts. CBN, ceramic, PCD, and cermet have narrow, fixed performance windows — they do not have a wide toughness-to-hardness spectrum.</div>
+    <div class="spectrum-bar"></div>
+    <div class="spectrum-labels"><span>← Harder / wear resistant<br>(fine grain, low Co)</span><span>Tougher / impact resistant →<br>(coarse grain, high Co)</span></div>
+    <div class="grid" style="margin-top:1rem;">
+      <div class="card"><h4>Substrate levers (independent)</h4><ul style="font-size:.82rem;color:#374151;line-height:1.8;padding-left:1rem;"><li><strong>Grain size:</strong> Finer grain = harder, more wear resistant</li><li><strong>Cobalt %:</strong> Higher cobalt = tougher, more impact resistant</li><li>These are independent — fine grain + high cobalt = hard AND tough (within limits)</li></ul></div>
+      <div class="card"><h4>Coating levers (independent)</h4><ul style="font-size:.82rem;color:#374151;line-height:1.8;padding-left:1rem;"><li><strong>CVD:</strong> Tensile stress, thicker, for high heat continuous cuts</li><li><strong>PVD:</strong> Compressive stress, thinner, for interrupted cuts, stainless, titanium</li><li>Substrate and coating are independent — combine freely</li></ul></div>
+    </div>
+    <div class="note"><strong>Selection rule: hardest grade that does not chip</strong>Start with a harder grade. If chipping occurs, move to a tougher grade. Don't start tough and "hope" — tougher grades wear faster. Find the edge of chipping, then step back one grade.</div>
+  </div>
+
+  <div id="p7" class="panel">
+    <table>
+      <tr><th>Coating</th><th>Type</th><th>Properties</th><th>Best for</th><th>Avoid for</th></tr>
+      <tr><td>TiN</td><td>PVD</td><td>Gold color. General purpose. Low hardness vs modern coatings.</td><td>Aluminum, low-carbon steel, general use</td><td>High heat applications</td></tr>
+      <tr><td>TiCN</td><td>PVD</td><td>Gray/blue. Better wear than TiN. Moderate heat resistance.</td><td>Cast iron, aluminum, general steel</td><td>High-temperature cutting</td></tr>
+      <tr><td style="color:#DC2626;font-weight:700;">TiAlN / AlTiN</td><td>PVD</td><td>Oxidizes to Al₂O₃ at high temp — insulating. Excellent heat resistance.</td><td>Steel, stainless, titanium, superalloys</td><td style="color:#DC2626;font-weight:700;">ALUMINUM — chemical affinity causes BUE</td></tr>
+      <tr><td>Al₂O₃</td><td>CVD</td><td>Ceramic-like. Maximum thermal resistance. Chemically inert.</td><td>High-speed steel turning, cast iron (dry)</td><td>Interrupted cuts, cold materials</td></tr>
+      <tr><td>TiC</td><td>CVD</td><td>High hardness. Excellent for abrasive materials.</td><td>Cast iron, hardened steel</td><td>Austenitic stainless</td></tr>
+      <tr><td>Diamond (CVD)</td><td>CVD</td><td>Hardest available. Maximum abrasion resistance.</td><td>High-silicon aluminum, composites, graphite</td><td>Steel (iron causes chemical dissolution)</td></tr>
+    </table>
+    <div class="note"><strong>CVD vs PVD summary</strong>CVD = thicker, tensile stress, applied at high temperature. Best for high-heat continuous cuts in steel and cast iron. PVD = thinner, compressive stress, applied at lower temperature. Best for interrupted cuts, stainless, titanium, and any application where edge sharpness is critical.</div>
+  </div>
+
+  <div id="p8" class="panel">
+    <table>
+      <tr><th>Failure mode</th><th>Appearance</th><th>Root cause</th><th>Fix</th></tr>
+      <tr><td>Flank wear (normal)</td><td>Uniform wear on flank face</td><td>Normal abrasion — end of tool life</td><td>Replace at scheduled interval. If too fast: reduce SFM or upgrade to harder grade.</td></tr>
+      <tr><td>Crater wear</td><td>Hollow on rake face</td><td>Chemical/thermal dissolution — too much heat at rake face</td><td>Reduce SFM. Change to more heat-resistant coating (CVD Al₂O₃).</td></tr>
+      <tr><td>Chipping</td><td>Small chips from cutting edge</td><td>Mechanical impact — grade too hard for interrupted cut</td><td>Move to tougher grade (higher application range number).</td></tr>
+      <tr><td>Fracture / breakage</td><td>Large piece missing or insert splits</td><td>Severe impact, BUE, over-clamping, or thermal shock</td><td>Check for BUE. Reduce DOC. Increase chip load (prevent rubbing). Avoid coolant on CBN/ceramic.</td></tr>
+      <tr><td>Built-up edge (BUE)</td><td>Material welded to cutting edge, smeared finish</td><td>Material affinity — too low SFM or wrong coating</td><td>Increase SFM. Change coating — uncoated or ZrN for aluminum, PVD for stainless.</td></tr>
+      <tr><td>Plastic deformation</td><td>Insert nose deflects/flattens</td><td>Cutting temperature exceeds substrate hot hardness</td><td>Reduce SFM significantly. Move to harder grade with higher hot hardness.</td></tr>
+      <tr><td>Notch wear</td><td>Notch at depth-of-cut line</td><td>Oxidation, work-hardened layer at surface, or hard skin (casting/forging)</td><td>Vary DOC to spread wear. Use tougher grade. Remove hard skin in first pass.</td></tr>
+    </table>
+  </div>
+</div>
+<script>
+function go(i,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));document.getElementById('p'+i).classList.add('active');btn.classList.add('active');}
+</script>
+</body>
+</html>

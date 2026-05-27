@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Process Sheet & Setup Verification — CNC AE Reference</title>
+<style>
+:root{--navy:#1A2744;--blue:#2C4A8A;--green:#1D9E75;--amber:#EF9F27;--red:#A32D2D;--purple:#534AB7;--bg:#F8F9FC;--border:#E2E6EF;--text:#1A1A2E;--mono:'Courier New',monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);}
+header{background:var(--navy);color:white;padding:1.5rem 2rem;}
+header h1{font-size:1.4rem;font-weight:600;}
+header p{font-size:.82rem;opacity:.7;margin-top:.25rem;}
+.container{max-width:960px;margin:0 auto;padding:1.5rem;}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.tab{padding:7px 12px;border:2px solid var(--border);border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;background:white;}
+.tab.active{border-color:var(--navy);background:var(--navy);color:white;}
+.panel{display:none;}.panel.active{display:block;}
+table{width:100%;border-collapse:collapse;background:white;border-radius:10px;overflow:hidden;border:1px solid var(--border);margin-bottom:1rem;}
+th{padding:.65rem 1rem;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;background:var(--navy);color:white;text-align:left;}
+td{padding:.7rem 1rem;font-size:.82rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;}
+tr:last-child td{border-bottom:none;}
+td:first-child{font-weight:600;color:var(--navy);}
+.note{background:#EFF6FF;border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:#1E3A5F;margin:.75rem 0;line-height:1.6;}
+.warn{background:#FEF2F2;border-left:4px solid var(--red);border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:#7F1D1D;margin:.75rem 0;line-height:1.6;}
+.warn strong,.note strong{display:block;margin-bottom:.25rem;}
+.field-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:1rem;}
+@media(max-width:700px){.field-grid{grid-template-columns:1fr 1fr;}}
+.field-card{background:white;border:1px solid var(--border);border-radius:8px;padding:.75rem;}
+.fc-name{font-size:.82rem;font-weight:600;color:var(--navy);margin-bottom:.25rem;}
+.fc-desc{font-size:.78rem;color:#374151;line-height:1.5;}
+.fc-crit{border-color:var(--purple);background:#EEF2FF;}
+.fc-name.crit{color:var(--purple);}
+.sv-step{background:white;border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:.75rem;display:flex;gap:1rem;align-items:flex-start;}
+.sv-num{width:28px;height:28px;border-radius:50%;background:var(--navy);color:white;font-size:.85rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sv-body{flex:1;}
+.sv-title{font-size:.88rem;font-weight:600;margin-bottom:.25rem;}
+.sv-detail{font-size:.82rem;color:#374151;line-height:1.6;}
+.sv-detail code{background:#F3F4F6;padding:1px 5px;border-radius:3px;font-family:var(--mono);font-size:.8rem;}
+.badge{font-size:.7rem;font-weight:600;padding:2px 7px;border-radius:3px;display:inline-block;margin-left:.4rem;vertical-align:middle;}
+.b-crit{background:#EEF2FF;color:var(--purple);}
+.b-warn{background:#FEF3C7;color:#92400E;}
+</style>
+</head>
+<body>
+<header>
+  <h1>📋 Process Sheet &amp; Setup Verification</h1>
+  <p>CNC AE Reference Library — Module 19 · Field standard · Mill setup · Lathe setup · Ownership and sign-off</p>
+</header>
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="go(0,this)">Process sheet field standard</button>
+    <button class="tab" onclick="go(1,this)">Mill setup verification</button>
+    <button class="tab" onclick="go(2,this)">Lathe setup verification</button>
+    <button class="tab" onclick="go(3,this)">Ownership &amp; sign-off</button>
+    <button class="tab" onclick="go(4,this)">Zero point descriptions</button>
+    <button class="tab" onclick="go(5,this)">DFM findings on process sheet</button>
+  </div>
+
+  <div id="p0" class="panel active">
+    <div class="note"><strong>Process sheet = how a part gets made. Setup verification sheet = proof the setup was correct before the first part was cut.</strong>These are two separate documents. The process sheet is authored by the AE. The setup verification sheet is filled out by the setup machinist and approved by the AE before first article.</div>
+    <div class="field-grid">
+      <div class="field-card fc-crit"><div class="fc-name crit">Part number <span class="badge b-crit">REQUIRED</span></div><div class="fc-desc">Full part number with revision. Never leave rev blank — process sheets must match drawing rev exactly.</div></div>
+      <div class="field-card fc-crit"><div class="fc-name crit">Revision <span class="badge b-crit">REQUIRED</span></div><div class="fc-desc">Must match drawing revision. A process sheet written to Rev A cannot be used for Rev B without update and sign-off.</div></div>
+      <div class="field-card fc-crit"><div class="fc-name crit">Material specification <span class="badge b-crit">REQUIRED</span></div><div class="fc-desc">Full alloy, temper, condition — e.g. 6061-T6, 4140 Q&T 28-32 HRC. "Aluminum" is not a specification.</div></div>
+      <div class="field-card fc-crit"><div class="fc-name crit">Zero point description <span class="badge b-crit">MOST CRITICAL FIELD</span></div><div class="fc-desc">Unambiguous description of G54 origin — readable by any machinist without the programmer present. "Corner of part" is insufficient. See Zero Point Descriptions tab.</div></div>
+      <div class="field-card"><div class="fc-name">Operation sequence</div><div class="fc-desc">Numbered list of operations in sequence. Each operation = one setup. Operations reference the datum established in the previous operation.</div></div>
+      <div class="field-card"><div class="fc-name">Workholding description</div><div class="fc-desc">Fixture ID or vise jaw type. Clamp torque in ft-lbs or N·m — not "tighten firmly." Soft jaw bore diameter if applicable.</div></div>
+      <div class="field-card"><div class="fc-name">Tool list reference</div><div class="fc-desc">Tool list document number and revision. Tool list is a separate controlled document — do not copy tools into process sheet.</div></div>
+      <div class="field-card"><div class="fc-name">Program number and revision</div><div class="fc-desc">NC program ID and revision. If the program changes, the process sheet must be updated and re-signed.</div></div>
+      <div class="field-card"><div class="fc-name">Quality checkpoints</div><div class="fc-desc">In-process inspection dimensions with frequency. First article, first of every lot, every Nth part. Which features are CMM vs in-process gauge.</div></div>
+      <div class="field-card"><div class="fc-name">Coolant specification</div><div class="fc-desc">Type, concentration, delivery method (flood, TSC, air blast). Especially important for aluminum (flood or air) vs titanium (TSC high pressure).</div></div>
+      <div class="field-card"><div class="fc-name">Stock size / billet dimensions</div><div class="fc-desc">Raw material dimensions. Identifies any operations that depend on stock size (facing to thickness, for example).</div></div>
+      <div class="field-card"><div class="fc-name">Record retention</div><div class="fc-desc">Inspection records must be retained per customer requirements. Aerospace/defense: 10 years minimum. Note retention requirement on process sheet header.</div></div>
+    </div>
+  </div>
+
+  <div id="p1" class="panel">
+    <div class="note"><strong>Mill setup verification — sequence matters</strong>Each step builds on the previous. A failed step means stop and fix — do not proceed to the next step. The goal is to prove the setup is correct before any cutting begins.</div>
+    <div class="sv-step">
+      <div class="sv-num">1</div>
+      <div class="sv-body"><div class="sv-title">Verify machine warm-up</div><div class="sv-detail">Allow 30–60 minutes of spindle warm at production speed before precision work. Log start time. Spindle grows 0.001–0.003″ in Z during thermal stabilization.</div></div>
+    </div>
+    <div class="sv-step">
+      <div class="sv-num">2</div>
+      <div class="sv-body"><div class="sv-title">Verify fixture / vise tram</div><div class="sv-detail">Indicate vise jaw or fixture body. Maximum deviation: ±0.0005″ over 12″ for precision work, ±0.001″ for standard. Document result. If out of tram — stop, correct, re-indicate.</div></div>
+    </div>
+    <div class="sv-step">
+      <div class="sv-num">3</div>
+      <div class="sv-body"><div class="sv-title">Load and clean fixture</div><div class="sv-detail">Air blast all datum pads before loading part. Load part per workholding instructions. Torque all clamps per process sheet specification. Check part is fully seated with Mylar shim or indicator.</div></div>
+    </div>
+    <div class="sv-step">
+      <div class="sv-num">4</div>
+      <div class="sv-body"><div class="sv-title">Set and verify work zero (G54)</div><div class="sv-detail">Set G54 origin per process sheet zero point description. Verify by touching off the known reference surface with the probe or tool. Log actual vs expected values. Maximum allowed deviation before correction: ±0.002″ for standard, ±0.0005″ for precision.</div></div>
+    </div>
+    <div class="sv-step">
+      <div class="sv-num">5</div>
+      <div class="sv-body"><div class="sv-title">Set and verify all tool length offsets</div><div class="sv-detail">Set tool length for every tool in the program. Touch off against the same reference surface used for Z-zero. Verify each tool length by probing a known feature. Document all tool lengths in the setup sheet.</div></div>
+    </div>
+    <div class="sv-step">
+      <div class="sv-num">6</div>
+      <div class="sv-body"><div class="sv-title">Dry run verification</div><div class="sv-detail">Run the program in single block, feed hold at Z clearance, with spindle off. Verify all tool paths are over the correct features. Check rapid moves for clearance. Verify no tools move into clamps or fixture.</div></div>
+    </div>
+    <div class="sv-step">
+      <div class="sv-num">7</div>
+      <div class="sv-body"><div class="sv-title">First article — measure and document</div><div class="sv-detail">Machine first part. Measure ALL dimensions on the process sheet quality checkpoints. Document all measurements. Sign the setup verification sheet. AE reviews and approves before production begins.</div></div>
+    </div>
+  </div>
+
+  <div id="p2" class="panel">
+    <div class="warn"><strong>TNR (Tool Nose Radius) is the most commonly wrong lathe offset</strong>TNR compensation (G41/G42) requires the correct nose radius value in the offset register. A wrong TNR causes dimensional error on tapers and radii even when the straight diameter is correct. Verify TNR against the physical insert for every tool at setup.</div>
+    <div class="sv-step">
+      <div class="sv-num">1</div>
+      <div class="sv-body"><div class="sv-title">Verify chuck / collet condition</div><div class="sv-detail">Check chuck jaw runout — indicate OD of test bar. TIR must be within spec: 3-jaw chuck standard ≤0.005″, precision soft jaws ≤0.001″. Clean jaw contact faces. Verify jaw torque on collet nuts.</div></div>
+    </div>
+    <div class="sv-step">
+      <div class="sv-num">2</div>
+      <div class="sv-body"><div class="sv-title">Load and indicate part</div><div class="sv-detail">Load part in chuck or collet. Indicate OD for roundness and TIR. For 4-jaw chuck: adjust until TIR ≤ specified. For precision collet: verify TIR is within collet spec. Document TIR value.</div></div>
+    </div>
+    <div class="sv-step">
+      <div class="sv-num">3</div>
+      <div class="sv-body"><div class="sv-title">Set work Z-zero</div><div class="sv-detail">Face the part and set Z-zero at the faced surface. Or touch off known datum. Document Z-zero register value. Verify by touching off with the probe or reference tool.</div></div>
+    </div>
+    <div class="sv-step">
+      <div class="sv-num">4</div>
+      <div class="sv-body"><div class="sv-title">Set X-zero (diameter mode)</div><div class="sv-detail">Set X-zero at part centerline via tool touch-off on a known OD. Or use the tool setter. Verify: face to 0.005″ depth and measure face diameter — should match program expectation.</div></div>
+    </div>
+    <div class="sv-step">
+      <div class="sv-num">5</div>
+      <div class="sv-body"><div class="sv-title">Set all tool offsets — including TNR <span class="badge b-crit">CRITICAL</span></div><div class="sv-detail">For each tool: set X and Z geometry offsets. Set TNR (tool nose radius) — verify against physical insert. Set tool nose orientation (imaginary tool tip direction: 1–9). Wrong TNR = wrong dimension on tapers/radii. Document all values.</div></div>
+    </div>
+    <div class="sv-step">
+      <div class="sv-num">6</div>
+      <div class="sv-body"><div class="sv-title">Single-block dry run</div><div class="sv-detail">Run in single block. Verify all tools approach from the correct direction. Check that no tool crashes into the chuck, collet, or tailstock. Verify rapid moves have adequate Z clearance.</div></div>
+    </div>
+    <div class="sv-step">
+      <div class="sv-num">7</div>
+      <div class="sv-body"><div class="sv-title">First article — measure all features</div><div class="sv-detail">Machine first part. Measure all dimensions including diameters, lengths, tapers, thread pitch diameters, and surface finish. Pay particular attention to any feature machined with TNR compensation. Document and sign.</div></div>
+    </div>
+  </div>
+
+  <div id="p3" class="panel">
+    <table>
+      <tr><th>Document</th><th>Author</th><th>Approver</th><th>When</th><th>Record retention</th></tr>
+      <tr><td>Process sheet</td><td>Applications Engineer</td><td>Engineering manager (or AE self-sign per company policy)</td><td>Before first article attempt</td><td>Life of part + customer requirement</td></tr>
+      <tr><td>Setup verification sheet</td><td>Setup machinist (fills)</td><td>AE (approves before production)</td><td>Every new setup or fixture change</td><td>Minimum 10 years aerospace/defense</td></tr>
+      <tr><td>First article inspection report</td><td>Inspector / CMM operator</td><td>Quality manager</td><td>First piece of every new lot or process change</td><td>10 years minimum or customer requirement</td></tr>
+      <tr><td>In-process inspection records</td><td>Machine operator</td><td>Reviewed by quality at lot close</td><td>Per frequency on process sheet</td><td>10 years minimum</td></tr>
+    </table>
+    <div class="note"><strong>If the process changes — restart the approval chain</strong>A program edit, fixture modification, or tooling change triggers a new first article and a new setup verification sheet sign-off. Changes made verbally or without documentation are an audit failure and a liability risk. This is not bureaucracy — it is traceability.</div>
+  </div>
+
+  <div id="p4" class="panel">
+    <div class="warn"><strong>Zero point description is the most important field on the process sheet</strong>A vague zero point description requires the programmer to be present at every setup — or introduces errors when the programmer is not available. The description must be readable by any machinist without additional context.</div>
+    <table>
+      <tr><th>Quality</th><th>Description</th><th>Assessment</th></tr>
+      <tr><td style="color:#991B1B;">Poor</td><td style="color:#991B1B;">"Corner of part"</td><td style="color:#991B1B;">Which corner? Which face? In which orientation?</td></tr>
+      <tr><td style="color:#92400E;">Poor</td><td style="color:#92400E;">"Front left corner, top face"</td><td style="color:#92400E;">What defines "front"? How is the part oriented in the vise?</td></tr>
+      <tr><td style="color:#065F46;">Good</td><td style="color:#065F46;">"G54 X: left face of part (face touching fixed jaw). G54 Y: front edge of part (face facing operator). G54 Z: top face of part (face facing up, this operation). Part seated on parallels."</td><td style="color:#065F46;">Any machinist can set this up correctly without the programmer.</td></tr>
+      <tr><td style="color:#065F46;">Excellent</td><td style="color:#065F46;">"G54 X: left face of part — touch off with 0.000 tool offset on the -X face per Op 10 datum. G54 Y: front face of part — touch off on -Y face. G54 Z: top face of part — face to blue ink and touch off. Parallels: 1-2-3 blocks, part elevated 1.000″ above vise jaws. Fixed jaw toward machine column."</td><td style="color:#065F46;">Complete and unambiguous. Could set up correctly on first read with no prior knowledge of the part.</td></tr>
+    </table>
+    <div class="note"><strong>Rule: if the programmer leaves the shop, any experienced CNC machinist should be able to set up the operation correctly using only the process sheet.</strong>If that's not true — the zero point description is insufficient.</div>
+  </div>
+
+  <div id="p5" class="panel">
+    <div class="note"><strong>DFM findings belong on the process sheet</strong>Written DFM findings outperform verbal ones every time. A numbered list in the process sheet or a separate DFM findings document creates a paper trail, gives the customer something to share with their engineer, and establishes due diligence.</div>
+    <table>
+      <tr><th>Finding type</th><th>Where documented</th><th>Who acts</th></tr>
+      <tr><td>Tolerance tighter than process capability</td><td>Process sheet DFM notes + customer email before quoting</td><td>Customer (design change) or shop (add grinding operation)</td></tr>
+      <tr><td>Sharp corner requiring EDM</td><td>Process sheet notes, flagged in quote</td><td>Customer or shop</td></tr>
+      <tr><td>Surface finish requiring grinding</td><td>Process sheet — separate operation added with notes</td><td>Shop</td></tr>
+      <tr><td>Missing datum for GD&T callout</td><td>Customer communication before order acceptance</td><td>Customer (add datum to drawing)</td></tr>
+      <tr><td>Ambiguous drawing dimension</td><td>Written clarification request — never assume</td><td>Customer (clarify drawing)</td></tr>
+      <tr><td>Material substitution</td><td>Customer email + process sheet notes</td><td>Customer approval required</td></tr>
+    </table>
+    <div class="warn"><strong>Never start a job with an open DFM issue</strong>An unresolved DFM issue that causes a defective part after the job starts is a quality escape and a cost. An open DFM issue communicated in writing before job start is a protected position. The customer chose to proceed — the shop documented the risk.</div>
+  </div>
+</div>
+<script>
+function go(i,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));document.getElementById('p'+i).classList.add('active');btn.classList.add('active');}
+</script>
+</body>
+</html>

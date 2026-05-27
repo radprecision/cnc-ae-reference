@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DFM Quick Reference — CNC AE Reference</title>
+<style>
+:root{--navy:#1A2744;--blue:#2C4A8A;--green:#1D9E75;--amber:#EF9F27;--red:#A32D2D;--purple:#534AB7;--bg:#F8F9FC;--border:#E2E6EF;--text:#1A1A2E;--mono:'Courier New',monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);}
+header{background:var(--navy);color:white;padding:1.5rem 2rem;}
+header h1{font-size:1.4rem;font-weight:600;}
+header p{font-size:.82rem;opacity:.7;margin-top:.25rem;}
+.container{max-width:960px;margin:0 auto;padding:1.5rem;}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.tab{padding:7px 12px;border:2px solid var(--border);border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;background:white;}
+.tab.active{border-color:var(--navy);background:var(--navy);color:white;}
+.panel{display:none;}.panel.active{display:block;}
+table{width:100%;border-collapse:collapse;background:white;border-radius:10px;overflow:hidden;border:1px solid var(--border);margin-bottom:1rem;}
+th{padding:.65rem 1rem;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;background:var(--navy);color:white;text-align:left;}
+td{padding:.7rem 1rem;font-size:.82rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;}
+tr:last-child td{border-bottom:none;}
+.note{background:#EFF6FF;border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:#1E3A5F;margin:.75rem 0;line-height:1.6;}
+.warn{background:#FEF2F2;border-left:4px solid var(--red);border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:#7F1D1D;margin:.75rem 0;line-height:1.6;}
+.warn strong,.note strong{display:block;margin-bottom:.25rem;}
+.ck-item{display:flex;align-items:flex-start;gap:.75rem;padding:.6rem 0;border-bottom:1px solid var(--border);}
+.ck-item:last-child{border-bottom:none;}
+.ck-box{width:18px;height:18px;border:2px solid var(--border);border-radius:4px;flex-shrink:0;margin-top:1px;cursor:pointer;transition:all .12s;}
+.ck-box:hover{border-color:var(--purple);}
+.ck-box.checked{background:var(--purple);border-color:var(--purple);}
+.ck-label{font-size:.85rem;font-weight:500;}
+.ck-detail{font-size:.78rem;color:#6B7280;margin-top:.2rem;line-height:1.5;}
+.flag{font-size:.7rem;font-weight:600;padding:1px 6px;border-radius:3px;margin-left:.4rem;vertical-align:middle;}
+.flag-stop{background:#FEE2E2;color:#991B1B;}
+.flag-warn{background:#FEF3C7;color:#92400E;}
+.prog{height:7px;background:#E5E7EB;border-radius:4px;margin:.5rem 0;}
+.prog-fill{height:100%;background:var(--purple);border-radius:4px;transition:width .2s;}
+.grp-hd{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#6B7280;padding:.6rem 0 .4rem;border-bottom:1px solid var(--border);margin-bottom:.4rem;}
+.prob-card{background:white;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:.75rem;}
+.prob-hd{padding:.7rem 1rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.prob-title{font-size:.88rem;font-weight:600;}
+.prob-body{padding:.75rem 1rem;font-size:.82rem;color:#374151;line-height:1.6;}
+.prob-row{display:flex;gap:.5rem;margin-bottom:.4rem;}
+.prob-lbl{font-weight:600;color:#374151;min-width:70px;flex-shrink:0;}
+.badge-h{background:#FEE2E2;color:#991B1B;font-size:.7rem;font-weight:600;padding:2px 7px;border-radius:4px;}
+.badge-m{background:#FEF3C7;color:#92400E;font-size:.7rem;font-weight:600;padding:2px 7px;border-radius:4px;}
+.badge-l{background:#D1FAE5;color:#065F46;font-size:.7rem;font-weight:600;padding:2px 7px;border-radius:4px;}
+</style>
+</head>
+<body>
+<header>
+  <h1>🔍 DFM Quick Reference</h1>
+  <p>CNC AE Reference Library — Module 21 · Design for Manufacturability · Print review checklist + problem categories</p>
+</header>
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="go(0,this)">Print review checklist</button>
+    <button class="tab" onclick="go(1,this)">DFM problem categories</button>
+    <button class="tab" onclick="go(2,this)">Tolerance vs process</button>
+    <button class="tab" onclick="go(3,this)">Cost impact</button>
+    <button class="tab" onclick="go(4,this)">Communication language</button>
+  </div>
+
+  <div id="p0" class="panel active">
+    <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;">
+      <div style="flex:1;"><div class="prog"><div class="prog-fill" id="prog" style="width:0%;"></div></div></div>
+      <span style="font-size:.82rem;color:#6B7280;" id="prog-lbl">0 of 26 checked</span>
+      <button onclick="resetCk()" style="font-size:.75rem;padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:white;cursor:pointer;">Reset</button>
+    </div>
+    <div id="checklist"></div>
+  </div>
+
+  <div id="p1" class="panel">
+    <div class="prob-card">
+      <div class="prob-hd" style="background:#FEE2E2;"><div class="prob-title" style="color:#991B1B;">1. Tolerance tighter than process capability</div><span class="badge-h">HIGH SEVERITY</span></div>
+      <div class="prob-body">
+        <div class="prob-row"><div class="prob-lbl">Symptom:</div><div>±0.001″ or tighter on features that will be milled or turned without grinding.</div></div>
+        <div class="prob-row"><div class="prob-lbl">Fix:</div><div><strong>Relax to ±0.002″ or add a grinding operation.</strong> Use ISO fit designations (H7/g6) which define function without over-specifying method.</div></div>
+        <div class="prob-row"><div class="prob-lbl">Cost:</div><div>Tighter than ±0.001″ = +50–300% (grinding required).</div></div>
+        <div class="prob-row"><div class="prob-lbl">Rule:</div><div><strong>±0.005″</strong> = standard CNC · <strong>±0.002″</strong> = precision · <strong>±0.001″</strong> = near limit · <strong>&lt;±0.001″</strong> = grind</div></div>
+      </div>
+    </div>
+    <div class="prob-card">
+      <div class="prob-hd" style="background:#FEE2E2;"><div class="prob-title" style="color:#991B1B;">2. Sharp internal corners</div><span class="badge-h">HIGH SEVERITY</span></div>
+      <div class="prob-body">
+        <div class="prob-row"><div class="prob-lbl">Symptom:</div><div>R0 or no radius on pocket/slot corners. CAD models with true sharp internal corners.</div></div>
+        <div class="prob-row"><div class="prob-lbl">Fix:</div><div><strong>Add radius ≥ tool radius.</strong> Rule of thumb: R ≥ pocket depth / 3. Square corners require EDM — add 3–10× cost.</div></div>
+      </div>
+    </div>
+    <div class="prob-card">
+      <div class="prob-hd" style="background:#FEF3C7;"><div class="prob-title" style="color:#92400E;">3. Thin walls</div><span class="badge-m">MEDIUM SEVERITY</span></div>
+      <div class="prob-body">
+        <div class="prob-row"><div class="prob-lbl">Min wall:</div><div><strong>Steel: 0.060″</strong> · <strong>Aluminum: 0.040″</strong> · <strong>Titanium: 0.080″</strong></div></div>
+        <div class="prob-row"><div class="prob-lbl">Effect:</div><div>Wall deflects under cutting forces, springs back — feature out of tolerance on CMM.</div></div>
+      </div>
+    </div>
+    <div class="prob-card">
+      <div class="prob-hd" style="background:#FEF3C7;"><div class="prob-title" style="color:#92400E;">4. Over-specified surface finish</div><span class="badge-m">MEDIUM SEVERITY</span></div>
+      <div class="prob-body">
+        <div class="prob-row"><div class="prob-lbl">Fix:</div><div><strong>Apply Ra 3.2 µm as default.</strong> Specify tighter only on surfaces with documented functional reason.</div></div>
+        <div class="prob-row"><div class="prob-lbl">Cost:</div><div>Ra 3.2→1.6: +15–25% · Ra 1.6→0.8: +30–50% · Ra 0.8→0.4: +100–200% (grinding)</div></div>
+      </div>
+    </div>
+    <div class="prob-card">
+      <div class="prob-hd" style="background:#FEF3C7;"><div class="prob-title" style="color:#92400E;">5. Undercuts requiring special tooling</div><span class="badge-m">MEDIUM SEVERITY</span></div>
+      <div class="prob-body">
+        <div class="prob-row"><div class="prob-lbl">Fix:</div><div>Redesign to eliminate, or specify lollipop/T-slot/back-chamfer cutter. Note and price the tooling.</div></div>
+        <div class="prob-row"><div class="prob-lbl">Cost:</div><div>+40–100% for special tooling + additional setup.</div></div>
+      </div>
+    </div>
+    <div class="prob-card">
+      <div class="prob-hd" style="background:#DBEAFE;"><div class="prob-title" style="color:#1E40AF;">6. Excess thread depth</div><span class="badge-l">LOW SEVERITY</span></div>
+      <div class="prob-body">
+        <div class="prob-row"><div class="prob-lbl">Rule:</div><div><strong>Steel: max 1.5× nominal diameter. Aluminum: max 2× nominal.</strong> Beyond this adds no pull-out strength.</div></div>
+        <div class="prob-row"><div class="prob-lbl">Relief:</div><div>Cut tap needs 3–5 pitches relief at bottom. Form tap: 1–2 pitches. Thread mill: none needed.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="p2" class="panel">
+    <div class="note"><strong>These are production-capable values — not best-case</strong>The tolerances listed represent Cpk ≥ 1.33 in production, not a single best measurement.</div>
+    <table>
+      <tr><th>Process</th><th>Tolerance (±)</th><th>Surface finish Ra</th><th>Notes</th></tr>
+      <tr><td>CNC milling — standard</td><td>±0.005″ (±0.127mm)</td><td>1.6–3.2 µm</td><td>Production-capable with Cpk ≥ 1.33</td></tr>
+      <tr><td>CNC milling — precision</td><td>±0.002″ (±0.050mm)</td><td>0.8–1.6 µm</td><td>Requires process discipline and temperature control</td></tr>
+      <tr><td>CNC milling — tight</td><td>±0.001″ (±0.025mm)</td><td>0.4–0.8 µm</td><td>Near limit of milling — not for general production</td></tr>
+      <tr><td>CNC turning — standard</td><td>±0.003″ (±0.076mm)</td><td>0.8–3.2 µm</td><td>Production-capable</td></tr>
+      <tr><td>CNC turning — precision</td><td>±0.001″ (±0.025mm)</td><td>0.4–0.8 µm</td><td>Wiper insert, tool monitoring, temperature stabilization</td></tr>
+      <tr><td>Drilling</td><td>±0.005″ (±0.127mm)</td><td>1.6–6.3 µm</td><td>Location ±0.003″ with spot drill</td></tr>
+      <tr><td>Reaming</td><td>±0.0005″ (±0.013mm)</td><td>0.2–1.6 µm</td><td>H7 fits achievable</td></tr>
+      <tr><td>Fine boring</td><td>±0.0002″ (±0.005mm)</td><td>0.4–1.6 µm</td><td>Most accurate hole-making process</td></tr>
+      <tr><td>Surface grinding</td><td>±0.0005″ (±0.013mm)</td><td>0.1–0.8 µm</td><td>Required below ±0.001″ on flat features</td></tr>
+      <tr><td>Cylindrical grinding</td><td>±0.0002″ (±0.005mm)</td><td>0.1–0.8 µm</td><td>Required for precision fits below H7/g6</td></tr>
+      <tr><td>Honing</td><td>±0.0001″ (±0.003mm)</td><td>0.05–0.4 µm</td><td>Negative Rsk — preferred for lubrication retention</td></tr>
+      <tr><td>EDM (wire)</td><td>±0.0002″ (±0.005mm)</td><td>0.4–3.2 µm</td><td>True square corners achievable</td></tr>
+    </table>
+  </div>
+
+  <div id="p3" class="panel">
+    <div class="note"><strong>The fix is almost always free</strong>In nearly every case the DFM fix is a drawing change — it costs nothing. The manufacturing savings are real and often large.</div>
+    <table>
+      <tr><th>DFM issue</th><th>Cost multiplier</th><th>Fix cost</th></tr>
+      <tr><td>Tolerance ±0.001″ vs ±0.005″</td><td style="color:#F59E0B;font-weight:600;">+50–150%</td><td style="color:#065F46;">Relax tolerance — free</td></tr>
+      <tr><td>Tolerance &lt;±0.0005″ (grinding)</td><td style="color:#DC2626;font-weight:600;">+100–300%</td><td style="color:#065F46;">Relax to ±0.001″ — free</td></tr>
+      <tr><td>Sharp internal corners (EDM)</td><td style="color:#DC2626;font-weight:600;">+200–500%</td><td style="color:#065F46;">Add radius ≥ tool radius — free</td></tr>
+      <tr><td>Deep pockets L:D &gt;4:1</td><td style="color:#F59E0B;font-weight:600;">+30–80%</td><td style="color:#374151;">Reduce depth or increase width — design change</td></tr>
+      <tr><td>Surface finish Ra 3.2→1.6 µm</td><td style="color:#F59E0B;font-weight:600;">+15–25%</td><td style="color:#065F46;">Relax to Ra 3.2 — free</td></tr>
+      <tr><td>Surface finish Ra 0.8→0.4 µm</td><td style="color:#DC2626;font-weight:600;">+100–200%</td><td style="color:#065F46;">Relax to Ra 0.8 — free</td></tr>
+      <tr><td>Undercut features</td><td style="color:#F59E0B;font-weight:600;">+40–100%</td><td style="color:#374151;">Redesign to eliminate — design change</td></tr>
+      <tr><td>Each additional setup</td><td style="color:#F59E0B;font-weight:600;">+25–50% per setup</td><td style="color:#374151;">Consolidate features — process design</td></tr>
+      <tr><td>Custom fixture required</td><td style="color:#DC2626;font-weight:600;">+$500–$5000 NRE</td><td style="color:#374151;">Add flat datum surfaces — design change</td></tr>
+    </table>
+  </div>
+
+  <div id="p4" class="panel">
+    <div class="note"><strong>Frame every finding as:</strong> Here is what I found → here is what it means for cost/risk/schedule → here is the option that solves it. Let the customer decide.</div>
+    <div style="display:flex;flex-direction:column;gap:.75rem;">
+      <div style="background:white;border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+        <div style="padding:.6rem 1rem;background:#F5F5F5;font-size:.82rem;font-weight:600;">Tight tolerance finding</div>
+        <div style="padding:.7rem 1rem;background:#FEF2F2;font-size:.82rem;color:#991B1B;"><span style="background:#FEE2E2;padding:1px 6px;border-radius:3px;font-weight:600;margin-right:.4rem;">DON'T</span>"We can't hold that tolerance." / "That's going to be very expensive."</div>
+        <div style="padding:.7rem 1rem;background:#F0FDF4;font-size:.82rem;color:#065F46;"><span style="background:#D1FAE5;padding:1px 6px;border-radius:3px;font-weight:600;margin-right:.4rem;">DO</span>"I flagged the ±0.001″ callout on the bore. With standard CNC turning, our Cpk runs about 1.1 at that tolerance — technically passing but little margin. Two options: add a grinding step (gives Cpk 1.6 consistently), or if the function is a sliding fit, an H7 tolerance class lets us ream to size which costs less than grinding. What's driving the tight dimension — is it a fit or a specific clearance?"</div>
+      </div>
+      <div style="background:white;border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+        <div style="padding:.6rem 1rem;background:#F5F5F5;font-size:.82rem;font-weight:600;">Sharp corner finding</div>
+        <div style="padding:.7rem 1rem;background:#FEF2F2;font-size:.82rem;color:#991B1B;"><span style="background:#FEE2E2;padding:1px 6px;border-radius:3px;font-weight:600;margin-right:.4rem;">DON'T</span>"You have square corners — we can't machine those."</div>
+        <div style="padding:.7rem 1rem;background:#F0FDF4;font-size:.82rem;color:#065F46;"><span style="background:#D1FAE5;padding:1px 6px;border-radius:3px;font-weight:600;margin-right:.4rem;">DO</span>"The pocket corners are called out as square. For this depth, the smallest radius we can machine is about R0.050. If the mating part also has a square corner — is that functional or just how the model was built? If we genuinely need sharp corners, we can EDM them — that adds roughly 3–4 hours per corner. If R0.050 works, it's included in the standard milling price."</div>
+      </div>
+      <div style="background:white;border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+        <div style="padding:.6rem 1rem;background:#F5F5F5;font-size:.82rem;font-weight:600;">Written DFM findings</div>
+        <div style="padding:.7rem 1rem;background:#EFF6FF;font-size:.82rem;color:#1E40AF;">Written DFM findings outperform verbal ones every time. A numbered list with cost/risk and recommended fix — sent by email — creates a paper trail, gives the customer something to share with their engineer, and establishes due diligence. If a DFM issue was flagged in writing before the job started, the liability position is completely different than if it was mentioned verbally or not at all.</div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+const CK_DATA=[
+  {grp:'1. Drawing completeness',items:[
+    {l:'Correct drawing revision',d:'Verify rev level in title block. Never quote from a drawing without a confirmed revision.',flag:'stop'},
+    {l:'All views readable and unambiguous',d:'Blurry or conflicting views require clarification before quoting.'},
+    {l:'Material fully specified — alloy, temper, condition',d:'e.g. 6061-T6, 4140 Q&T 28-32 HRC. "Aluminum" is not a specification.',flag:'stop'},
+    {l:'Datum structure complete and logical',d:'Three mutually perpendicular datums. Missing datums make GD&T callouts ambiguous.'},
+  ]},
+  {grp:'2. Tolerances',items:[
+    {l:'Every tolerance tighter than ±0.005″ identified',d:'List them. For each: is there a functional reason? Can it be inspected?',flag:'warn'},
+    {l:'Every tolerance tighter than ±0.001″ has a process plan',d:'These typically require grinding — separate operation, separate setup, CMM inspection.',flag:'stop'},
+    {l:'GD&T callouts achievable with available processes',d:'True position below 0.005″ dia requires CMM. Flatness below 0.001″ requires grinding.'},
+    {l:'Tolerances consistent with material and process',d:'±0.0005″ on a cast aluminum part signals the drawing was not reviewed for manufacturability.'},
+  ]},
+  {grp:'3. Holes and threads',items:[
+    {l:'No hole depth exceeds 3× diameter without noting special process',d:'Deeper than 3×D requires peck drilling or deep-hole tools.'},
+    {l:'No holes smaller than 0.040″ without noting special process',d:'Micro-drills below 0.040″ break frequently and require very slow speeds.'},
+    {l:'Thread depth ≤ 1.5× nominal diameter (steel) / 2× (aluminum)',d:'Excess depth adds no strength — increases tap breakage risk.'},
+    {l:'Blind threads have adequate relief below thread depth',d:'Cut tap: 3–5 pitches relief. Form tap: 1–2 pitches. Thread mill: none needed.'},
+  ]},
+  {grp:'4. Surface finish',items:[
+    {l:'Every finish callout tighter than Ra 1.6 µm (63 µin) justified',d:'Ask: what fails functionally if this surface is Ra 3.2? If nothing — relax it.',flag:'warn'},
+    {l:'Every finish callout tighter than Ra 0.4 µm (16 µin) has a process plan',d:'Ra 0.4 µm requires grinding — separate operation with separate setup.',flag:'stop'},
+    {l:'Blanket finish callout reviewed — does it apply to all surfaces?',d:'A blanket Ra 0.8 applied to every surface including non-functional ones is a common expensive error.'},
+  ]},
+  {grp:'5. Pockets, walls, corners',items:[
+    {l:'All pocket corners have radius ≥ 1/3 of pocket depth',d:'Square internal corners require EDM. Radius equal to end mill radius is minimum.'},
+    {l:'Pocket depth ≤ 3× pocket width',d:'Deeper requires long-reach tooling with reduced parameters and specialist cost.'},
+    {l:'Minimum wall thickness adequate',d:'Steel: 0.060″ · Aluminum: 0.040″ · Titanium: 0.080″'},
+    {l:'No undercuts without noting special tooling required',d:'Undercuts need lollipop, T-slot, or back-chamfer cutters — add setup and tooling cost.',flag:'warn'},
+  ]},
+  {grp:'6. Special processes and post-machining',items:[
+    {l:'All post-machining operations identified',d:'Anodize, plating, heat treat, NDT. Post-machining affects final dimensions.'},
+    {l:'Drawing dimensions pre- or post-process confirmed with customer',d:'Hard anodize adds 0.0008–0.001″ per side. Must be specified in the quote.',flag:'warn'},
+    {l:'Number of setups estimated — each adds cost and error potential',d:'Features tight relative to each other should be machined in the same setup.'},
+  ]},
+];
+function buildChecklist(){
+  const div=document.getElementById('checklist');
+  CK_DATA.forEach((g,gi)=>{
+    const gd=document.createElement('div');gd.style.marginBottom='1rem';
+    const h=document.createElement('div');h.className='grp-hd';h.textContent=g.grp;gd.appendChild(h);
+    g.items.forEach((item,ii)=>{
+      const row=document.createElement('div');row.className='ck-item';
+      const box=document.createElement('div');box.className='ck-box';box.dataset.g=gi;box.dataset.i=ii;
+      box.onclick=function(){this.classList.toggle('checked');updateProg();};
+      const txt=document.createElement('div');
+      const lbl=document.createElement('div');lbl.className='ck-label';
+      lbl.textContent=item.l;
+      if(item.flag){const f=document.createElement('span');f.className='flag flag-'+(item.flag==='stop'?'stop':'warn');f.textContent=item.flag==='stop'?'STOP':'REVIEW';lbl.appendChild(f);}
+      const det=document.createElement('div');det.className='ck-detail';det.textContent=item.d;
+      txt.appendChild(lbl);txt.appendChild(det);
+      row.appendChild(box);row.appendChild(txt);gd.appendChild(row);
+    });
+    div.appendChild(gd);
+  });
+}
+function updateProg(){
+  const all=document.querySelectorAll('.ck-box');
+  const chk=document.querySelectorAll('.ck-box.checked');
+  document.getElementById('prog').style.width=(chk.length/all.length*100)+'%';
+  document.getElementById('prog-lbl').textContent=chk.length+' of '+all.length+' checked';
+}
+function resetCk(){document.querySelectorAll('.ck-box').forEach(b=>b.classList.remove('checked'));updateProg();}
+function go(i,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('p'+i).classList.add('active');
+  btn.classList.add('active');
+}
+buildChecklist();updateProg();
+</script>
+</body>
+</html>

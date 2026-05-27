@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Hole Making Reference — CNC AE Reference</title>
+<style>
+:root{--navy:#1A2744;--blue:#2C4A8A;--bg:#F8F9FC;--border:#E2E6EF;--text:#1A1A2E;--mono:'Courier New',monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);}
+header{background:var(--navy);color:white;padding:1.5rem 2rem;}
+header h1{font-size:1.4rem;font-weight:600;}
+header p{font-size:.82rem;opacity:.7;margin-top:.25rem;}
+.container{max-width:960px;margin:0 auto;padding:1.5rem;}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.tab{padding:7px 12px;border:2px solid var(--border);border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;background:white;}
+.tab.active{border-color:var(--navy);background:var(--navy);color:white;}
+.panel{display:none;}.panel.active{display:block;}
+table{width:100%;border-collapse:collapse;background:white;border-radius:10px;overflow:hidden;border:1px solid var(--border);margin-bottom:1rem;}
+th{padding:.65rem 1rem;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;background:var(--navy);color:white;text-align:left;}
+td{padding:.7rem 1rem;font-size:.82rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;}
+tr:last-child td{border-bottom:none;}
+td:first-child{font-family:var(--mono);font-weight:600;color:#1A2744;}
+.note{background:#EFF6FF;border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:#1E3A5F;margin:.75rem 0;line-height:1.6;}
+.note strong{display:block;margin-bottom:.25rem;}
+.filter-row{display:flex;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap;}
+.filter-input{padding:.5rem .75rem;border:1px solid var(--border);border-radius:7px;font-size:.85rem;background:white;width:200px;}
+.filter-input:focus{outline:none;border-color:var(--blue);}
+</style>
+</head>
+<body>
+<header>
+  <h1>🕳 Hole Making Reference</h1>
+  <p>CNC AE Reference Library — Module 11 · Drill point angles · Tap drill tables · Thread standards · Reaming</p>
+</header>
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="go(0,this)">Drill point angles</button>
+    <button class="tab" onclick="go(1,this)">UNC tap drills</button>
+    <button class="tab" onclick="go(2,this)">UNF tap drills</button>
+    <button class="tab" onclick="go(3,this)">Metric tap drills</button>
+    <button class="tab" onclick="go(4,this)">Thread standards</button>
+    <button class="tab" onclick="go(5,this)">Reaming rules</button>
+  </div>
+
+  <div id="p0" class="panel active">
+    <table>
+      <tr><th>Point angle</th><th>Material / Application</th><th>Notes</th></tr>
+      <tr><td>118°</td><td>General purpose — mild steel, aluminum, plastics</td><td>Standard jobber drill angle. Wide availability. Not ideal for hard materials.</td></tr>
+      <tr><td>135°</td><td>Harder steels, stainless, alloy steels</td><td>Split point preferred. Self-centering — reduces need for spot drill. More aggressive.</td></tr>
+      <tr><td>140°</td><td>Carbide drills — hard materials, production</td><td>Standard carbide indexable drill point. Flat bottom approaches possible.</td></tr>
+      <tr><td>130°</td><td>Stainless steel specialty</td><td>Used by some manufacturers for austenitic stainless to reduce work hardening.</td></tr>
+      <tr><td>82°</td><td>Countersink — flat-head screws (ASME/inch)</td><td>Flat-head machine screw countersink standard</td></tr>
+      <tr><td>90°</td><td>Countersink — flat-head metric (ISO)</td><td>Metric flat-head countersink standard. Also center drill.</td></tr>
+      <tr><td>60°</td><td>Center drill</td><td>Combination drill-countersink for lathe centers</td></tr>
+      <tr><td>180°</td><td>Flat-bottom drill / end mill entry</td><td>Special geometry for flat-bottom holes. Standard drills leave cone; flat-bottom requires special geometry.</td></tr>
+    </table>
+    <div class="note"><strong>Always spot drill before drilling on curved or angled surfaces</strong>A standard drill will walk on a curved entry surface. A spot drill (90° or 120°) creates a flat starting point. On CNC with rigid fixturing, spot drilling is often omitted — but should always be used when entry geometry is not perpendicular to the drill.</div>
+  </div>
+
+  <div id="p1" class="panel">
+    <div class="note"><strong>Tap drill sizes at 75% thread (cut tap) and 65% thread (form tap)</strong>Form tap produces stronger thread and no chips — preferred for aluminum and blind holes. Form tap requires 5–10% larger drill than cut tap.</div>
+    <div class="filter-row"><input class="filter-input" type="text" id="unc-filter" placeholder="Filter by size..." oninput="filterTable('unc-table',this.value)"/></div>
+    <table id="unc-table">
+      <tr><th>Thread</th><th>TPI</th><th>Cut tap drill (75%)</th><th>Form tap drill (65%)</th><th>Minor Ø (in)</th></tr>
+      <tr><td>#4-40 UNC</td><td>40</td><td>#43 (0.0890)</td><td>#42 (0.0935)</td><td>0.0718</td></tr>
+      <tr><td>#6-32 UNC</td><td>32</td><td>#36 (0.1065)</td><td>#33 (0.1130)</td><td>0.0869</td></tr>
+      <tr><td>#8-32 UNC</td><td>32</td><td>#29 (0.1360)</td><td>#27 (0.1440)</td><td>0.1140</td></tr>
+      <tr><td>#10-24 UNC</td><td>24</td><td>#25 (0.1495)</td><td>#20 (0.1610)</td><td>0.1279</td></tr>
+      <tr><td>#10-32 UNF</td><td>32</td><td>#21 (0.1590)</td><td>#18 (0.1695)</td><td>0.1389</td></tr>
+      <tr><td>1/4-20 UNC</td><td>20</td><td>#7 (0.2010)</td><td>#3 (0.2130)</td><td>0.1850</td></tr>
+      <tr><td>5/16-18 UNC</td><td>18</td><td>F (0.2570)</td><td>H (0.2660)</td><td>0.2403</td></tr>
+      <tr><td>3/8-16 UNC</td><td>16</td><td>5/16 (0.3125)</td><td>Q (0.3320)</td><td>0.2938</td></tr>
+      <tr><td>7/16-14 UNC</td><td>14</td><td>U (0.3680)</td><td>3/8 (0.3750)</td><td>0.3447</td></tr>
+      <tr><td>1/2-13 UNC</td><td>13</td><td>27/64 (0.4219)</td><td>7/16 (0.4375)</td><td>0.4001</td></tr>
+      <tr><td>9/16-12 UNC</td><td>12</td><td>31/64 (0.4844)</td><td>1/2 (0.5000)</td><td>0.4542</td></tr>
+      <tr><td>5/8-11 UNC</td><td>11</td><td>17/32 (0.5313)</td><td>35/64 (0.5469)</td><td>0.5069</td></tr>
+      <tr><td>3/4-10 UNC</td><td>10</td><td>21/32 (0.6563)</td><td>43/64 (0.6719)</td><td>0.6273</td></tr>
+      <tr><td>7/8-9 UNC</td><td>9</td><td>49/64 (0.7656)</td><td>25/32 (0.7813)</td><td>0.7307</td></tr>
+      <tr><td>1-8 UNC</td><td>8</td><td>7/8 (0.8750)</td><td>57/64 (0.8906)</td><td>0.8376</td></tr>
+    </table>
+  </div>
+
+  <div id="p2" class="panel">
+    <div class="note"><strong>UNF — Unified National Fine</strong>Finer pitch than UNC for same nominal diameter. Higher thread engagement strength, better vibration resistance. Common in aerospace and automotive.</div>
+    <table>
+      <tr><th>Thread</th><th>TPI</th><th>Cut tap drill (75%)</th><th>Form tap drill (65%)</th></tr>
+      <tr><td>#4-48 UNF</td><td>48</td><td>#42 (0.0935)</td><td>#41 (0.0960)</td></tr>
+      <tr><td>#6-40 UNF</td><td>40</td><td>#33 (0.1130)</td><td>#31 (0.1200)</td></tr>
+      <tr><td>#8-36 UNF</td><td>36</td><td>#29 (0.1360)</td><td>#28 (0.1405)</td></tr>
+      <tr><td>#10-32 UNF</td><td>32</td><td>#21 (0.1590)</td><td>#18 (0.1695)</td></tr>
+      <tr><td>1/4-28 UNF</td><td>28</td><td>#3 (0.2130)</td><td>7/32 (0.2188)</td></tr>
+      <tr><td>5/16-24 UNF</td><td>24</td><td>I (0.2720)</td><td>J (0.2770)</td></tr>
+      <tr><td>3/8-24 UNF</td><td>24</td><td>Q (0.3320)</td><td>R (0.3390)</td></tr>
+      <tr><td>7/16-20 UNF</td><td>20</td><td>25/64 (0.3906)</td><td>13/32 (0.4063)</td></tr>
+      <tr><td>1/2-20 UNF</td><td>20</td><td>29/64 (0.4531)</td><td>15/32 (0.4688)</td></tr>
+      <tr><td>5/8-18 UNF</td><td>18</td><td>37/64 (0.5781)</td><td>19/32 (0.5938)</td></tr>
+      <tr><td>3/4-16 UNF</td><td>16</td><td>11/16 (0.6875)</td><td>45/64 (0.7031)</td></tr>
+    </table>
+  </div>
+
+  <div id="p3" class="panel">
+    <div class="note"><strong>Metric tap drills at 75% thread (cut tap)</strong>Tap drill = nominal diameter − pitch. e.g. M10×1.5: drill = 10 − 1.5 = 8.5mm. Form tap: add 5–10% to drill size.</div>
+    <table>
+      <tr><th>Thread</th><th>Pitch (mm)</th><th>Cut tap drill (mm)</th><th>Form tap drill (mm)</th></tr>
+      <tr><td>M3</td><td>0.5</td><td>2.5</td><td>2.7</td></tr>
+      <tr><td>M4</td><td>0.7</td><td>3.3</td><td>3.5</td></tr>
+      <tr><td>M5</td><td>0.8</td><td>4.2</td><td>4.5</td></tr>
+      <tr><td>M6</td><td>1.0</td><td>5.0</td><td>5.3</td></tr>
+      <tr><td>M8</td><td>1.25</td><td>6.8</td><td>7.2</td></tr>
+      <tr><td>M10</td><td>1.5</td><td>8.5</td><td>9.0</td></tr>
+      <tr><td>M12</td><td>1.75</td><td>10.2</td><td>10.8</td></tr>
+      <tr><td>M14</td><td>2.0</td><td>12.0</td><td>12.7</td></tr>
+      <tr><td>M16</td><td>2.0</td><td>14.0</td><td>14.7</td></tr>
+      <tr><td>M20</td><td>2.5</td><td>17.5</td><td>18.4</td></tr>
+      <tr><td>M24</td><td>3.0</td><td>21.0</td><td>22.1</td></tr>
+      <tr><td>M30</td><td>3.5</td><td>26.5</td><td>27.9</td></tr>
+    </table>
+  </div>
+
+  <div id="p4" class="panel">
+    <table>
+      <tr><th>Standard</th><th>Thread form</th><th>Typical use</th><th>Notes</th></tr>
+      <tr><td>UNC</td><td>60° V — coarse pitch</td><td>General fastening, quick assembly</td><td>Most common in US manufacturing</td></tr>
+      <tr><td>UNF</td><td>60° V — fine pitch</td><td>Automotive, aerospace, precision instruments</td><td>Stronger than UNC for same nominal — more threads per inch</td></tr>
+      <tr><td>UNEF</td><td>60° V — extra fine</td><td>Thin-wall tubes, precision adjustment</td><td>Less common</td></tr>
+      <tr><td>Metric (ISO)</td><td>60° V</td><td>Universal standard outside USA</td><td>Designation: MØ×pitch (e.g. M10×1.5). Tolerance class: 6H/6g standard.</td></tr>
+      <tr><td>NPT</td><td>60° tapered</td><td>Pipe fittings — pressure seal</td><td>1/16″ taper per inch. Requires thread sealant. Not interchangeable with NPS.</td></tr>
+      <tr><td>NPTF (Dryseal)</td><td>60° tapered — interference</td><td>Hydraulic fittings — no sealant needed</td><td>Tighter tolerances than NPT. Seals on thread flanks.</td></tr>
+      <tr><td>BSPP / G</td><td>55° parallel</td><td>Hydraulic/pneumatic (European)</td><td>Straight thread — seals on face with O-ring or washer</td></tr>
+      <tr><td>BSPT / R</td><td>55° tapered</td><td>Pipe fittings (European)</td><td>Tapered — seals on thread like NPT but 55° flank angle</td></tr>
+      <tr><td>ACME</td><td>29° trapezoidal</td><td>Lead screws, power transmission</td><td>Wide flat roots for strength. Not interchangeable with metric trapezoidal.</td></tr>
+    </table>
+  </div>
+
+  <div id="p5" class="panel">
+    <div class="note"><strong>Reaming — the three critical rules</strong>1. Stock per side = 1–3% of diameter. 2. Speed = 50–65% of drill SFM. 3. Feed = 2–3× drill IPR (IPR = chip load × flutes for reaming). Never reverse a reamer — always flood coolant.</div>
+    <table>
+      <tr><th>Parameter</th><th>Rule</th><th>Example (0.500″ reamer)</th></tr>
+      <tr><td>Reaming stock</td><td>1–3% of diameter per side</td><td>0.005–0.015″ per side (drill at 0.487–0.497″)</td></tr>
+      <tr><td>Reaming SFM</td><td>50–65% of drill SFM for same material</td><td>Drill 300 SFM → Ream 165–195 SFM</td></tr>
+      <tr><td>Feed per rev (IPR)</td><td>IPR = chip load × number of flutes</td><td>6 flutes × 0.003 CL = 0.018 IPR</td></tr>
+      <tr><td>Feed rate (IPM)</td><td>IPM = RPM × IPR</td><td>1500 RPM × 0.018 = 27 IPM</td></tr>
+      <tr><td>Coolant</td><td>Flood always — never dry</td><td>TSC preferred for blind holes</td></tr>
+      <tr><td>Reversal</td><td>NEVER reverse rotation under load</td><td>Retract in forward rotation or use auto-reverse cycle</td></tr>
+      <tr><td>Tolerance achieved</td><td>H7 (+0.0008/−0.000 at 1/2″)</td><td>Requires fresh sharp reamer, correct stock, flood coolant</td></tr>
+    </table>
+    <div class="note"><strong>Reaming stock too small: bell-mouth hole.</strong>Reaming stock too large: chatter, rough finish, short reamer life. Stay within 1–3% per side. Source: Hannibal Carbide reaming data.</div>
+  </div>
+</div>
+<script>
+function go(i,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));document.getElementById('p'+i).classList.add('active');btn.classList.add('active');}
+function filterTable(id, val){
+  const rows=document.querySelectorAll('#'+id+' tr');
+  val=val.toLowerCase();
+  rows.forEach((r,i)=>{if(i===0)return;r.style.display=r.textContent.toLowerCase().includes(val)?'':'none';});
+}
+</script>
+</body>
+</html>
