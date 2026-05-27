@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GD&T Reference — CNC AE Reference</title>
+<style>
+:root{--navy:#1A2744;--blue:#2C4A8A;--purple:#534AB7;--green:#1D9E75;--amber:#EF9F27;--red:#A32D2D;--bg:#F8F9FC;--border:#E2E6EF;--text:#1A1A2E;--mono:'Courier New',monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);}
+header{background:var(--navy);color:white;padding:1.5rem 2rem;}
+header h1{font-size:1.4rem;font-weight:600;}
+header p{font-size:.82rem;opacity:.7;margin-top:.25rem;}
+.container{max-width:960px;margin:0 auto;padding:1.5rem;}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.tab{padding:7px 12px;border:2px solid var(--border);border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;background:white;}
+.tab.active{border-color:var(--navy);background:var(--navy);color:white;}
+.panel{display:none;}.panel.active{display:block;}
+table{width:100%;border-collapse:collapse;background:white;border-radius:10px;overflow:hidden;border:1px solid var(--border);margin-bottom:1rem;}
+th{padding:.65rem 1rem;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;background:var(--navy);color:white;text-align:left;}
+td{padding:.75rem 1rem;font-size:.83rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.55;}
+tr:last-child td{border-bottom:none;}
+.sym{font-size:1.3rem;text-align:center;width:40px;}
+.note{background:#EFF6FF;border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:#1E3A5F;margin:.75rem 0;line-height:1.6;}
+.note strong{display:block;margin-bottom:.25rem;}
+.warn{background:#FEF2F2;border-left:4px solid var(--red);border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:#7F1D1D;margin:.75rem 0;line-height:1.6;}
+.warn strong{display:block;margin-bottom:.25rem;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+@media(max-width:620px){.grid{grid-template-columns:1fr;}}
+.card{background:white;border:1px solid var(--border);border-radius:10px;padding:1rem;}
+.card h4{font-size:.88rem;font-weight:600;color:var(--navy);margin-bottom:.6rem;padding-bottom:.4rem;border-bottom:1px solid var(--border);}
+.card p,.card li{font-size:.82rem;color:#374151;line-height:1.75;}
+.card ul{padding-left:1.1rem;}
+/* FCF diagram */
+.fcf{display:inline-flex;border:2px solid var(--navy);border-radius:3px;overflow:hidden;margin:1rem 0;font-family:var(--mono);font-size:.85rem;}
+.fcf-cell{padding:6px 12px;border-right:2px solid var(--navy);display:flex;align-items:center;justify-content:center;background:white;min-width:44px;}
+.fcf-cell:last-child{border-right:none;}
+.fcf-cell.sym-cell{font-size:1.1rem;background:#EEF4FF;}
+.fcf-cell.tol-cell{color:var(--purple);font-weight:700;}
+.fcf-cell.dat-cell{color:var(--green);font-weight:700;}
+.fcf-label{font-size:.7rem;color:#6B7280;text-align:center;display:block;font-family:'Segoe UI',sans-serif;margin-top:2px;}
+.fcf-wrap{display:flex;flex-direction:column;align-items:flex-start;}
+.stack-category{margin-bottom:1rem;}
+.cat-hd{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#6B7280;padding:.5rem 0 .4rem;border-bottom:1px solid var(--border);margin-bottom:.5rem;}
+.sym-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem;}
+.sym-card{background:white;border:1px solid var(--border);border-radius:8px;padding:.75rem;display:flex;gap:.75rem;align-items:flex-start;}
+.sym-icon{font-size:1.5rem;width:36px;text-align:center;flex-shrink:0;margin-top:1px;}
+.sym-info{flex:1;}
+.sym-name{font-size:.85rem;font-weight:600;color:var(--navy);}
+.sym-type{font-size:.7rem;color:#6B7280;margin-bottom:.2rem;}
+.sym-desc{font-size:.78rem;color:#374151;line-height:1.5;}
+.badge{font-size:.68rem;font-weight:600;padding:1px 6px;border-radius:3px;display:inline-block;margin-left:.35rem;vertical-align:middle;}
+.b-form{background:#EEF4FF;color:#1E40AF;}
+.b-orient{background:#FEF3C7;color:#92400E;}
+.b-loc{background:#D1FAE5;color:#065F46;}
+.b-run{background:#FEE2E2;color:#991B1B;}
+.b-prof{background:#F3E8FF;color:#6B21A8;}
+.modifier-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:1rem;}
+@media(max-width:600px){.modifier-grid{grid-template-columns:1fr;}}
+.mod-card{background:white;border:1px solid var(--border);border-radius:8px;padding:.85rem;}
+.mod-sym{font-size:1.6rem;font-weight:700;color:var(--purple);margin-bottom:.3rem;}
+.mod-name{font-size:.85rem;font-weight:600;color:var(--navy);margin-bottom:.3rem;}
+.mod-desc{font-size:.78rem;color:#374151;line-height:1.6;}
+</style>
+</head>
+<body>
+<header>
+  <h1>⊕ GD&amp;T Reference</h1>
+  <p>CNC AE Reference Library — Module 4 · ASME Y14.5 · 14 symbols · FCF anatomy · Datum structure · Modifiers</p>
+</header>
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="go(0,this)">All 14 symbols</button>
+    <button class="tab" onclick="go(1,this)">FCF anatomy</button>
+    <button class="tab" onclick="go(2,this)">Datum structure</button>
+    <button class="tab" onclick="go(3,this)">Material condition modifiers</button>
+    <button class="tab" onclick="go(4,this)">Tolerance zones</button>
+    <button class="tab" onclick="go(5,this)">Common callouts</button>
+  </div>
+
+  <!-- TAB 0 — ALL 14 SYMBOLS -->
+  <div id="p0" class="panel active">
+    <div class="note"><strong>Five categories — Form · Profile · Orientation · Location · Runout</strong>Form tolerances never reference a datum. Profile can reference datums or not. Orientation, location, and runout always reference at least one datum.</div>
+
+    <div class="stack-category">
+      <div class="cat-hd">Form — no datum reference</div>
+      <div class="sym-grid">
+        <div class="sym-card"><div class="sym-icon">⏥</div><div class="sym-info"><div class="sym-name">Flatness <span class="badge b-form">FORM</span></div><div class="sym-type">Surface · No datum</div><div class="sym-desc">All points on the surface must lie between two parallel planes separated by the tolerance value. Does not control location or orientation — only the shape of the surface itself.</div></div></div>
+        <div class="sym-card"><div class="sym-icon">○</div><div class="sym-info"><div class="sym-name">Circularity (Roundness) <span class="badge b-form">FORM</span></div><div class="sym-type">Feature of size · No datum</div><div class="sym-desc">At any cross-section, all points on the surface must lie between two concentric circles separated by the tolerance value. Applied per cross-section — does not control the full cylinder.</div></div></div>
+        <div class="sym-card"><div class="sym-icon">⌭</div><div class="sym-info"><div class="sym-name">Cylindricity <span class="badge b-form">FORM</span></div><div class="sym-type">Feature of size · No datum</div><div class="sym-desc">All points on the cylindrical surface must lie between two coaxial cylinders separated by the tolerance value. Controls roundness, straightness, and taper simultaneously. Tight and expensive to inspect.</div></div></div>
+        <div class="sym-card"><div class="sym-icon">⏤</div><div class="sym-info"><div class="sym-name">Straightness <span class="badge b-form">FORM</span></div><div class="sym-type">Line or axis · No datum</div><div class="sym-desc">Each line element on a surface must lie within two parallel lines separated by the tolerance. When applied to an axis (with diameter symbol ⌀) — the derived axis must lie within a cylindrical tolerance zone.</div></div></div>
+      </div>
+    </div>
+
+    <div class="stack-category">
+      <div class="cat-hd">Profile — may or may not reference datums</div>
+      <div class="sym-grid">
+        <div class="sym-card"><div class="sym-icon">⌒</div><div class="sym-info"><div class="sym-name">Profile of a Line <span class="badge b-prof">PROFILE</span></div><div class="sym-type">Line element · Datum optional</div><div class="sym-desc">Each line cross-section of the surface must lie within a tolerance zone defined by two offset profiles. Used for 2D contours — arcs, transitions, non-standard profiles.</div></div></div>
+        <div class="sym-card"><div class="sym-icon">⌓</div><div class="sym-info"><div class="sym-name">Profile of a Surface <span class="badge b-prof">PROFILE</span></div><div class="sym-type">Full surface · Datum optional</div><div class="sym-desc">The entire surface must lie within a tolerance zone defined by two offset surfaces. The most powerful GD&T control — can replace all other tolerances on complex 3D surfaces. Common in aerospace and medical.</div></div></div>
+      </div>
+    </div>
+
+    <div class="stack-category">
+      <div class="cat-hd">Orientation — always references a datum</div>
+      <div class="sym-grid">
+        <div class="sym-card"><div class="sym-icon">∠</div><div class="sym-info"><div class="sym-name">Angularity <span class="badge b-orient">ORIENT</span></div><div class="sym-type">Surface or axis · Datum required</div><div class="sym-desc">The surface or axis must lie within two parallel planes (or a cylinder) at the specified angle relative to the datum. The angle is basic — exact, with no tolerance on the angle itself.</div></div></div>
+        <div class="sym-card"><div class="sym-icon">⊥</div><div class="sym-info"><div class="sym-name">Perpendicularity <span class="badge b-orient">ORIENT</span></div><div class="sym-type">Surface or axis · Datum required</div><div class="sym-desc">Special case of angularity at 90°. The surface or axis must lie within the tolerance zone perpendicular to the referenced datum. Most common orientation control for bores, bosses, and mating faces.</div></div></div>
+        <div class="sym-card"><div class="sym-icon">∥</div><div class="sym-info"><div class="sym-name">Parallelism <span class="badge b-orient">ORIENT</span></div><div class="sym-type">Surface or axis · Datum required</div><div class="sym-desc">Special case of angularity at 0°. The surface or axis must lie within two planes parallel to the referenced datum. Controls orientation only — does not control distance from the datum (that requires a size or location tolerance).</div></div></div>
+      </div>
+    </div>
+
+    <div class="stack-category">
+      <div class="cat-hd">Location — always references datums</div>
+      <div class="sym-grid">
+        <div class="sym-card"><div class="sym-icon">⊕</div><div class="sym-info"><div class="sym-name">True Position <span class="badge b-loc">LOCATION</span></div><div class="sym-type">Feature of size · Datum required</div><div class="sym-desc">The axis or center plane of the feature must lie within a tolerance zone (cylindrical or between two planes) located at the true (basic) position. The most widely used GD&T control. Diameter symbol = cylindrical zone. Bonus tolerance available at MMC.</div></div></div>
+        <div class="sym-card"><div class="sym-icon">◎</div><div class="sym-info"><div class="sym-name">Concentricity <span class="badge b-loc">LOCATION</span></div><div class="sym-type">Axis · Datum required</div><div class="sym-desc">The derived median points of the feature must lie within a cylindrical tolerance zone coaxial with the datum axis. Extremely difficult to inspect — requires CMM. Usually replaced by runout or position in modern practice.</div></div></div>
+        <div class="sym-card"><div class="sym-icon">⊙</div><div class="sym-info"><div class="sym-name">Symmetry <span class="badge b-loc">LOCATION</span></div><div class="sym-type">Median plane · Datum required</div><div class="sym-desc">The derived median points must lie within two parallel planes symmetric about the datum. Like concentricity but for planar features. Also difficult to inspect — often replaced by position in modern practice.</div></div></div>
+      </div>
+    </div>
+
+    <div class="stack-category">
+      <div class="cat-hd">Runout — always references a datum axis</div>
+      <div class="sym-grid">
+        <div class="sym-card"><div class="sym-icon">↗</div><div class="sym-info"><div class="sym-name">Circular Runout <span class="badge b-run">RUNOUT</span></div><div class="sym-type">Per cross-section · Datum axis required</div><div class="sym-desc">As the part is rotated about the datum axis, the indicator reading at any single cross-section must not exceed the tolerance. Controls circularity + coaxiality at each cross-section independently. Simpler to inspect than total runout.</div></div></div>
+        <div class="sym-card"><div class="sym-icon">⇗</div><div class="sym-info"><div class="sym-name">Total Runout <span class="badge b-run">RUNOUT</span></div><div class="sym-type">Full surface · Datum axis required</div><div class="sym-desc">As the part is rotated and the indicator traverses the full surface, the total reading must not exceed the tolerance. Controls circularity, cylindricity, coaxiality, and taper simultaneously. Most comprehensive runout control.</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 1 — FCF ANATOMY -->
+  <div id="p1" class="panel">
+    <div class="note"><strong>Feature Control Frame (FCF) — read left to right</strong>Every GD&T callout lives in a feature control frame. The compartments always appear in the same order: geometric symbol → tolerance value → datum references.</div>
+
+    <div class="fcf-wrap">
+      <div class="fcf">
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div class="fcf-cell sym-cell" style="font-size:1.2rem;">⊕</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div class="fcf-cell tol-cell">⌀0.010</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div class="fcf-cell" style="font-size:.75rem;color:#333;">Ⓜ</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div class="fcf-cell dat-cell">A</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div class="fcf-cell dat-cell">B</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div class="fcf-cell dat-cell">C</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:0;margin-top:4px;font-size:.72rem;color:#6B7280;font-family:'Segoe UI',sans-serif;">
+        <div style="min-width:44px;text-align:center;">Symbol</div>
+        <div style="min-width:80px;text-align:center;">Tolerance</div>
+        <div style="min-width:44px;text-align:center;">Modifier</div>
+        <div style="min-width:44px;text-align:center;">Datum A</div>
+        <div style="min-width:44px;text-align:center;">Datum B</div>
+        <div style="min-width:44px;text-align:center;">Datum C</div>
+      </div>
+    </div>
+
+    <table style="margin-top:1rem;">
+      <tr><th>Compartment</th><th>Content</th><th>Rules</th></tr>
+      <tr><td style="font-weight:600;color:var(--navy);">1 — Geometric symbol</td><td>One of the 14 GD&T symbols</td><td>Always first. Defines what is being controlled.</td></tr>
+      <tr><td style="font-weight:600;color:var(--purple);">2 — Tolerance value</td><td>Number with units. ⌀ prefix = cylindrical zone.</td><td>⌀ before the number means the tolerance zone is a cylinder (common for position of holes). No ⌀ = zone between two parallel planes.</td></tr>
+      <tr><td style="font-weight:600;color:#374151;">3 — Material condition modifier</td><td>Ⓜ (MMC) · Ⓛ (LMC) · Ⓢ (RFS — implied if absent)</td><td>Optional. Only valid on features of size. Applies to the tolerance value.</td></tr>
+      <tr><td style="font-weight:600;color:var(--green);">4 — Primary datum</td><td>Single letter (A, B, C...)</td><td>Most constrained datum — removes the most degrees of freedom. Required for orientation, location, runout. Optional for profile.</td></tr>
+      <tr><td style="font-weight:600;color:var(--green);">5 — Secondary datum</td><td>Single letter</td><td>Second most constrained. May have its own modifier.</td></tr>
+      <tr><td style="font-weight:600;color:var(--green);">6 — Tertiary datum</td><td>Single letter</td><td>Least constrained. Removes final degree of freedom.</td></tr>
+    </table>
+
+    <div class="grid">
+      <div class="card">
+        <h4>Reading the example FCF</h4>
+        <p>⊕ ⌀0.010 Ⓜ | A | B | C</p>
+        <ul style="margin-top:.5rem;">
+          <li>True position (⊕)</li>
+          <li>Cylindrical tolerance zone ⌀0.010</li>
+          <li>At maximum material condition (Ⓜ) — bonus tolerance available</li>
+          <li>Referenced to datum A (primary), B (secondary), C (tertiary)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>⌀ in the tolerance — what it means</h4>
+        <p>Without ⌀: tolerance zone is two parallel planes (width = tolerance value). Used for slots, tabs, planar features.</p>
+        <p style="margin-top:.5rem;">With ⌀: tolerance zone is a cylinder (diameter = tolerance value). Used for holes, pins, bosses. A ⌀0.010 cylindrical zone gives ~41% more area than a 0.010 square zone — this is the main benefit of true position over coordinate tolerancing.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2 — DATUM STRUCTURE -->
+  <div id="p2" class="panel">
+    <div class="note"><strong>Datums are theoretical perfect planes, axes, and points — not the physical surfaces</strong>The physical surface is the datum feature. The datum is derived from it. A flat surface establishes a datum plane. A cylindrical bore establishes a datum axis. The datum reference frame (DRF) is the coordinate system built from the three datums.</div>
+
+    <div class="grid">
+      <div class="card">
+        <h4>Datum reference frame — 3-2-1</h4>
+        <ul>
+          <li><strong>Primary datum (A):</strong> contacts 3 points minimum. Establishes the base plane. Removes 3 DOF (Z translation + rotation about X and Y).</li>
+          <li><strong>Secondary datum (B):</strong> contacts 2 points minimum. Removes 2 DOF (Y translation + rotation about Z).</li>
+          <li><strong>Tertiary datum (C):</strong> contacts 1 point minimum. Removes 1 DOF (X translation).</li>
+          <li><strong>Total:</strong> 6 DOF constrained — part fully located.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Datum feature selection rules</h4>
+        <ul>
+          <li>Primary datum = largest, most stable surface — maximizes contact</li>
+          <li>Datums must be machined features — not raw stock or saw cuts</li>
+          <li>Datums should be accessible for fixturing and inspection</li>
+          <li>Datum precedence (A before B before C) must match the fixturing sequence</li>
+          <li>The datum that controls the most critical relationship is primary</li>
+        </ul>
+      </div>
+    </div>
+
+    <table>
+      <tr><th>Datum feature type</th><th>Establishes</th><th>DOF removed</th><th>Common use</th></tr>
+      <tr><td>Flat surface (primary)</td><td>Datum plane</td><td>3 (Z + Rx + Ry)</td><td>Bottom face of a prismatic part</td></tr>
+      <tr><td>Flat surface (secondary)</td><td>Datum plane</td><td>2 (Y + Rz)</td><td>Side face of a prismatic part</td></tr>
+      <tr><td>Flat surface (tertiary)</td><td>Datum plane</td><td>1 (X)</td><td>End face of a prismatic part</td></tr>
+      <tr><td>Cylindrical bore (primary)</td><td>Datum axis</td><td>4 (X + Y + Rx + Ry)</td><td>Central bore of a hub or flange</td></tr>
+      <tr><td>Cylindrical bore (secondary)</td><td>Datum axis</td><td>2 (Rz + one translation)</td><td>Anti-rotation hole in a flange</td></tr>
+      <tr><td>Cylindrical pin/boss</td><td>Datum axis</td><td>4 (same as bore)</td><td>Locating pin, shaft OD</td></tr>
+      <tr><td>Cone / center</td><td>Datum point or axis</td><td>Up to 5</td><td>Lathe centers, tapered seats</td></tr>
+    </table>
+
+    <div class="warn"><strong>Datum order matters — A|B|C is not the same as B|A|C</strong>The order of datum references in the FCF defines the precedence of constraint. Changing datum order changes what the tolerance zone is relative to. A drawing that specifies A|B|C locates the feature relative to A first — a different result than B|A|C even with the same physical datums.</div>
+  </div>
+
+  <!-- TAB 3 — MATERIAL CONDITION MODIFIERS -->
+  <div id="p3" class="panel">
+    <div class="note"><strong>Material condition modifiers only apply to features of size</strong>A feature of size has opposing surfaces — holes, pins, slots, tabs. Flat surfaces, edges, and line elements cannot have material condition modifiers. Applying Ⓜ to a surface flatness callout is an error.</div>
+
+    <div class="modifier-grid">
+      <div class="mod-card">
+        <div class="mod-sym">Ⓜ</div>
+        <div class="mod-name">Maximum Material Condition (MMC)</div>
+        <div class="mod-desc">The condition where the feature contains the most material. For a hole: smallest allowable diameter. For a pin: largest allowable diameter.<br><br><strong>Bonus tolerance:</strong> as the feature departs from MMC toward LMC, the geometric tolerance increases by the same amount. A ⌀0.010 position at MMC on a hole that is 0.005 larger than MMC = ⌀0.015 actual tolerance zone.<br><br><strong>Use when:</strong> assembly fit is the function. The loosest fit (smallest hole + largest pin) defines the worst case.</div>
+      </div>
+      <div class="mod-card">
+        <div class="mod-sym">Ⓛ</div>
+        <div class="mod-name">Least Material Condition (LMC)</div>
+        <div class="mod-desc">The condition where the feature contains the least material. For a hole: largest allowable diameter. For a pin: smallest allowable diameter.<br><br><strong>Bonus tolerance:</strong> same principle as MMC but in the opposite direction — as the feature departs from LMC toward MMC, the geometric tolerance increases.<br><br><strong>Use when:</strong> minimum wall thickness is the function. Ensures adequate material remains around a hole or between features. Less common than MMC.</div>
+      </div>
+      <div class="mod-card">
+        <div class="mod-sym">Ⓢ</div>
+        <div class="mod-name">Regardless of Feature Size (RFS)</div>
+        <div class="mod-desc">The geometric tolerance applies at any size within the size tolerance — no bonus tolerance. The tolerance zone is always the stated value regardless of the actual feature size.<br><br><strong>Implied:</strong> RFS is the default in ASME Y14.5-2009 and later. No symbol is needed — absence of Ⓜ or Ⓛ means RFS.<br><br><strong>Use when:</strong> the function requires the tolerance to be maintained regardless of size — balance, dynamic fit, precision location.</div>
+      </div>
+    </div>
+
+    <table>
+      <tr><th>Scenario</th><th>Tolerance at MMC</th><th>Actual size</th><th>Departure from MMC</th><th>Actual tolerance zone</th></tr>
+      <tr style="background:#F0FDF4;"><td>Hole ⌀0.500–0.510, pos ⌀0.010 Ⓜ</td><td>⌀0.010</td><td>⌀0.500 (MMC)</td><td>0.000</td><td style="color:#065F46;font-weight:600;">⌀0.010</td></tr>
+      <tr><td>Same hole, actual larger</td><td>⌀0.010</td><td>⌀0.505</td><td>0.005</td><td style="color:var(--purple);font-weight:600;">⌀0.015</td></tr>
+      <tr><td>Same hole, at LMC</td><td>⌀0.010</td><td>⌀0.510 (LMC)</td><td>0.010</td><td style="color:var(--purple);font-weight:600;">⌀0.020</td></tr>
+      <tr style="background:#FEF3C7;"><td>Same callout with Ⓢ instead</td><td>⌀0.010</td><td>Any size</td><td>N/A</td><td style="color:#92400E;font-weight:600;">⌀0.010 always</td></tr>
+    </table>
+  </div>
+
+  <!-- TAB 4 — TOLERANCE ZONES -->
+  <div id="p4" class="panel">
+    <div class="note"><strong>The tolerance zone shape is defined by the geometric symbol and the ⌀ prefix</strong>Understanding the zone shape is essential for knowing what the control actually means and how to inspect it.</div>
+    <table>
+      <tr><th>Control</th><th>Tolerance zone shape</th><th>Zone defined by</th><th>Inspection method</th></tr>
+      <tr><td>Flatness</td><td>Two parallel planes</td><td>Distance between planes = tolerance value</td><td>Surface plate + height gauge, CMM, optical flat</td></tr>
+      <tr><td>Straightness (surface)</td><td>Two parallel lines</td><td>Distance between lines = tolerance value</td><td>Straight edge + feeler gauge, CMM scan</td></tr>
+      <tr><td>Straightness (axis) ⌀</td><td>Cylinder</td><td>Cylinder diameter = tolerance value</td><td>CMM — derive axis from multiple cross-sections</td></tr>
+      <tr><td>Circularity</td><td>Two concentric circles</td><td>Radial distance between circles = tolerance value</td><td>V-block + indicator (per cross-section), CMM</td></tr>
+      <tr><td>Cylindricity</td><td>Two coaxial cylinders</td><td>Radial distance between cylinders = tolerance value</td><td>CMM only — full surface scan required</td></tr>
+      <tr><td>Perpendicularity (surface)</td><td>Two parallel planes</td><td>Perpendicular to datum, distance = tolerance value</td><td>Precision square + indicator, CMM</td></tr>
+      <tr><td>Perpendicularity (axis) ⌀</td><td>Cylinder</td><td>Perpendicular to datum, cylinder diameter = tolerance value</td><td>CMM — derive axis, measure angle</td></tr>
+      <tr><td>True position ⌀</td><td>Cylinder</td><td>Centered at basic location, diameter = tolerance value</td><td>CMM (standard), functional gauge (MMC)</td></tr>
+      <tr><td>True position (no ⌀)</td><td>Two parallel planes</td><td>Centered at basic location, distance = tolerance value</td><td>CMM, open setup with gauge blocks</td></tr>
+      <tr><td>Profile of a surface</td><td>Two offset surfaces</td><td>Uniform or unequal bilateral or unilateral offset</td><td>CMM — full surface scan against nominal CAD</td></tr>
+      <tr><td>Circular runout</td><td>Two concentric circles (per cross-section)</td><td>FIM (full indicator movement) at each cross-section</td><td>V-block or centers + indicator, rotate part</td></tr>
+      <tr><td>Total runout</td><td>Two coaxial cylinders</td><td>FIM over entire surface as indicator traverses</td><td>Centers + indicator traverse, CMM</td></tr>
+    </table>
+    <div class="note"><strong>CMM vs functional gauge</strong>CMM inspection is the standard and most flexible method — measures actual coordinates and calculates the geometric deviation mathematically. Functional gauges (hard gauges) are faster for production and directly simulate assembly, but only work at MMC and give go/no-go results without measurement data. For PPAP and capability studies, CMM data is required.</div>
+  </div>
+
+  <!-- TAB 5 — COMMON CALLOUTS -->
+  <div id="p5" class="panel">
+    <div class="note"><strong>These are the GD&T callouts you will see most often in production CNC work</strong>Understanding these cold — what they mean, how to achieve them, and how to inspect them — covers 90% of what an AE encounters on the shop floor.</div>
+    <table>
+      <tr><th>Callout</th><th>Reads as</th><th>How to achieve it</th><th>How to inspect it</th></tr>
+      <tr><td style="font-family:var(--mono);font-size:.8rem;">⊕ ⌀0.010 Ⓜ | A | B | C</td><td>True position, ⌀0.010 cylindrical zone at MMC, referenced to A, B, C</td><td>Accurate work offset, rigid workholding, probe confirmation of G54. Bonus tolerance helps if holes are at LMC.</td><td>CMM measures hole center, calculates deviation from basic location. Functional gauge acceptable at MMC.</td></tr>
+      <tr><td style="font-family:var(--mono);font-size:.8rem;">⊥ 0.005 | A</td><td>Perpendicularity, 0.005 wide zone, referenced to datum A</td><td>Tram the spindle to the fixture, rigid setup, minimal tool deflection. Bore rather than mill for critical perpendicularity.</td><td>CMM measures the bore axis or surface and calculates angle deviation from datum A.</td></tr>
+      <tr><td style="font-family:var(--mono);font-size:.8rem;">⏥ 0.002</td><td>Flatness, 0.002 wide zone, no datum</td><td>Surface grind or precision face mill with wiper insert. Below 0.001 requires grinding. Thermal stability critical.</td><td>Surface plate + height gauge scan, optical flat, CMM surface scan.</td></tr>
+      <tr><td style="font-family:var(--mono);font-size:.8rem;">↗ 0.003 | A</td><td>Circular runout, 0.003 FIM at each cross-section, referenced to datum A (axis)</td><td>Turn between centers or in precision collet. Single setup for datum feature and controlled feature. Minimize tool pressure.</td><td>Mount on centers or V-block referenced to datum A. Rotate and read FIM at each cross-section.</td></tr>
+      <tr><td style="font-family:var(--mono);font-size:.8rem;">∥ 0.005 | A</td><td>Parallelism, 0.005 wide zone, referenced to datum A</td><td>Second face milled in same setup as datum A or with part fixtured on datum A face. Minimize thermal growth between operations.</td><td>Part on datum A surface on surface plate. Indicator traverses controlled surface — record FIM.</td></tr>
+      <tr><td style="font-family:var(--mono);font-size:.8rem;">⌓ 0.010 | A | B</td><td>Profile of a surface, 0.010 wide zone (bilateral ±0.005), referenced to A and B</td><td>5-axis machining from CAD model. Tool path deviation determines profile. Rigid setup, temperature-controlled environment for tight profiles.</td><td>CMM full surface scan against nominal CAD. Deviation map shows high/low regions. Standard in aerospace.</td></tr>
+    </table>
+    <div class="warn"><strong>Basic dimensions are exact — they have no tolerance</strong>Any dimension associated with a GD&T control is a basic dimension (shown in a box on the drawing). Basic dimensions have no tolerance of their own — all the tolerance is in the feature control frame. Treating a basic dimension as a ±0.005 tolerance is a common and serious error.</div>
+  </div>
+</div>
+<script>
+function go(i,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('p'+i).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
